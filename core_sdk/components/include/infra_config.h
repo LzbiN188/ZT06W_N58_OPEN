@@ -1,0 +1,21 @@
+#ifndef _INFRA_CONFIG_H_
+#define _INFRA_CONFIG_H_
+#define INFRA_COMPAT
+#define INFRA_NET
+#define PLATFORM_HAS_STDINT
+#define INFRA_STRING
+#define DYNAMIC_REGISTER
+#define MQTT_COMM_ENABLED
+#define INFRA_LOG
+#define INFRA_TIMER
+#define INFRA_SHA256
+#define INFRA_REPORT
+#define INFRA_HTTPC
+#define MQTT_DYNAMIC_REGISTER
+#define HAL_KV
+#define INFRA_SHA1
+#define INFRA_PREAUTH
+#define MQTT_PRE_AUTH
+
+#endif
+
