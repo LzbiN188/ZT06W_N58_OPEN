@@ -448,7 +448,7 @@ void portGpioCfg(void)
 
     //ldr感光口
     nwy_gpio_set_direction(LDR_PORT, nwy_input);
-
+	nwy_gpio_pullup_or_pulldown(LDR_PORT,2);
     //relay 继电器控制口
     nwy_gpio_set_direction(RELAY_PORT, nwy_output);
     RELAY_OFF;

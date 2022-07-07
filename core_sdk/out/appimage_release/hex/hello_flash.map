@@ -2336,12 +2336,12 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
                 0x6023002c        0x4 LONG 0x80ed0000 __corestub_start
                 0x60230030        0x4 LONG 0x4
                 0x60230034        0x4 LONG 0x5e0 (__text_load_start - __flash_start)
-                0x60230038        0x4 LONG 0x17780 (__text_end - __text_start)
+                0x60230038        0x4 LONG 0x17788 (__text_end - __text_start)
                 0x6023003c        0x4 LONG 0x602305e0 __text_start
                 0x60230040        0x4 LONG 0x4
-                0x60230044        0x4 LONG 0x17d80 (__init_array_load_start - __flash_start)
+                0x60230044        0x4 LONG 0x17da0 (__init_array_load_start - __flash_start)
                 0x60230048        0x4 LONG 0x0 (__init_array_end - __init_array_start)
-                0x6023004c        0x4 LONG 0x60247d80 __init_array_start
+                0x6023004c        0x4 LONG 0x60247da0 __init_array_start
                 0x60230050        0x4 LONG 0x1
                 0x60230054        0x4 LONG 0x440 (__data_load_start - __flash_start)
                 0x60230058        0x4 LONG 0x185 (__data_end - __data_start)
@@ -2931,7 +2931,7 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
  *fill*         0x80ef1b3c        0x4 
                 0x602305e0                . = ((LOADADDR (.corestub) + SIZEOF (.corestub)) + SIZEOF (.data))
 
-.text           0x602305e0    0x17780
+.text           0x602305e0    0x177a0
                 0x602305e0                __text_start = .
  *(.text .text.* .gnu.linkonce.t.* .rdata .rodata .rodata.* .gnu.linkonce.r.* .glue_7 .glue_7t .vfp11_veneer .v4_bx)
  .glue_7        0x602305e0        0x0 linker stubs
@@ -3470,578 +3470,578 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
                 0x60239398        0x4 CMakeFiles/hello_flash.dir/app/app_port.c.obj
                 0x60239398                portSleepCtrl
  .text.portGpioCfg
-                0x6023939c       0x5e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023939c       0x66 CMakeFiles/hello_flash.dir/app/app_port.c.obj
                 0x6023939c                portGpioCfg
  .text.portPmuCfg
-                0x602393fa       0x2e CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602393fa                portPmuCfg
+                0x60239402       0x2e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239402                portPmuCfg
  .text.portGsensorCfg
-                0x60239428       0x84 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239428                portGsensorCfg
+                0x60239430       0x84 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239430                portGsensorCfg
  .text.portGpsCtrl
-                0x602394ac       0x70 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602394ac                portGpsCtrl
+                0x602394b4       0x70 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602394b4                portGpsCtrl
  .text.portGpsSetPositionMode
-                0x6023951c       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x6023951c                portGpsSetPositionMode
+                0x60239524       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239524                portGpsSetPositionMode
  .text.portGpsGetNmea
-                0x60239544       0x30 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239544                portGpsGetNmea
- *fill*         0x60239574        0x4 
+                0x6023954c       0x30 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023954c                portGpsGetNmea
+ *fill*         0x6023957c        0x4 
  .text.portGetOutSideVolAdcVol
-                0x60239578       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239578                portGetOutSideVolAdcVol
+                0x60239580       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239580                portGetOutSideVolAdcVol
  .text.portGetBatteryAdcVol
-                0x602395a0       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602395a0                portGetBatteryAdcVol
+                0x602395a8       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602395a8                portGetBatteryAdcVol
  .text.portGetModuleRssi
-                0x602395c8       0x14 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602395c8                portGetModuleRssi
+                0x602395d0       0x14 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602395d0                portGetModuleRssi
  .text.portGetModuleICCID
-                0x602395dc       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602395dc                portGetModuleICCID
+                0x602395e4       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602395e4                portGetModuleICCID
  .text.portGetModuleIMSI
-                0x60239604        0x8 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239604                portGetModuleIMSI
+                0x6023960c        0x8 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023960c                portGetModuleIMSI
  .text.portGetModuleIMEI
-                0x6023960c       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x6023960c                portGetModuleIMEI
+                0x60239614       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239614                portGetModuleIMEI
  .text.portGetLbsInfo
-                0x60239634       0x98 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239634                portGetLbsInfo
+                0x6023963c       0x98 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023963c                portGetLbsInfo
  .text.portSendAgpsData
-                0x602396cc       0x20 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602396cc                portSendAgpsData
+                0x602396d4       0x20 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602396d4                portSendAgpsData
  .text.portSetGpsStarupMode
-                0x602396ec       0x40 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602396ec                portSetGpsStarupMode
+                0x602396f4       0x40 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602396f4                portSetGpsStarupMode
  .text.portSystemReset
-                0x6023972c       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x6023972c                portSystemReset
+                0x60239734       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239734                portSystemReset
  .text.portSystemShutDown
-                0x60239744       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239744                portSystemShutDown
+                0x6023974c       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023974c                portSystemShutDown
  .text.portSaveAudio
-                0x6023975c       0x68 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x6023975c                portSaveAudio
+                0x60239764       0x68 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239764                portSaveAudio
  .text.portDeleteAudio
-                0x602397c4       0x38 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602397c4                portDeleteAudio
+                0x602397cc       0x38 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602397cc                portDeleteAudio
  .text.portPlayAudio
-                0x602397fc       0x38 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602397fc                portPlayAudio
+                0x60239804       0x38 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239804                portPlayAudio
  .text.portUpgradeWirte
-                0x60239834       0x1a CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239834                portUpgradeWirte
+                0x6023983c       0x1a CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023983c                portUpgradeWirte
  .text.portUpgradeStart
-                0x6023984e       0x10 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x6023984e                portUpgradeStart
- *fill*         0x6023985e        0x2 
+                0x60239856       0x10 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239856                portUpgradeStart
+ *fill*         0x60239866        0x2 
  .text.portRecInit
-                0x60239860       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239860                portRecInit
+                0x60239868       0x28 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239868                portRecInit
  .text.portRecStart
-                0x60239888       0xac CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239888                portRecStart
+                0x60239890       0xac CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239890                portRecStart
  .text.portRecStop
-                0x60239934       0x30 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239934                portRecStop
+                0x6023993c       0x30 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023993c                portRecStop
  .text.recSaveCallBack
-                0x60239964       0x48 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023996c       0x48 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .text.portRecUpload
-                0x602399ac       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602399ac                portRecUpload
+                0x602399b4       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602399b4                portRecUpload
  .text.portIsRecordNow
-                0x602399c4        0xc CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602399c4                portIsRecordNow
+                0x602399cc        0xc CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602399cc                portIsRecordNow
  .text.portSetRadio
-                0x602399d0       0x3c CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x602399d0                portSetRadio
+                0x602399d8       0x3c CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x602399d8                portSetRadio
  .text.bleMacParser
-                0x60239a0c       0x90 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239a0c                bleMacParser
+                0x60239a14       0x90 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239a14                bleMacParser
  .text.portSendCmd
-                0x60239a9c      0x104 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239a9c                portSendCmd
- .text.setCLIP  0x60239ba0        0xc CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239ba0                setCLIP
+                0x60239aa4      0x104 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239aa4                portSendCmd
+ .text.setCLIP  0x60239ba8        0xc CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239ba8                setCLIP
  .text.portAtCmdInit
-                0x60239bac       0x50 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239bac                portAtCmdInit
+                0x60239bb4       0x50 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239bb4                portAtCmdInit
  .text.portSendSms
-                0x60239bfc       0x60 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239bfc                portSendSms
+                0x60239c04       0x60 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239c04                portSendSms
  .text.portSetVol
-                0x60239c5c       0x20 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239c5c                portSetVol
- *fill*         0x60239c7c        0x4 
+                0x60239c64       0x20 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239c64                portSetVol
+ *fill*         0x60239c84        0x4 
  .text.portCapacityCalculate
-                0x60239c80       0x70 CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                0x60239c80                portCapacityCalculate
+                0x60239c88       0x70 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239c88                portCapacityCalculate
  .rodata.bleMacParser.str1.1
-                0x60239cf0       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239cf8       0x18 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.cmd_table
-                0x60239d08       0x40 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239d10       0x40 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portAtCmdInit.str1.1
-                0x60239d48        0xf CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239d50        0xf CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portDeleteAudio.str1.1
-                0x60239d57       0x46 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239d5f       0x46 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portGetLbsInfo.str1.1
-                0x60239d9d       0x1c CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239da5       0x1c CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portGpsCtrl.str1.1
-                0x60239db9       0x9c CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239dc1       0x9c CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portGpsSetPositionMode.str1.1
-                0x60239e55       0x1c CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239e5d       0x1c CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                  0x29 (size before relaxing)
  .rodata.portGsensorCfg.str1.1
-                0x60239e71       0x14 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239e79       0x14 CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                  0x23 (size before relaxing)
  .rodata.portPlayAudio.str1.1
-                0x60239e85       0x21 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239e8d       0x21 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portRecStart.str1.1
-                0x60239ea6       0x41 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239eae       0x41 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portRecStop.str1.1
-                0x60239ee7       0x1d CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239eef       0x1d CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSaveAudio.str1.1
-                0x60239f04       0x59 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239f0c       0x59 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSendAgpsData.str1.1
-                0x60239f5d       0x14 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239f65       0x14 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSendCmd.str1.1
-                0x60239f71       0x4f CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239f79       0x4f CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                  0x54 (size before relaxing)
  .rodata.portSendSms.str1.1
-                0x60239fc0       0x33 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239fc8       0x33 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSetGpsStarupMode.str1.1
-                0x60239ff3       0x4e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x60239ffb       0x4e CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSetRadio.str1.1
-                0x6023a041       0x25 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a049       0x25 CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                  0x32 (size before relaxing)
  .rodata.portSetRtcDateTime.str1.1
-                0x6023a066       0x2e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a06e       0x2e CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSetVol.str1.1
-                0x6023a094       0x10 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a09c       0x10 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSystemReset.str1.1
-                0x6023a0a4       0x10 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a0ac       0x10 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portSystemShutDown.str1.1
-                0x6023a0b4       0x13 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a0bc       0x13 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.portUartCfg.str1.1
-                0x6023a0c7       0xc0 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a0cf       0xc0 CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.recSaveCallBack.str1.1
-                0x6023a187       0x1e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a18f       0x1e CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.receiveCLIP.str1.1
-                0x6023a1a5       0x3e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a1ad       0x3e CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                  0x44 (size before relaxing)
  .rodata.receiveCMT.str1.1
-                0x6023a1e3       0x3a CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a1eb       0x3a CMakeFiles/hello_flash.dir/app/app_port.c.obj
  .rodata.setCLIP.str1.1
-                0x6023a21d       0x3a CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a225       0x3a CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                   0x2 (size before relaxing)
  .rodata.str1.1
-                0x6023a21d       0x38 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                0x6023a225       0x38 CMakeFiles/hello_flash.dir/app/app_port.c.obj
                                  0x3b (size before relaxing)
- *fill*         0x6023a255        0x3 
+ *fill*         0x6023a25d        0x3 
  .text.tcpSendData
-                0x6023a258       0x20 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a260       0x20 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.protocolGPSpack
-                0x6023a278      0x238 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a280      0x238 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.sendTcpDataDebugShow
-                0x6023a4b0       0x44 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a4b8       0x44 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.getTerminalAccState
-                0x6023a4f4       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a4f4                getTerminalAccState
+                0x6023a4fc       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a4fc                getTerminalAccState
  .text.terminalAccon
-                0x6023a504       0x1c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a504                terminalAccon
+                0x6023a50c       0x1c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a50c                terminalAccon
  .text.terminalAccoff
-                0x6023a520       0x1c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a520                terminalAccoff
+                0x6023a528       0x1c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a528                terminalAccoff
  .text.terminalCharge
-                0x6023a53c       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a53c                terminalCharge
+                0x6023a544       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a544                terminalCharge
  .text.terminalunCharge
-                0x6023a550       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a550                terminalunCharge
+                0x6023a558       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a558                terminalunCharge
  .text.getTerminalChargeState
-                0x6023a564       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a564                getTerminalChargeState
+                0x6023a56c       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a56c                getTerminalChargeState
  .text.terminalAlarmSet
-                0x6023a574       0x18 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a574                terminalAlarmSet
+                0x6023a57c       0x18 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a57c                terminalAlarmSet
  .text.saveInstructionId
-                0x6023a58c        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a58c                saveInstructionId
+                0x6023a594        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a594                saveInstructionId
  .text.recoverInstructionId
-                0x6023a598        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a598                recoverInstructionId
+                0x6023a5a0        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a5a0                recoverInstructionId
  .text.getProtoclInstructionid
-                0x6023a5a4        0x8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a5a4                getProtoclInstructionid
+                0x6023a5ac        0x8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a5ac                getProtoclInstructionid
  .text.GetCrc16
-                0x6023a5ac       0x2c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a5ac                GetCrc16
+                0x6023a5b4       0x2c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a5b4                GetCrc16
  .text.createProtocolTail_78
-                0x6023a5d8       0x2e CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a5e0       0x2e CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.createProtocolTail_79
-                0x6023a606       0x36 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a60e       0x36 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.createProtocol01
-                0x6023a63c       0xa4 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a63c                createProtocol01
+                0x6023a644       0xa4 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a644                createProtocol01
  .text.createProtocol13
-                0x6023a6e0       0xc8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a6e0                createProtocol13
+                0x6023a6e8       0xc8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a6e8                createProtocol13
  .text.createProtocol19
-                0x6023a7a8       0xc4 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a7a8                createProtocol19
+                0x6023a7b0       0xc4 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a7b0                createProtocol19
  .text.createProtocolF3
-                0x6023a86c       0xd0 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a86c                createProtocolF3
+                0x6023a874       0xd0 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a874                createProtocolF3
  .text.createProtocol16
-                0x6023a93c       0xc8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023a93c                createProtocol16
+                0x6023a944       0xc8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023a944                createProtocol16
  .text.protoclparser01
-                0x6023aa04       0x28 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa04                protoclparser01
+                0x6023aa0c       0x28 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa0c                protoclparser01
  .text.protocolInit
-                0x6023aa2c       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa2c                protocolInit
+                0x6023aa34       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa34                protocolInit
  .text.protoclUpdateSn
-                0x6023aa3c       0x24 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa3c                protoclUpdateSn
+                0x6023aa44       0x24 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa44                protoclUpdateSn
  .text.protocolUpdateVol
-                0x6023aa60       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa60                protocolUpdateVol
+                0x6023aa68       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa68                protocolUpdateVol
  .text.protocolUpdateRssi
-                0x6023aa74        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa74                protocolUpdateRssi
+                0x6023aa7c        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa7c                protocolUpdateRssi
  .text.protocolUpdateSatelliteUsed
-                0x6023aa80       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa80                protocolUpdateSatelliteUsed
+                0x6023aa88       0x10 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa88                protocolUpdateSatelliteUsed
  .text.protocolUpdateLbsInfo
-                0x6023aa90       0x18 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aa90                protocolUpdateLbsInfo
+                0x6023aa98       0x18 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aa98                protocolUpdateLbsInfo
  .text.protocolUpdateBleMac
-                0x6023aaa8       0x1c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aaa8                protocolUpdateBleMac
+                0x6023aab0       0x1c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aab0                protocolUpdateBleMac
  .text.protocolUpdateWifiList
-                0x6023aac4       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aac4                protocolUpdateWifiList
+                0x6023aacc       0x14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aacc                protocolUpdateWifiList
  .text.protocolUpdateEvent
-                0x6023aad8        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aad8                protocolUpdateEvent
+                0x6023aae0        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aae0                protocolUpdateEvent
  .text.protocolRegisterTcpSend
-                0x6023aae4        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aae4                protocolRegisterTcpSend
+                0x6023aaec        0xc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aaec                protocolRegisterTcpSend
  .text.upgradeStartInit
-                0x6023aaf0       0x44 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023aaf0                upgradeStartInit
+                0x6023aaf8       0x44 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aaf8                upgradeStartInit
  .text.gpsRestoreWriteData
-                0x6023ab34       0x68 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023ab34                gpsRestoreWriteData
+                0x6023ab3c       0x68 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023ab3c                gpsRestoreWriteData
  .text.sendProtocolToServer
-                0x6023ab9c      0x51c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023ab9c                sendProtocolToServer
+                0x6023aba4      0x51c CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023aba4                sendProtocolToServer
  .text.upgradeDoing
-                0x6023b0b8       0x48 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023b0c0       0x48 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.protocolParser
-                0x6023b100      0x460 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023b108      0x460 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .text.socketRecvPush
-                0x6023b560      0x104 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023b560                socketRecvPush
+                0x6023b568      0x104 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023b568                socketRecvPush
  .text.upgradeFromServer
-                0x6023b664      0x204 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023b664                upgradeFromServer
+                0x6023b66c      0x204 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023b66c                upgradeFromServer
  .text.gpsRestoreReadData
-                0x6023b868      0x1b8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                0x6023b868                gpsRestoreReadData
+                0x6023b870      0x1b8 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023b870                gpsRestoreReadData
  .rodata.gpsRestoreReadData.str1.1
-                0x6023ba20       0x66 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023ba28       0x66 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.gpsRestoreWriteData.str1.1
-                0x6023ba86       0x40 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023ba8e       0x40 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.protoclUpdateSn.str1.1
-                0x6023bac6        0xd CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023bace        0xd CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.protoclparser13.str1.1
-                0x6023bad3       0x11 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023badb       0x11 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.protoclparser16.str1.1
-                0x6023bae4        0xd CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023baec        0xd CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.protocolParser.str1.1
-                0x6023baf1      0x227 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023baf9      0x227 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.sendProtocolToServer.str1.1
-                0x6023bd18       0x53 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023bd20       0x53 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.sendTcpDataDebugShow.str1.1
-                0x6023bd6b        0xb CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023bd73        0xb CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.upgradeDoing.str1.1
-                0x6023bd76       0x19 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023bd7e       0x19 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.upgradeFromServer.str1.1
-                0x6023bd8f       0xe2 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023bd97       0xe2 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
  .rodata.upgradeStartInit.str1.1
-                0x6023be71       0x13 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                0x6023be79       0x13 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
                                  0x21 (size before relaxing)
  .rodata.ztvm_crctab16
-                0x6023be84      0x200 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
- .text.setkey   0x6023c084       0xec CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .text.encrypt  0x6023c170      0x164 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .text.expand   0x6023c2d4       0x36 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023be8c      0x200 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+ .text.setkey   0x6023c08c       0xec CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .text.encrypt  0x6023c178      0x164 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .text.expand   0x6023c2dc       0x36 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .text.compress
-                0x6023c30a       0x30 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c312       0x30 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .text.ztvm_encrypt_undes
-                0x6023c33a       0x54 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
-                0x6023c33a                ztvm_encrypt_undes
+                0x6023c342       0x54 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c342                ztvm_encrypt_undes
  .text.ztvm_encrypt_des
-                0x6023c38e       0x56 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
-                0x6023c38e                ztvm_encrypt_des
+                0x6023c396       0x56 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c396                ztvm_encrypt_des
  .text.ztvm_encrypt_untrides
-                0x6023c3e4       0x28 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
-                0x6023c3e4                ztvm_encrypt_untrides
+                0x6023c3ec       0x28 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c3ec                ztvm_encrypt_untrides
  .text.XINGSHENG_ID_ASCII_Decoding
-                0x6023c40c       0x26 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
-                0x6023c40c                XINGSHENG_ID_ASCII_Decoding
+                0x6023c414       0x26 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c414                XINGSHENG_ID_ASCII_Decoding
  .text.XINGSHENG_ID_Decoder
-                0x6023c432       0x82 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
-                0x6023c432                XINGSHENG_ID_Decoder
+                0x6023c43a       0x82 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c43a                XINGSHENG_ID_Decoder
  .text.decryptSN
-                0x6023c4b4       0xa8 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
-                0x6023c4b4                decryptSN
- .rodata.FP     0x6023c55c       0x40 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.IP     0x6023c59c       0x40 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.P      0x6023c5dc       0x20 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.PC1_C  0x6023c5fc       0x1c CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.PC1_D  0x6023c618       0x1c CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.PC2_C  0x6023c634       0x18 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.PC2_D  0x6023c64c       0x18 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.S      0x6023c664      0x200 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .rodata.e      0x6023c864       0x30 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c4bc       0xa8 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c4bc                decryptSN
+ .rodata.FP     0x6023c564       0x40 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.IP     0x6023c5a4       0x40 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.P      0x6023c5e4       0x20 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.PC1_C  0x6023c604       0x1c CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.PC1_D  0x6023c620       0x1c CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.PC2_C  0x6023c63c       0x18 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.PC2_D  0x6023c654       0x18 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.S      0x6023c66c      0x200 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .rodata.e      0x6023c86c       0x30 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .rodata.shifts
-                0x6023c894       0x10 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+                0x6023c89c       0x10 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .text.radioRestore
-                0x6023c8a4        0x6 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
- *fill*         0x6023c8aa        0x2 
+                0x6023c8ac        0x6 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+ *fill*         0x6023c8b2        0x2 
  .text.socketDataRecv
-                0x6023c8ac       0x80 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023c8b4       0x80 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .text.searchSocket
-                0x6023c92c       0x30 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023c934       0x30 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .text.socketCallBack
-                0x6023c95c       0x48 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023c964       0x48 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .text.netdataStateCallBack
-                0x6023c9a4       0x4c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023c9ac       0x4c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .text.socketDel
-                0x6023c9f0       0x5c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023c9f8       0x5c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .text.socketListInit
-                0x6023ca4c       0x10 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023ca4c                socketListInit
+                0x6023ca54       0x10 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023ca54                socketListInit
  .text.networkInfoInit
-                0x6023ca5c       0x18 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023ca5c                networkInfoInit
+                0x6023ca64       0x18 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023ca64                networkInfoInit
  .text.netResetCsqSearch
-                0x6023ca74        0xc CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023ca74                netResetCsqSearch
+                0x6023ca7c        0xc CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023ca7c                netResetCsqSearch
  .text.socketAdd
-                0x6023ca80       0x94 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023ca80                socketAdd
+                0x6023ca88       0x94 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023ca88                socketAdd
  .text.socketDeleteAll
-                0x6023cb14       0x54 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023cb14                socketDeleteAll
+                0x6023cb1c       0x54 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023cb1c                socketDeleteAll
  .text.socketClose
-                0x6023cb68       0x40 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023cb68                socketClose
+                0x6023cb70       0x40 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023cb70                socketClose
  .text.netStopDataCall
-                0x6023cba8       0x34 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023cba8                netStopDataCall
+                0x6023cbb0       0x34 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023cbb0                netStopDataCall
  .text.networkConnectCtl
-                0x6023cbdc       0x50 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023cbdc                networkConnectCtl
+                0x6023cbe4       0x50 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023cbe4                networkConnectCtl
  .text.netWorkRestore
-                0x6023cc2c        0x6 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
- *fill*         0x6023cc32        0x2 
+                0x6023cc34        0x6 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+ *fill*         0x6023cc3a        0x2 
  .text.socketSendData
-                0x6023cc34       0x6c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023cc34                socketSendData
+                0x6023cc3c       0x6c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023cc3c                socketSendData
  .text.networkConnectTask
-                0x6023cca0      0x6bc CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023cca0                networkConnectTask
+                0x6023cca8      0x6bc CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023cca8                networkConnectTask
  .text.isNetworkNormal
-                0x6023d35c       0x14 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023d35c                isNetworkNormal
+                0x6023d364       0x14 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d364                isNetworkNormal
  .text.socketGetUsedFlag
-                0x6023d370       0x1c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023d370                socketGetUsedFlag
+                0x6023d378       0x1c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d378                socketGetUsedFlag
  .text.socketGetConnectStatus
-                0x6023d38c       0x1c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                0x6023d38c                socketGetConnectStatus
+                0x6023d394       0x1c CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d394                socketGetConnectStatus
  .rodata.netStopDataCall.str1.1
-                0x6023d3a8       0x10 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d3b0       0x10 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.netdataStateCallBack.str1.1
-                0x6023d3b8       0x45 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d3c0       0x45 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.networkConnectCtl.str1.1
-                0x6023d3fd        0xb CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d405        0xb CMakeFiles/hello_flash.dir/app/app_socket.c.obj
                                  0x1a (size before relaxing)
  .rodata.networkConnectTask.str1.1
-                0x6023d408      0x289 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d410      0x289 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
                                 0x2af (size before relaxing)
  .rodata.socketAdd.str1.1
-                0x6023d691        0xe CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d699        0xe CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.socketCallBack.str1.1
-                0x6023d69f        0xf CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d6a7        0xf CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.socketClose.str1.1
-                0x6023d6ae       0x11 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d6b6       0x11 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.socketDataRecv.str1.1
-                0x6023d6bf       0x3d CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d6c7       0x3d CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.socketDel.str1.1
-                0x6023d6fc       0x33 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d704       0x33 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.socketDeleteAll.str1.1
-                0x6023d72f       0x29 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d737       0x29 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .rodata.socketSendData.str1.1
-                0x6023d758       0x26 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                0x6023d760       0x26 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .text.asciiToHex
-                0x6023d77e       0x26 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d786       0x26 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
  .text.LogMessageWL
-                0x6023d7a4       0xb4 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d7a4                LogMessageWL
+                0x6023d7ac       0xb4 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d7ac                LogMessageWL
  .text.LogMessage
-                0x6023d858       0x1a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d858                LogMessage
- *fill*         0x6023d872        0x2 
+                0x6023d860       0x1a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d860                LogMessage
+ *fill*         0x6023d87a        0x2 
  .text.LogPrintf
-                0x6023d874       0x40 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d874                LogPrintf
+                0x6023d87c       0x40 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d87c                LogPrintf
  .text.getCharIndex
-                0x6023d8b4       0x1a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d8b4                getCharIndex
+                0x6023d8bc       0x1a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d8bc                getCharIndex
  .text.changeByteArrayToHexString
-                0x6023d8ce       0x34 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d8ce                changeByteArrayToHexString
+                0x6023d8d6       0x34 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d8d6                changeByteArrayToHexString
  .text.changeHexStringToByteArray
-                0x6023d902       0x3c CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d902                changeHexStringToByteArray
+                0x6023d90a       0x3c CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d90a                changeHexStringToByteArray
  .text.changeHexStringToByteArray_10in
-                0x6023d93e       0x40 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d93e                changeHexStringToByteArray_10in
+                0x6023d946       0x40 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d946                changeHexStringToByteArray_10in
  .text.my_strpach
-                0x6023d97e       0x34 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d97e                my_strpach
+                0x6023d986       0x34 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d986                my_strpach
  .text.my_strstr
-                0x6023d9b2       0x3c CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d9b2                my_strstr
+                0x6023d9ba       0x3c CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d9ba                my_strstr
  .text.my_getstrindex
-                0x6023d9ee       0x5a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023d9ee                my_getstrindex
+                0x6023d9f6       0x5a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023d9f6                my_getstrindex
  .text.mycmdPatch
-                0x6023da48       0x3a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023da48                mycmdPatch
- *fill*         0x6023da82        0x2 
+                0x6023da50       0x3a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023da50                mycmdPatch
+ *fill*         0x6023da8a        0x2 
  .text.stringToItem
-                0x6023da84       0x90 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023da84                stringToItem
+                0x6023da8c       0x90 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023da8c                stringToItem
  .text.stringToUpper
-                0x6023db14       0x22 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                0x6023db14                stringToUpper
+                0x6023db1c       0x22 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023db1c                stringToUpper
  .rodata.LogMessageWL.str1.1
-                0x6023db36       0x12 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                0x6023db3e       0x12 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
                                  0x15 (size before relaxing)
  .text.gsRepair
-                0x6023db48        0x6 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023db50        0x6 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .text.openGnssGpsBd
-                0x6023db4e        0x6 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023db56        0x6 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .text.wifiStartScan
-                0x6023db54       0xd0 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023db5c       0xd0 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .text.sysRunTimeCnt
-                0x6023dc24       0x2c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dc2c       0x2c CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .text.sysEnterStopQuickly
-                0x6023dc50       0x40 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dc58       0x40 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .text.ledStatusUpdate
-                0x6023dc90       0x4c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dc90                ledStatusUpdate
+                0x6023dc98       0x4c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dc98                ledStatusUpdate
  .text.motionOccur
-                0x6023dcdc       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dcdc                motionOccur
+                0x6023dce4       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dce4                motionOccur
  .text.gpsRequestSet
-                0x6023dcec       0x1c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dcec                gpsRequestSet
+                0x6023dcf4       0x1c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dcf4                gpsRequestSet
  .text.gpsRequestClear
-                0x6023dd08       0x1c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dd08                gpsRequestClear
+                0x6023dd10       0x1c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dd10                gpsRequestClear
  .text.motionStateUpdate
-                0x6023dd24       0xbc CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dd24                motionStateUpdate
+                0x6023dd2c       0xbc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dd2c                motionStateUpdate
  .text.gpsRequestGet
-                0x6023dde0        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dde0                gpsRequestGet
+                0x6023dde8        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dde8                gpsRequestGet
  .text.lbsRequestSet
-                0x6023ddec       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023ddec                lbsRequestSet
+                0x6023ddf4       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ddf4                lbsRequestSet
  .text.wifiRequestSet
-                0x6023ddfc       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023ddfc                wifiRequestSet
+                0x6023de04       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023de04                wifiRequestSet
  .text.alarmRequestSet
-                0x6023de0c       0x28 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023de0c                alarmRequestSet
+                0x6023de14       0x28 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023de14                alarmRequestSet
  .text.alarmRequestClear
-                0x6023de34       0x1c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023de34                alarmRequestClear
+                0x6023de3c       0x1c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023de3c                alarmRequestClear
  .text.alarmRequestSave
-                0x6023de50       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023de50                alarmRequestSave
+                0x6023de58       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023de58                alarmRequestSave
  .text.alarmRequestClearSave
-                0x6023de64       0x2c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023de64                alarmRequestClearSave
+                0x6023de6c       0x2c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023de6c                alarmRequestClearSave
  .text.recordRequestSet
-                0x6023de90       0x24 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023de90                recordRequestSet
+                0x6023de98       0x24 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023de98                recordRequestSet
  .text.recordRequestClear
-                0x6023deb4        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023deb4                recordRequestClear
+                0x6023debc        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023debc                recordRequestClear
  .text.sysIsInRun
-                0x6023dec0       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023dec0                sysIsInRun
+                0x6023dec8       0x10 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023dec8                sysIsInRun
  .text.myAppRun
-                0x6023ded0      0xb28 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023ded0                myAppRun
+                0x6023ded8      0xb28 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ded8                myAppRun
  .text.myApp100MSRun
-                0x6023e9f8      0x100 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023e9f8                myApp100MSRun
+                0x6023ea00      0x100 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ea00                myApp100MSRun
  .text.myAppEvent
-                0x6023eaf8       0x58 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023eaf8                myAppEvent
+                0x6023eb00       0x58 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023eb00                myAppEvent
  .text.appSendThreadEvent
-                0x6023eb50       0x20 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6023eb50                appSendThreadEvent
+                0x6023eb58       0x20 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023eb58                appSendThreadEvent
  .rodata.alarmRequestClear.str1.1
-                0x6023eb70       0x1b CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023eb78       0x1b CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.alarmRequestClearSave.str1.1
-                0x6023eb8b       0x1a CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023eb93       0x1a CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.alarmRequestSet.str1.1
-                0x6023eba5       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ebad       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.gpsRequestClear.str1.1
-                0x6023ebbe       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ebc6       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.gpsRequestSet.str1.1
-                0x6023ebd7       0x17 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ebdf       0x17 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.motionStateUpdate.str1.1
-                0x6023ebee       0x2e CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ebf6       0x2e CMakeFiles/hello_flash.dir/app/app_task.c.obj
                                  0x3d (size before relaxing)
  .rodata.myAppRun.str1.1
-                0x6023ec1c      0x2fd CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ec24      0x2fd CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.sysEnterStopQuickly.str1.1
-                0x6023ef19       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6023ef21       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.wifiStartScan.str1.1
-                0x6023ef2d       0x51 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .text.atof     0x6023ef7e        0x6 ../../components/newlib/armca5/libc.a(lib_a-atof.o)
-                0x6023ef7e                atof
- .text.atoi     0x6023ef84        0x8 ../../components/newlib/armca5/libc.a(lib_a-atoi.o)
-                0x6023ef84                atoi
- .text.atol     0x6023ef8c        0x8 ../../components/newlib/armca5/libc.a(lib_a-atol.o)
-                0x6023ef8c                atol
- .text.memcpy   0x6023ef94       0xc8 ../../components/newlib/armca5/libc.a(lib_a-memcpy-stub.o)
-                0x6023ef94                memcpy
- .text.memset   0x6023f05c       0xa8 ../../components/newlib/armca5/libc.a(lib_a-memset.o)
-                0x6023f05c                memset
+                0x6023ef35       0x51 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .text.atof     0x6023ef86        0x6 ../../components/newlib/armca5/libc.a(lib_a-atof.o)
+                0x6023ef86                atof
+ .text.atoi     0x6023ef8c        0x8 ../../components/newlib/armca5/libc.a(lib_a-atoi.o)
+                0x6023ef8c                atoi
+ .text.atol     0x6023ef94        0x8 ../../components/newlib/armca5/libc.a(lib_a-atol.o)
+                0x6023ef94                atol
+ .text.memcpy   0x6023ef9c       0xc8 ../../components/newlib/armca5/libc.a(lib_a-memcpy-stub.o)
+                0x6023ef9c                memcpy
+ .text.memset   0x6023f064       0xa8 ../../components/newlib/armca5/libc.a(lib_a-memset.o)
+                0x6023f064                memset
  .text.snprintf
-                0x6023f104       0x66 ../../components/newlib/armca5/libc.a(lib_a-snprintf.o)
-                0x6023f104                snprintf
- *fill*         0x6023f16a        0x2 
- .text.sprintf  0x6023f16c       0x40 ../../components/newlib/armca5/libc.a(lib_a-sprintf.o)
-                0x6023f16c                sprintf
- .text.strcat   0x6023f1ac       0x40 ../../components/newlib/armca5/libc.a(lib_a-strcat.o)
-                0x6023f1ac                strcat
- *fill*         0x6023f1ec       0x14 
+                0x6023f10c       0x66 ../../components/newlib/armca5/libc.a(lib_a-snprintf.o)
+                0x6023f10c                snprintf
+ *fill*         0x6023f172        0x2 
+ .text.sprintf  0x6023f174       0x40 ../../components/newlib/armca5/libc.a(lib_a-sprintf.o)
+                0x6023f174                sprintf
+ .text.strcat   0x6023f1b4       0x40 ../../components/newlib/armca5/libc.a(lib_a-strcat.o)
+                0x6023f1b4                strcat
+ *fill*         0x6023f1f4        0xc 
  .text          0x6023f200      0x2dc ../../components/newlib/armca5/libc.a(lib_a-strcmp.o)
                 0x6023f208                strcmp
  .text.strcpy   0x6023f4dc       0xc4 ../../components/newlib/armca5/libc.a(lib_a-strcpy.o)
@@ -4335,28 +4335,28 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
  .text          0x602477f0      0x144 ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a(_udivmoddi4.o)
                 0x602477f0                __udivmoddi4
  *fill*         0x60247934        0x4 
- .text.__stub   0x60247938      0x428 linker stubs
-                0x60247d60                __text_end = .
-                0x60247d60                . = ALIGN (0x20)
- *fill*         0x60247d60        0x0 
+ .text.__stub   0x60247938      0x430 linker stubs
+                0x60247d68                __text_end = .
+                0x60247d80                . = ALIGN (0x20)
+ *fill*         0x60247d68       0x18 
                 0x602305e0                __text_load_start = LOADADDR (.text)
 
-.iplt           0x60247d60        0x0
- .iplt          0x60247d60        0x0 ../../components/lib/core_stub.o
+.iplt           0x60247d80        0x0
+ .iplt          0x60247d80        0x0 ../../components/lib/core_stub.o
 
-.rel.dyn        0x60247d60        0x0
- .rel.iplt      0x60247d60        0x0 ../../components/lib/core_stub.o
+.rel.dyn        0x60247d80        0x0
+ .rel.iplt      0x60247d80        0x0 ../../components/lib/core_stub.o
 
-.ARM.exidx      0x60247d60        0x8
- .ARM.exidx     0x60247d60        0x8 ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a(_udivmoddi4.o)
+.ARM.exidx      0x60247d80        0x8
+ .ARM.exidx     0x60247d80        0x8 ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a(_udivmoddi4.o)
 
-.init_array     0x60247d80        0x0
-                0x60247d80                __init_array_start = .
+.init_array     0x60247da0        0x0
+                0x60247da0                __init_array_start = .
  *(.init_array*)
-                0x60247d80                __init_array_end = .
-                0x60247d80                . = ALIGN (0x20)
-                0x60247d80                __init_array_load_start = LOADADDR (.init_array)
-                0x60247d80                __flash_end = (ADDR (.init_array) + SIZEOF (.init_array))
+                0x60247da0                __init_array_end = .
+                0x60247da0                . = ALIGN (0x20)
+                0x60247da0                __init_array_load_start = LOADADDR (.init_array)
+                0x60247da0                __flash_end = (ADDR (.init_array) + SIZEOF (.init_array))
                 0x80ef1b40                __ram_end = (ADDR (.bss) + SIZEOF (.bss))
                 0x00000001                ASSERT ((__flash_end <= (ORIGIN (flash) + LENGTH (flash))), FLASH overflow)
                 0x00000001                ASSERT ((__ram_end <= (ORIGIN (ram) + LENGTH (ram))), RAM overflow)
@@ -4608,7 +4608,7 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
  *(.gnu*)
 OUTPUT(hex\hello_flash.elf elf32-littlearm)
 
-.debug_info     0x00000000    0x27bfa
+.debug_info     0x00000000    0x27c12
  .debug_info    0x00000000     0x20bf CMakeFiles/hello_flash.dir/app/aes.c.obj
  .debug_info    0x000020bf     0x1be0 CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
  .debug_info    0x00003c9f     0x32e4 CMakeFiles/hello_flash.dir/app/app_ble.c.obj
@@ -4620,12 +4620,12 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_info    0x000125ae     0x11a2 CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj
  .debug_info    0x00013750     0x24db CMakeFiles/hello_flash.dir/app/app_net.c.obj
  .debug_info    0x00015c2b     0x13d6 CMakeFiles/hello_flash.dir/app/app_param.c.obj
- .debug_info    0x00017001     0x3f3d CMakeFiles/hello_flash.dir/app/app_port.c.obj
- .debug_info    0x0001af3e     0x4526 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
- .debug_info    0x0001f464     0x11b9 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .debug_info    0x0002061d     0x29b3 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
- .debug_info    0x00022fd0     0x138e CMakeFiles/hello_flash.dir/app/app_sys.c.obj
- .debug_info    0x0002435e     0x389c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .debug_info    0x00017001     0x3f55 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+ .debug_info    0x0001af56     0x4526 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+ .debug_info    0x0001f47c     0x11b9 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .debug_info    0x00020635     0x29b3 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+ .debug_info    0x00022fe8     0x138e CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+ .debug_info    0x00024376     0x389c CMakeFiles/hello_flash.dir/app/app_task.c.obj
 
 .debug_abbrev   0x00000000     0x4b2b
  .debug_abbrev  0x00000000      0x531 CMakeFiles/hello_flash.dir/app/aes.c.obj
@@ -4720,7 +4720,7 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_ranges  0x000019d8       0x90 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
  .debug_ranges  0x00001a68      0x3d0 CMakeFiles/hello_flash.dir/app/app_task.c.obj
 
-.debug_line     0x00000000     0x63d1
+.debug_line     0x00000000     0x63d2
  .debug_line    0x00000000      0x582 CMakeFiles/hello_flash.dir/app/aes.c.obj
  .debug_line    0x00000582      0x39a CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
  .debug_line    0x0000091c      0x7b4 CMakeFiles/hello_flash.dir/app/app_ble.c.obj
@@ -4732,12 +4732,12 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_line    0x00002a75      0x2e2 CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj
  .debug_line    0x00002d57      0x650 CMakeFiles/hello_flash.dir/app/app_net.c.obj
  .debug_line    0x000033a7      0x2d7 CMakeFiles/hello_flash.dir/app/app_param.c.obj
- .debug_line    0x0000367e      0xa07 CMakeFiles/hello_flash.dir/app/app_port.c.obj
- .debug_line    0x00004085      0xc14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
- .debug_line    0x00004c99      0x447 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .debug_line    0x000050e0      0x659 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
- .debug_line    0x00005739      0x3f2 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
- .debug_line    0x00005b2b      0x8a6 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .debug_line    0x0000367e      0xa08 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+ .debug_line    0x00004086      0xc14 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+ .debug_line    0x00004c9a      0x447 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .debug_line    0x000050e1      0x659 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+ .debug_line    0x0000573a      0x3f2 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+ .debug_line    0x00005b2c      0x8a6 CMakeFiles/hello_flash.dir/app/app_task.c.obj
 
 .debug_str      0x00000000     0x6918
  .debug_str     0x00000000      0x7db CMakeFiles/hello_flash.dir/app/aes.c.obj
