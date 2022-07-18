@@ -7,6 +7,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "aes.h"
+#include "app_port.h"
 #include "nwy_ble_client.h"
 
 static bleServer_s bleServInfo;
@@ -696,6 +697,11 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogPrintf(DEBUG_ALL, "BLE==>relay state %d", data[readInd + 4]);
                 break;
             case CMD_ALARM:
+                //Ë³±ã°Ñ¼ÌµçÆ÷Ò²¸ø¶ÏÁË
+                RELAY_OFF;
+                sysparam.relayCtl = 0;
+                paramSaveAll();
+				
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, À¶ÑÀÆÁ±Î±¨¾¯...");
                 alarmRequestSet(ALARM_SHIELD_REQUEST);
