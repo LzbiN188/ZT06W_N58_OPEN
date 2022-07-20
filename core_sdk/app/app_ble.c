@@ -491,6 +491,13 @@ void bleScheduleInit(void)
     {
         bleScheduleCtrl(1);
     }
+
+	if (sysparam.relayCtl)
+    {
+    	//状态同步
+        bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+    }
 }
 
 /**************************************************
@@ -698,10 +705,12 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 break;
             case CMD_ALARM:
                 //顺便把继电器也给断了
-                RELAY_OFF;
-                sysparam.relayCtl = 0;
+                RELAY_ON;
+                sysparam.relayCtl = 1;
+                bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
+                bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
                 paramSaveAll();
-				
+
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽报警...");
                 alarmRequestSet(ALARM_SHIELD_REQUEST);
