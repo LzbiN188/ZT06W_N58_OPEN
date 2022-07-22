@@ -39,5 +39,6 @@ int mycmdPatch(uint8_t *cmd1, uint8_t *cmd2);
 
 void stringToItem(ITEM *item, uint8_t *str, uint16_t len);
 void stringToUpper(char *str, uint16_t strlen);
+void stringToLowwer(char *str, uint16_t strlen);
 
 #endif

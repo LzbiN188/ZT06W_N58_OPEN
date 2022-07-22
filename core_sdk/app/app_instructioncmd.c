@@ -61,6 +61,8 @@ const instruction_s instructiontable[] =
     {READPARAM_INS, "READPARAM"},
     {SETBLEPARAM_INS, "SETBLEPARAM"},
     {SETBLEWARNPARAM_INS, "SETBLEWARNPARAM"},
+    {RELAYFUN_INS, "RELAYFUN"},
+    {RELAYSPEED_INS, "RELAYSPEED"},
     {SN_INS, "*"},
 };
 
@@ -293,6 +295,7 @@ static void doServerInstruction(ITEM *item, char *message)
         if (serverType == JT808_PROTOCOL_TYPE)
         {
             strncpy((char *)sysparam.jt808Server, item->item_data[2], 50);
+            stringToLowwer(sysparam.jt808Server, strlen(sysparam.jt808Server));
             sysparam.jt808Port = atoi((const char *)item->item_data[3]);
             sprintf(message, "Update jt808 domain %s:%d;", sysparam.jt808Server, sysparam.jt808Port);
 
@@ -300,6 +303,7 @@ static void doServerInstruction(ITEM *item, char *message)
         else
         {
             strncpy((char *)sysparam.Server, item->item_data[2], 50);
+            stringToLowwer(sysparam.Server, strlen(sysparam.Server));
             sysparam.ServerPort = atoi((const char *)item->item_data[3]);
             sprintf(message, "Update domain %s:%d;", sysparam.Server, sysparam.ServerPort);
         }
@@ -774,21 +778,19 @@ static void doRelayInstrucion(ITEM *item, char *message)
 {
     if (item->item_data[1][0] == '1')
     {
-        RELAY_ON;
         sysparam.relayCtl = 1;
-        bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
         paramSaveAll();
+        relayAutoRequest();
         strcpy(message, "Relay on success");
     }
     else if (item->item_data[1][0] == '0')
     {
         RELAY_OFF;
         sysparam.relayCtl = 0;
-
+        paramSaveAll();
+        relayAutoClear();
         bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
-        paramSaveAll();
         strcpy(message, "Relay off success");
     }
     else
@@ -1142,6 +1144,7 @@ static void doHideServerInstruction(ITEM *item, char *message)
             if (item->item_data[2][0] != 0 && item->item_data[3][0] != 0)
             {
                 strncpy((char *)sysparam.hiddenServer, item->item_data[2], 50);
+                stringToLowwer(sysparam.hiddenServer, strlen(sysparam.hiddenServer));
                 sysparam.hiddenPort = atoi((const char *)item->item_data[3]);
                 sprintf(message, "Update hidden server %s:%d and enable it", sysparam.hiddenServer, sysparam.hiddenPort);
             }
@@ -1294,7 +1297,7 @@ static void doSetBleParamInstruction(ITEM *item, char *message)
         sprintf(message, "Update new ble param to %.2fv,%.2fv,%d", sysparam.bleRfThreshold / 100.0,
                 sysparam.bleOutThreshold / 100.0, sysparam.bleAutoDisc);
         bleScheduleSetAllReq(BLE_EVENT_SET_RF_THRE | BLE_EVENT_SET_OUTV_THRE | BLE_EVENT_SET_AD_THRE | BLE_EVENT_GET_RF_THRE |
-                             BLE_EVENT_GET_OUT_THRE |BLE_EVENT_GET_AD_THRE);
+                             BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_AD_THRE);
     }
 }
 
@@ -1313,7 +1316,8 @@ static void doSetBleWarnParamInstruction(ITEM *item, char *message)
             if (bleinfo != NULL)
             {
                 cnt++;
-                sprintf(message + strlen(message), "(%d:[%.2f,%d,%d]) ", i, bleinfo->preV_threshold/100.0, bleinfo->preDetCnt_threshold,
+                sprintf(message + strlen(message), "(%d:[%.2f,%d,%d]) ", i, bleinfo->preV_threshold / 100.0,
+                        bleinfo->preDetCnt_threshold,
                         bleinfo->preHold_threshold);
             }
         }
@@ -1357,6 +1361,36 @@ static void doSetBleWarnParamInstruction(ITEM *item, char *message)
 }
 
 
+
+static void doRelayFunInstruction(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Current relayfun %d", sysparam.relayFun);
+    }
+    else
+    {
+        sysparam.relayFun = atoi(item->item_data[1]);
+        paramSaveAll();
+        sprintf(message, "Update relayfun %d", sysparam.relayFun);
+    }
+}
+
+
+
+static void doRelaySpeedInstruction(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Current relaySpeed %d km/h", sysparam.relaySpeed);
+    }
+    else
+    {
+        sysparam.relaySpeed = atoi(item->item_data[1]);
+        paramSaveAll();
+        sprintf(message, "Update relaySpeed %d km/h", sysparam.relaySpeed);
+    }
+}
 
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
@@ -1481,6 +1515,12 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
             break;
         case SETBLEWARNPARAM_INS:
             doSetBleWarnParamInstruction(item, message);
+            break;
+        case RELAYFUN_INS:
+            doRelayFunInstruction(item, message);
+            break;
+        case RELAYSPEED_INS:
+            doRelaySpeedInstruction(item, message);
             break;
         default:
             if (param->mode == MESSAGE_MODE)

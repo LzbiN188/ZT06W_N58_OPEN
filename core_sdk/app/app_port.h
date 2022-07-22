@@ -42,6 +42,7 @@
 #define OFF_STATE		0
 
 #define AUDIOFILE   "myMusic.mp3"
+#define RECFILE		"rec.amr"
 #define RECORD_BUFF_SIZE		(120*1024)
 
 typedef enum
@@ -157,9 +158,9 @@ void portSystemReset(void);
 void portSystemShutDown(void);
 
 
-void portSaveAudio(uint8_t *audio, uint16_t len);
-void portDeleteAudio(void);
-void portPlayAudio(void);
+void portSaveAudio(char * filePath,uint8_t *audio, uint16_t len);
+void portDeleteAudio(char * filePath);
+void portPlayAudio(char * filePath);
 
 uint8_t portUpgradeWirte(unsigned int offset, unsigned int length, unsigned char *data);
 uint8_t portUpgradeStart(void);

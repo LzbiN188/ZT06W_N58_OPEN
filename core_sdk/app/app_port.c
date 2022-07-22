@@ -448,7 +448,7 @@ void portGpioCfg(void)
 
     //ldr感光口
     nwy_gpio_set_direction(LDR_PORT, nwy_input);
-	nwy_gpio_pullup_or_pulldown(LDR_PORT,2);
+    nwy_gpio_pullup_or_pulldown(LDR_PORT, 2);
     //relay 继电器控制口
     nwy_gpio_set_direction(RELAY_PORT, nwy_output);
     RELAY_OFF;
@@ -794,7 +794,7 @@ int portStartAgps(char *agpsServer, int agpsPort, char *agpsUser, char *agpsPswd
 
 int portSendAgpsData(char *data, uint16_t len)
 {
-	LogPrintf(DEBUG_ALL,"agps write %d bytes",len);
+    LogPrintf(DEBUG_ALL, "agps write %d bytes", len);
     return nwy_loc_send_agps_data(data, len);
 }
 
@@ -861,11 +861,11 @@ void portSystemShutDown(void)
 @note		以追加方式保存到文件
 **************************************************/
 
-void portSaveAudio(uint8_t *audio, uint16_t len)
+void portSaveAudio(char * filePath,uint8_t *audio, uint16_t len)
 {
     uint16_t  fileOperation;
     int fd, writelen;
-    if (nwy_sdk_fexist(AUDIOFILE) == true)
+    if (nwy_sdk_fexist(filePath) == true)
     {
         fileOperation = NWY_WRONLY | NWY_APPEND;
     }
@@ -873,7 +873,7 @@ void portSaveAudio(uint8_t *audio, uint16_t len)
     {
         fileOperation = NWY_CREAT | NWY_RDWR;
     }
-    fd = nwy_sdk_fopen(AUDIOFILE, fileOperation);
+    fd = nwy_sdk_fopen(filePath, fileOperation);
     if (fd < 0)
     {
         LogMessage(DEBUG_ALL, "portSaveAudio==>Open error");
@@ -897,22 +897,22 @@ void portSaveAudio(uint8_t *audio, uint16_t len)
 @note
 **************************************************/
 
-void portDeleteAudio(void)
+void portDeleteAudio(char * filePath)
 {
-    if (nwy_sdk_fexist(AUDIOFILE))
+    if (nwy_sdk_fexist(filePath))
     {
-        if (nwy_sdk_file_unlink(AUDIOFILE) == 0)
+        if (nwy_sdk_file_unlink(filePath) == 0)
         {
-            LogMessage(DEBUG_ALL, "Delete audio file success");
+            LogPrintf(DEBUG_ALL, "Delete %s success",filePath);
         }
         else
         {
-            LogMessage(DEBUG_ALL, "Delete audio file fail");
+            LogPrintf(DEBUG_ALL, "Delete %s fail",filePath);
         }
     }
     else
     {
-        LogMessage(DEBUG_ALL, "Audio file not exist");
+        LogPrintf(DEBUG_ALL, "%s not exist",filePath);
     }
 }
 
@@ -922,14 +922,14 @@ void portDeleteAudio(void)
 @note
 **************************************************/
 
-void portPlayAudio(void)
+void portPlayAudio(char * filePath)
 {
     long size = 0;
-    size = nwy_sdk_fsize(AUDIOFILE);
-    LogPrintf(DEBUG_ALL, "Play Begin:%s[%d Byte]", AUDIOFILE, size);
-    nwy_audio_file_play(AUDIOFILE);
+    size = nwy_sdk_fsize(filePath);
+    LogPrintf(DEBUG_ALL, "Play Begin:%s[%d Byte]", filePath, size);
+    nwy_audio_file_play(filePath);
     LogMessage(DEBUG_ALL, "Play Done");
-    portDeleteAudio();
+    portDeleteAudio(filePath);
 }
 
 /**************************************************
@@ -1043,14 +1043,20 @@ int portRecStart(void)
     sprintf(record.recFileName, "%02d%02d%02d%02d%02d%02d", year % 100, month, date, hour, minute, second);
     record.recSize = 0;
     LogPrintf(DEBUG_ALL, "portRecStart==>[%s]", record.recFileName);
+    if (sysinfo.recTest)
+    {
+        portDeleteAudio(RECFILE);
+    }
     ret = nwy_audio_recorder_open(recSaveCallBack);
     if (ret != 0)
     {
+        sysinfo.recTest = 0;
         return -1;
     }
     ret = nwy_audio_recorder_start();
     if (ret != 0)
     {
+        sysinfo.recTest = 0;
         return -2;
     }
     record.recDoing = 1;
@@ -1071,6 +1077,12 @@ void portRecStop(void)
     nwy_audio_recorder_stop();
     nwy_audio_recorder_close();
     record.recDoing = 0;
+    if (sysinfo.recTest)
+    {
+        sysinfo.recTest = 0;
+        portSaveAudio(RECFILE, record.recBuff, record.recSize);
+        appSendThreadEvent(THREAD_EVENT_PLAY_REC, 0);
+    }
 }
 
 /**************************************************

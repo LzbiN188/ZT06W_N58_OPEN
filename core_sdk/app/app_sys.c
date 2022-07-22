@@ -364,3 +364,23 @@ void stringToUpper(char *str, uint16_t strlen)
         }
     }
 }
+
+
+/**************************************************
+@bref		将一段字符串中的大写字母转成小写
+@param
+@return
+@note
+**************************************************/
+void stringToLowwer(char *str, uint16_t strlen)
+{
+    uint16_t i;
+    for (i = 0; i < strlen; i++)
+    {
+        if (str[i] >= 'A' && str[i] <= 'Z')
+        {
+            str[i] = str[i] - 'A' + 'a';
+        }
+    }
+}
+

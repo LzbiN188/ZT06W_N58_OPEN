@@ -5,7 +5,7 @@
 
 #define PARAM_VER		0x1F
 
-#define EEPROM_VERSION	"N58_CA_V4.2.6"
+#define EEPROM_VERSION	"N58_CA_V4.2.7"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -81,6 +81,8 @@ typedef struct
     float accOffVoltage;
 
     //add new
+    uint8_t relayFun;
+	uint8_t relaySpeed;
     
 } systemParam_s;
 

@@ -170,7 +170,9 @@ void paramSetDefault(uint8_t lev)
     thisparam.blePreShieldVoltage = 48;
     thisparam.blePreShieldDetCnt = 10;
     thisparam.blePreShieldHoldTime = 1;
-	
+
+    thisparam.relaySpeed = 20;
+
     memcpy(&sysparam, &thisparam, sizeof(systemParam_s));
     paramSaveAll();
     LogMessage(DEBUG_ALL, "paramSetDefault");
@@ -192,4 +194,7 @@ void paramInit(void)
         paramSetDefault(0);
     }
     sysinfo.alarmrequest = sysparam.alarmRequest;
+
+    stringToLowwer(sysparam.Server, strlen(sysparam.Server));
+    stringToLowwer(sysparam.hiddenServer, strlen(sysparam.hiddenServer));
 }

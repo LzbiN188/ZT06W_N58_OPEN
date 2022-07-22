@@ -749,6 +749,7 @@ void alarmRequestSet(uint16_t request)
 {
     sysinfo.alarmrequest |= request;
     LogPrintf(DEBUG_ALL, "alarmRequestSet==>0x%04X", request);
+	alarmRequestSave(sysinfo.alarmrequest);
     gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
 }
 
@@ -1272,6 +1273,11 @@ static void feedWdtTask(void)
 {
     static uint8 flag = 0;
     sysinfo.softWdtTick = 0;
+
+    if (sysinfo.wdtTest)
+    {
+        return;
+    }
     flag ^= 1;
     if (flag)
     {
@@ -1346,8 +1352,20 @@ static void voltageCheckTask(void)
             lbsRequestSet();
             wifiRequestSet();
             gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-            bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-            bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+            sysparam.relayCtl = 1;
+            paramSaveAll();
+            if (sysparam.relayFun == 0)
+            {
+                relayAutoClear();
+                RELAY_ON;
+                bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
+                bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+                LogMessage(DEBUG_ALL, "relay on immediately");
+            }
+            else
+            {
+                relayAutoRequest();
+            }
         }
 
     }
@@ -1510,6 +1528,13 @@ static void autoShutDownTask(void)
     portSystemShutDown();
 }
 
+
+/**************************************************
+@bref		串口自动控制任务
+@param
+@note
+**************************************************/
+
 static void autoUartTask(void)
 {
 
@@ -1526,6 +1551,83 @@ static void autoUartTask(void)
         {
             portUartCfg(APPUSART2, 0, 0, NULL);
         }
+    }
+}
+
+/**************************************************
+@bref		relayAutoRequest
+@param
+@note
+**************************************************/
+
+void relayAutoRequest(void)
+{
+    sysinfo.doRelayFlag = 1;
+}
+
+/**************************************************
+@bref		relayAutoClear
+@param
+@note
+**************************************************/
+
+void relayAutoClear(void)
+{
+    sysinfo.doRelayFlag = 0;
+}
+
+/**************************************************
+@bref		继电器自动控制
+@param
+@note
+**************************************************/
+static void doRelayOn(void)
+{
+    relayAutoClear();
+    RELAY_ON;
+    bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
+    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+    LogMessage(DEBUG_ALL, "do relay on");
+
+}
+void relayAutoCtrl(void)
+{
+    static uint8_t runTick = 0;
+    gpsinfo_s *gpsinfo;
+    if (sysinfo.doRelayFlag == 0)
+    {
+        runTick = 0;
+        return	;
+    }
+    if (getTerminalAccState() == 0)
+    {
+        //设备静止了，立即断油电，本机relay控制线断，如果有蓝牙，也一块断
+        doRelayOn();
+        return;
+    }
+    if (sysparam.relaySpeed == 0)
+    {
+        //没有配置速度规则，那就等acc off才断
+        return;
+    }
+    if (sysinfo.gpsOnoff == 0)
+    {
+        return;
+    }
+    gpsinfo = getCurrentGPSInfo();
+    if (gpsinfo->fixstatus == 0)
+    {
+        return;
+    }
+    if (gpsinfo->speed > sysparam.relaySpeed)
+    {
+        runTick = 0;
+        return;
+    }
+    if (++runTick >= 5)
+    {
+        runTick = 0;
+        doRelayOn();
     }
 }
 /**************************************************
@@ -1583,6 +1685,7 @@ void myAppRun(void *param)
         bleScheduleTask();
         autoShutDownTask();
         autoUartTask();
+        relayAutoCtrl();
 
     }
 }
@@ -1622,7 +1725,10 @@ void myAppEvent(void *param)
         switch (event.id)
         {
             case THREAD_EVENT_PLAY_AUDIO:
-                portPlayAudio();
+                portPlayAudio(AUDIOFILE);
+                break;
+            case THREAD_EVENT_PLAY_REC:
+                portPlayAudio(RECFILE);
                 break;
             case THREAD_EVENT_REC:
                 if (event.param1 == THREAD_PARAM_REC_START)

@@ -42,6 +42,7 @@
 typedef enum
 {
     THREAD_EVENT_PLAY_AUDIO = NWY_APP_EVENT_ID_BASE + 1,
+    THREAD_EVENT_PLAY_REC,
     THREAD_EVENT_REC,
     THREAD_EVENT_SOCKET_CLOSE,
     THREAD_EVENT_BLE_CLIENT,
@@ -130,6 +131,9 @@ typedef struct
     uint8_t flag123				: 1;
     uint8_t hiddenServCloseReq	: 1;
     uint8_t ttsPlayNow			: 1;
+    uint8_t doRelayFlag			: 1;
+    uint8_t wdtTest				: 1;
+    uint8_t recTest				: 1;
     uint8_t logLevel;
     uint8_t gpsRequest;
     uint8_t runFsm;
@@ -178,6 +182,9 @@ void recordRequestClear(void);
 uint8_t sysIsInRun(void);
 
 void appSendThreadEvent(uint16 threadEvent, uint32_t param1);
+
+void relayAutoRequest(void);
+void relayAutoClear(void);
 
 void myAppRun(void *param);
 void myApp100MSRun(void *param);

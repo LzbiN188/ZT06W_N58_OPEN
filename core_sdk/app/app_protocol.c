@@ -1368,7 +1368,7 @@ static void protoclparser51(uint8_t link, char *protocol, int size)
     audiofile.audioId |= protocol[15];
     LogPrintf(DEBUG_ALL, "Type:%d,Cnt:%d,Size:%d,Id:%X", audiofile.audioType, audiofile.audioCnt, audiofile.audioSize,
               audiofile.audioId);
-    portDeleteAudio();
+    portDeleteAudio(AUDIOFILE);
     sendProtocolToServer(link, PROTOCOL_51, NULL);
 }
 /**************************************************
@@ -1380,7 +1380,7 @@ static void protoclparser51(uint8_t link, char *protocol, int size)
 static void protoclparser52(uint8_t link, char *protocol, int size)
 {
     audiofile.audioCurPack = protocol[5] << 8 | protocol[6];
-    portSaveAudio((uint8_t *)protocol + 7, size - 15);
+    portSaveAudio(AUDIOFILE,(uint8_t *)protocol + 7, size - 15);
     LogPrintf(DEBUG_ALL, "audio receive packId %d ,size %d Byte", audiofile.audioCurPack, size - 15);
     sendProtocolToServer(link, PROTOCOL_52, NULL);
     if ((audiofile.audioCurPack + 1) == audiofile.audioCnt)

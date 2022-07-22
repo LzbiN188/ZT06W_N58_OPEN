@@ -45,6 +45,8 @@ typedef enum
     READPARAM_INS,
     SETBLEPARAM_INS,
     SETBLEWARNPARAM_INS,
+    RELAYFUN_INS,
+    RELAYSPEED_INS,
 } cmd_e;
 
 

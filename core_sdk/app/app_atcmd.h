@@ -23,6 +23,10 @@ typedef enum
     AT_FMPC_CHKP_CMD,
     AT_FMPC_CM_CMD,
     AT_FMPC_CMGET_CMD,
+    AT_FMPC_EXTVOL_CMD,
+    AT_FMPC_WIFI_CMD,
+   	AT_FMCP_WDTSTOP_CMD,
+   	AT_FMPC_AUDIO_CMD,
 } atCmd_e;
 
 

@@ -495,8 +495,7 @@ void bleScheduleInit(void)
 	if (sysparam.relayCtl)
     {
     	//状态同步
-        bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+        relayAutoRequest();
     }
 }
 
@@ -655,7 +654,6 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
             case CMD_DEV_ON:
                 LogMessage(DEBUG_ALL, "BLE==>relayon success");
                 alarmRequestSet(ALARM_OIL_CUTDOWN_REQUEST);
-                alarmRequestSave(ALARM_OIL_CUTDOWN_REQUEST);
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_DEVON);
                 break;
             case CMD_DEV_OFF:
@@ -705,16 +703,12 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 break;
             case CMD_ALARM:
                 //顺便把继电器也给断了
-                RELAY_ON;
                 sysparam.relayCtl = 1;
-                bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-                bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
                 paramSaveAll();
-
+				relayAutoRequest();
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽报警...");
                 alarmRequestSet(ALARM_SHIELD_REQUEST);
-                alarmRequestSave(ALARM_SHIELD_REQUEST);
                 bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM);
                 break;
             case CMD_AUTODIS:

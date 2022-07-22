@@ -36,6 +36,10 @@ const atCmd_s atCmdTable[] =
     {AT_FMPC_CHKP_CMD, "FMPC_CHKP"},
     {AT_FMPC_CM_CMD, "FMPC_CM"},
     {AT_FMPC_CMGET_CMD, "FMPC_CMGET"},
+    {AT_FMPC_EXTVOL_CMD, "FMPC_EXTVOL"},
+    {AT_FMPC_WIFI_CMD, "FMPC_WIFI"},
+    {AT_FMCP_WDTSTOP_CMD, "FMPC_WDTSTOP"},
+    {AT_FMPC_AUDIO_CMD, "FMPC_AUDIO"},
 };
 
 /**************************************************
@@ -301,13 +305,11 @@ static void atCmdFmpcRelayParser(uint8_t *buf, uint16_t len)
 {
     if (strstr((char *)buf, "ON") != NULL)
     {
-        sysinfo.nmeaOutput = 1;
         RELAY_ON;
         LogMessage(DEBUG_FACTORY, "Relay ON OK");
     }
     else
     {
-        sysinfo.nmeaOutput = 0;
         RELAY_OFF;
         LogMessage(DEBUG_FACTORY, "Relay OFF OK");
     }
@@ -417,8 +419,6 @@ static void atCmdFmpcCmParser(void)
 /**************************************************
 @bref		FMPC_CMGET 指令
 @param
-	buf
-	len
 @return
 @note
 **************************************************/
@@ -434,6 +434,77 @@ static void atCmdCmGetParser(void)
         LogMessage(DEBUG_FACTORY, "CM FAIL");
     }
 }
+/**************************************************
+@bref		FMPC_EXTVOL 指令
+@param
+@return
+@note
+**************************************************/
+
+static void atCmdFmpcExtvolParser(void)
+{
+    LogPrintf(DEBUG_FACTORY, "+FMPC_EXTVOL: %.2f", sysinfo.outsideVol);
+}
+/**************************************************
+@bref		FMPC_WIFI 指令
+@param
+@return
+@note
+**************************************************/
+
+static void atCmdFmpcWifiParser(void)
+{
+    nwy_wifi_scan_list_t scan_list;
+    memset(&scan_list, 0, sizeof(scan_list));
+    nwy_wifi_scan(&scan_list);
+    if (scan_list.num != 0)
+    {
+        LogPrintf(DEBUG_FACTORY, "+FMPC_WIFI: %d", scan_list.num);
+    }
+    else
+    {
+        LogMessage(DEBUG_FACTORY, "+FMPC_WIFI: FAIL");
+    }
+}
+/**************************************************
+@bref		FMPC_WDTSTOP 指令
+@param
+@return
+@note
+**************************************************/
+
+static void atCmdFmpcWdtStopParser(void)
+{
+    sysinfo.wdtTest = 1;
+    LogMessage(DEBUG_FACTORY, "+FMPC_WDTSTOP: OK");
+}
+
+
+static void recTestStop(void)
+{
+    appSendThreadEvent(THREAD_EVENT_REC, THREAD_PARAM_REC_STOP);
+    LogPrintf(DEBUG_FACTORY, "+FMPC_AUDIO: DONE");
+}
+
+/**************************************************
+@bref		FMPC_AUDIO 指令
+@param
+@return
+@note
+**************************************************/
+
+void atCmdFmpcAudioParser(void)
+{
+    if (sysinfo.recTest == 1)
+    {
+        return;
+    }
+    sysinfo.recTest = 1;
+    appSendThreadEvent(THREAD_EVENT_REC, THREAD_PARAM_REC_START);
+    LogPrintf(DEBUG_FACTORY, "+FMPC_AUDIO: START");
+    startTimer(30, recTestStop, 0);
+}
+
 
 /**************************************************
 @bref		指令解析
@@ -523,6 +594,18 @@ void atCmdRecvParser(char *buf, uint32_t len)
                         break;
                     case AT_FMPC_CMGET_CMD:
                         atCmdCmGetParser();
+                        break;
+                    case AT_FMPC_EXTVOL_CMD:
+                        atCmdFmpcExtvolParser();
+                        break;
+                    case AT_FMPC_WIFI_CMD:
+                        atCmdFmpcWifiParser();
+                        break;
+                    case AT_FMCP_WDTSTOP_CMD:
+                        atCmdFmpcWdtStopParser();
+                        break;
+                    case AT_FMPC_AUDIO_CMD:
+                        atCmdFmpcAudioParser();
                         break;
                     default:
                         LogPrintf(DEBUG_FACTORY, "Unknow cmd:%s", cmdbuf);
