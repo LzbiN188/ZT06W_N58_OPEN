@@ -602,6 +602,7 @@ static void gpsRequestTask(void)
                 portSetGpsStarupMode(HOT_START);
                 sysinfo.gpsOnoff = 0;
                 portGpsCtrl(0);
+                portSleepCtrl(1);
                 ledStatusUpdate(SYSTEM_LED_GPS, 0);
                 protocolUpdateSatelliteUsed(0, 0);
                 gpsClearCurrentGPSInfo();
@@ -749,7 +750,7 @@ void alarmRequestSet(uint16_t request)
 {
     sysinfo.alarmrequest |= request;
     LogPrintf(DEBUG_ALL, "alarmRequestSet==>0x%04X", request);
-	alarmRequestSave(sysinfo.alarmrequest);
+    alarmRequestSave(sysinfo.alarmrequest);
     gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
 }
 
@@ -1067,6 +1068,10 @@ static void sysStart(void)
         case MODE2:
         case MODE21:
         case MODE23:
+            if (sysparam.MODE == MODE2)
+            {
+                gpsRequestSet(GPS_REQ_KEEPON);
+            }
             portGsensorCfg(1);
             break;
         default:

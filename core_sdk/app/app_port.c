@@ -608,8 +608,8 @@ void portGpsSetPositionMode(nwy_loc_position_mode_t pos_mode)
 void portGpsGetNmea(void (*gpsRecv)(uint8_t *, uint16_t))
 {
     int ret;
-    char nmea[2048];
-    memset(nmea, 0, 2048);
+    char nmea[4096];
+    memset(nmea, 0, 4096);
     ret = nwy_loc_get_nmea_data(nmea);
     if (ret && gpsRecv != NULL)
     {

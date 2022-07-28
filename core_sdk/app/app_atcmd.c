@@ -142,6 +142,11 @@ static void doAtdebugCmd(char *buf, uint32_t len)
     {
         bleScheduleDelete(atoi(item.item_data[1]));
     }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SLEEP"))
+    {
+        portSleepCtrl(1);
+		LogMessage(DEBUG_ALL,"enable sleep");
+    }
     else
     {
         setDebugLevel(item.item_data[0], strlen(item.item_data[0]));
