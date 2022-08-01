@@ -153,6 +153,8 @@ typedef struct
 uint8_t bleServSendData(char *buf, uint16_t len);
 void bleServCloseRequestSet(void);
 void bleServCloseRequestClear(void);
+void bleServRequestOn5Minutes(void);
+
 void bleServRunTask(void);
 
 
@@ -173,6 +175,8 @@ void bleScheduleClearReq(uint8_t ind, uint32_t event);
 
 
 void bleScheduleInit(void);
+uint8_t bleScheduleGetCnt(void);
+
 void bleScheduleCtrl(uint8_t onoff);
 
 void bleScheduleTask(void);

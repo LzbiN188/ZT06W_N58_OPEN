@@ -343,6 +343,7 @@ static void doModeInstruction(ITEM *item, char *message)
     {
         workmode = atoi(item->item_data[1]);
         gpsRequestClear(GPS_REQ_KEEPON);
+        sysResetStartRun();
         switch (workmode)
         {
             case 1:
@@ -476,14 +477,13 @@ static void doModeInstruction(ITEM *item, char *message)
                 break;
             case 3:
             case 23:
-                if (item->item_cnt > 2)
+
+                sysparam.gapMinutes = atoi(item->item_data[2]);
+                if (sysparam.gapMinutes <= 5)
                 {
-                    sysparam.gapMinutes = atoi(item->item_data[2]);
-                    if (sysparam.gapMinutes <= 5)
-                    {
-                        sysparam.gapMinutes = 5;
-                    }
+                    sysparam.gapMinutes = 5;
                 }
+
                 if (workmode == 3)
                 {
                     terminalAccoff();
@@ -579,13 +579,12 @@ static void doAPNInstruction(ITEM *item, char *message)
         if (item->item_data[2][0] != 0 && item->item_cnt >= 3)
         {
             strcpy((char *)sysparam.apnuser, item->item_data[2]);
-
         }
         if (item->item_data[3][0] != 0 && item->item_cnt >= 4)
         {
             strcpy((char *)sysparam.apnpassword, item->item_data[3]);
-
         }
+        portSetApn(sysparam.apn, sysparam.apnuser, sysparam.apnpassword);
         paramSaveAll();
         sprintf(message, "Update APN:%s,APN User:%s,APN Password:%s", sysparam.apn, sysparam.apnuser, sysparam.apnpassword);
     }
@@ -686,15 +685,33 @@ static void doDebugInstrucion(ITEM *item, char *message)
 {
     uint16_t year = 0;
     uint8_t  month = 0, date = 0, hour = 0, minute = 0, second = 0;
-    portGetRtcDateTime(&year, &month, &date, &hour, &minute, &second);
-    sprintf(message, "Time: %.2d/%.2d/%.2d %.2d:%.2d:%.2d;", year, month, date, hour, minute, second);
-    sprintf(message + strlen(message), "sysrun: %.2ld:%.2ld:%.2ld;", sysinfo.sysTick / 3600, sysinfo.sysTick % 3600 / 60,
-            sysinfo.sysTick % 60);
-    sprintf(message + strlen(message), "gpsLast: %.2ld:%.2ld:%.2ld;", sysinfo.gpsUpdateTick / 3600,
-            sysinfo.gpsUpdateTick % 3600 / 60, sysinfo.gpsUpdateTick % 60);
-    sprintf(message + strlen(message), "gpsrequest:0x%04x;", sysinfo.gpsRequest);
-    sprintf(message + strlen(message), "hideLogin:%s;", hiddenServIsReady() ? "Yes" : "NO");
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        portGetRtcDateTime(&year, &month, &date, &hour, &minute, &second);
+        sprintf(message, "Time: %.2d/%.2d/%.2d %.2d:%.2d:%.2d;", year, month, date, hour, minute, second);
+        sprintf(message + strlen(message), "sysrun: %.2ld:%.2ld:%.2ld;", sysinfo.sysTick / 3600, sysinfo.sysTick % 3600 / 60,
+                sysinfo.sysTick % 60);
+        sprintf(message + strlen(message), "gpsLast: %.2ld:%.2ld:%.2ld;", sysinfo.gpsUpdateTick / 3600,
+                sysinfo.gpsUpdateTick % 3600 / 60, sysinfo.gpsUpdateTick % 60);
+        sprintf(message + strlen(message), "gpsrequest:0x%04X;", sysinfo.gpsRequest);
+        sprintf(message + strlen(message), "hideLogin:%s;", hiddenServIsReady() ? "Yes" : "NO");
+    }
+    else
+    {
+        if (my_strpach(item->item_data[1], "MODECNTCLEAR"))
+        {
+            sysparam.startUpCnt = 0;
+            sysparam.runTime = 0;
+            paramSaveAll();
+            strcpy(message, "Debug:clear mode count");
+        }
+        else
+        {
+            strcpy(message, "Debug:unknow");
+        }
+    }
 }
+
 static void doACCCTLGNSSInstrucion(ITEM *item, char *message)
 {
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
@@ -888,6 +905,12 @@ static void doSetAgpsInstruction(ITEM *item, char *message)
     }
 }
 
+static void bleServReOpen(void)
+{
+    bleServCloseRequestClear();
+}
+
+
 static void doBLEENInstrucion(ITEM *item, char *message)
 {
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
@@ -897,6 +920,19 @@ static void doBLEENInstrucion(ITEM *item, char *message)
     else
     {
         sysparam.bleen = atol(item->item_data[1]);
+        if (sysparam.bleen)
+        {
+            memset(sysparam.bleConnMac, 0, sizeof(sysparam.bleConnMac));
+            bleScheduleWipeAll();
+            bleScheduleCtrl(0);
+            bleServCloseRequestSet();
+            startTimer(30, bleServReOpen, 0);
+        }
+        else
+        {
+            sysinfo.bleOnBySystem = 0;
+        }
+
         paramSaveAll();
         sprintf(message, "%s the ble function", sysparam.bleen ? "Enable" : "Disable");
     }
@@ -1179,6 +1215,10 @@ static void doSetBleMacInstruction(ITEM *item, char *message)
     }
     else
     {
+        //互斥操作，开启蓝牙主机功能时，关闭蓝牙从机功能
+        sysinfo.bleOnBySystem = 0;
+        sysparam.bleen = 0;
+
         memset(sysparam.bleConnMac, 0, sizeof(sysparam.bleConnMac));
         bleScheduleWipeAll();
         ind = 0;

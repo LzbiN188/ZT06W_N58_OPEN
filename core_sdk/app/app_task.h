@@ -134,6 +134,7 @@ typedef struct
     uint8_t doRelayFlag			: 1;
     uint8_t wdtTest				: 1;
     uint8_t recTest				: 1;
+    uint8_t bleOnBySystem		: 1;
     uint8_t logLevel;
     uint8_t gpsRequest;
     uint8_t runFsm;
@@ -180,6 +181,7 @@ uint8_t recordRequestSet(uint8_t recordTime);
 void recordRequestClear(void);
 
 uint8_t sysIsInRun(void);
+void sysResetStartRun(void);
 
 void appSendThreadEvent(uint16 threadEvent, uint32_t param1);
 

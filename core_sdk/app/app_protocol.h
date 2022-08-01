@@ -87,8 +87,6 @@ typedef struct
     uint8_t mnc;
     uint8_t event;
 
-    uint16_t startUpCnt;
-    uint16_t runCnt;
     uint16_t Serial;
     uint16_t mcc;
     uint16_t lac;

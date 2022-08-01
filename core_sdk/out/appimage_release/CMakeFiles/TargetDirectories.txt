@@ -1,6 +1,6 @@
-D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/appimg_flash_delete_pacgen.dir
-D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/hello_flash_ldscript.dir
-D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/hello_flash.dir
-D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/hello_flash_pacgen.dir
-D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/edit_cache.dir
-D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/rebuild_cache.dir
+D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/appimg_flash_delete_pacgen.dir
+D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/hello_flash_ldscript.dir
+D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/hello_flash.dir
+D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/hello_flash_pacgen.dir
+D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/edit_cache.dir
+D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/CMakeFiles/rebuild_cache.dir

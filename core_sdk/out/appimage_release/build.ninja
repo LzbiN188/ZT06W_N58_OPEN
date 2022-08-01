@@ -197,9 +197,9 @@ build CMakeFiles/hello_flash.dir/app/app_task.c.obj: C_COMPILER__hello_flash ../
 build hex/hello_flash.elf hex/hello_flash.img hex/hello_flash.map: C_EXECUTABLE_LINKER__hello_flash ../../components/lib/core_stub.o CMakeFiles/hello_flash.dir/app/aes.c.obj CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj CMakeFiles/hello_flash.dir/app/app_ble.c.obj CMakeFiles/hello_flash.dir/app/app_gps.c.obj CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj CMakeFiles/hello_flash.dir/app/app_jt808.c.obj CMakeFiles/hello_flash.dir/app/app_kernal.c.obj CMakeFiles/hello_flash.dir/app/app_main.c.obj CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj CMakeFiles/hello_flash.dir/app/app_net.c.obj CMakeFiles/hello_flash.dir/app/app_param.c.obj CMakeFiles/hello_flash.dir/app/app_port.c.obj CMakeFiles/hello_flash.dir/app/app_protocol.c.obj CMakeFiles/hello_flash.dir/app/app_sn.c.obj CMakeFiles/hello_flash.dir/app/app_socket.c.obj CMakeFiles/hello_flash.dir/app/app_sys.c.obj CMakeFiles/hello_flash.dir/app/app_task.c.obj | CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj ../../components/newlib/armca5/libc.a ../../components/newlib/armca5/libm.a ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
   FLAGS = -std=gnu11
   LINK_FLAGS = -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -Os
-  LINK_LIBRARIES = -T  CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj  -Wl,-Map=D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.map  -nostdlib  -Wl,--gc-sections  ../../components/newlib/armca5/libc.a  ../../components/newlib/armca5/libm.a  ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
+  LINK_LIBRARIES = -T  CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj  -Wl,-Map=D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.map  -nostdlib  -Wl,--gc-sections  ../../components/newlib/armca5/libc.a  ../../components/newlib/armca5/libm.a  ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
   OBJECT_DIR = CMakeFiles\hello_flash.dir
-  POST_BUILD = cmd.exe /C "cd /D D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && dtools mkappimg D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.elf D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img"
+  POST_BUILD = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && dtools mkappimg D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.elf D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img"
   PRE_LINK = cd .
   RESTAT = 1
   TARGET_FILE = hex\hello_flash.elf
@@ -216,7 +216,7 @@ build hello_flash_pacgen: phony CMakeFiles/hello_flash_pacgen hex/hello_flash.pa
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake-gui.exe -SD:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
+  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake-gui.exe -SD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -228,7 +228,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake.exe -SD:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
+  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake.exe -SD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -246,7 +246,7 @@ build CMakeFiles/appimg_flash_delete_pacgen: phony hex/appimg_flash_delete.pac
 # Custom command for hex\appimg_flash_delete.pac
 
 build hex/appimg_flash_delete.pac: CUSTOM_COMMAND ../../tools/pacgen.py
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-erase-flash -i ERASE_APPIMG -a 0x60230000 -s 0x1b0000 pac-gen D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/appimg_flash_delete.pac"
+  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-erase-flash -i ERASE_APPIMG -a 0x60230000 -s 0x1b0000 pac-gen D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/appimg_flash_delete.pac"
   DESC = Generating hex/appimg_flash_delete.pac
   restat = 1
 
@@ -261,7 +261,7 @@ build CMakeFiles/hello_flash_pacgen: phony hex/hello_flash.pac || hex/hello_flas
 # Custom command for hex\hello_flash.pac
 
 build hex/hello_flash.pac: CUSTOM_COMMAND ../../tools/pacgen.py hex/hello_flash.img || hex/hello_flash.elf
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-image -i APPIMG -a 0x60230000 -s 0x1b0000 -p D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img pac-gen D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.pac"
+  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-image -i APPIMG -a 0x60230000 -s 0x1b0000 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img pac-gen D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.pac"
   DESC = Generating hex/hello_flash.pac
   restat = 1
 
@@ -278,7 +278,7 @@ build hello_flash.elf: phony hex/hello_flash.elf
 # =============================================================================
 
 #############################################
-# Folder: D:/CODE/Neoway/N58/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release
+# Folder: D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release
 
 build all: phony appimg_flash_delete_pacgen hello_flash_ldscript hex/hello_flash.elf hello_flash_pacgen
 

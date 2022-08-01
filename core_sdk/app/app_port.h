@@ -107,6 +107,19 @@ typedef enum
     FACTORY_START = 3,
 } gps_startUpmode_e;
 
+typedef enum
+{
+    PDP_IP = 1,
+    PDP_IPV6,
+    PDP_IPV4V6,
+} pdp_type_e;
+typedef enum
+{
+    AUTH_NONE,
+    AUTH_PAP,
+    AUTH_CHAP,
+} auth_type_e;
+
 
 extern usartCtrl_s usart1_ctl;
 extern usartCtrl_s usart2_ctl;
@@ -185,6 +198,8 @@ uint8_t portCapacityCalculate(float vol);
 
 void portOutputTTS(void);
 void portPushTTS(char *ttsbuf);
+
+void portSetApn(char *apn, char *userName, char *password);
 
 #endif
 

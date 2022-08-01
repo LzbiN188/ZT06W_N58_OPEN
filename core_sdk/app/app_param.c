@@ -113,6 +113,7 @@ void paramSetDefault(uint8_t lev)
         thisparam.hiddenPort = 9998;
         thisparam.adccal = 31.33;
         thisparam.hiddenServOnoff = 1;
+        thisparam.protocol = ZT_PROTOCOL_TYPE;
     }
     else
     {
@@ -129,6 +130,7 @@ void paramSetDefault(uint8_t lev)
         thisparam.hiddenPort = sysparam.hiddenPort;
         thisparam.adccal = sysparam.adccal;
         thisparam.hiddenServOnoff = sysparam.hiddenServOnoff;
+        thisparam.protocol = sysparam.protocol;
     }
 
     strcpy(thisparam.updateServer, "47.106.81.204");
@@ -142,7 +144,6 @@ void paramSetDefault(uint8_t lev)
     thisparam.heartbeatgap = 180;
     thisparam.lightAlarm = 1;
     thisparam.accctlgnss = 1;
-    thisparam.protocol = ZT_PROTOCOL_TYPE;
     thisparam.vol = 60;
     thisparam.accdetmode = 2;
     thisparam.MODE = 2;

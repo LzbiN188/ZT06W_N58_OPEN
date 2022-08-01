@@ -388,10 +388,10 @@ int createProtocol13(char *dest)
     dest[pdu_len++ ] = 0;//感光
 
 
-    dest[pdu_len++ ] = (protocolInfo.startUpCnt >> 8) & 0xff; //模式一次数
-    dest[pdu_len++ ] = protocolInfo.startUpCnt & 0xff;
-    dest[pdu_len++ ] = (protocolInfo.runCnt >> 8) & 0xff; //模式二次数
-    dest[pdu_len++ ] = protocolInfo.runCnt & 0xff;
+    dest[pdu_len++ ] = (sysparam.startUpCnt >> 8) & 0xff; //模式一次数
+    dest[pdu_len++ ] = sysparam.startUpCnt & 0xff;
+    dest[pdu_len++ ] = (sysparam.runTime >> 8) & 0xff; //模式二次数
+    dest[pdu_len++ ] = sysparam.runTime & 0xff;
 
 
     ret = createProtocolTail_78(dest, pdu_len,  protocolInfo.Serial);

@@ -27,18 +27,7 @@ typedef enum
     DATA_CALL_RELEALSE,
 } dataCall_e;
 
-typedef enum
-{
-    PDP_IP = 1,
-    PDP_IPV6,
-    PDP_IPV4V6,
-} pdp_type_e;
-typedef enum
-{
-    AUTH_NONE,
-    AUTH_PAP,
-    AUTH_CHAP,
-} auth_type_e;
+
 
 
 typedef struct SOCK_INFO

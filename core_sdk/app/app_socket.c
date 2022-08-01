@@ -234,7 +234,6 @@ static uint8_t netCheckRegister(void)
     uint8_t result = 0;
     int ret;
     nwy_nw_regs_info_type_t reg_info;
-    nwy_nw_cfgdftpdn_t cfgpdn;
     memset(&reg_info, 0, sizeof(nwy_nw_regs_info_type_t));
     ret = nwy_nw_get_register_info(&reg_info);
     if (NWY_RES_OK == ret)
@@ -246,13 +245,7 @@ static uint8_t netCheckRegister(void)
             LogPrintf(DEBUG_ALL, "Data Register==>Reg:%d,Roam:%d,RadioTech:%d", reg_info.data_regs.regs_state,
                       reg_info.data_regs.roam_state,
                       reg_info.data_regs.radio_tech);
-            memset(&cfgpdn, 0, sizeof(nwy_nw_cfgdftpdn_t));
-            cfgpdn.pdpType = PDP_IP;
-            cfgpdn.authProt = AUTH_PAP;
-            strcpy(cfgpdn.apn, sysparam.apn);
-            strcpy(cfgpdn.userName, sysparam.apnuser);
-            strcpy(cfgpdn.password, sysparam.apnpassword);
-            nwy_nw_set_cfgdftpdn_info(cfgpdn);
+            portSetApn(sysparam.apn,sysparam.apnuser,sysparam.apnpassword);
         }
         //”Ô“Ù”Ú
         if (reg_info.voice_regs_valid)

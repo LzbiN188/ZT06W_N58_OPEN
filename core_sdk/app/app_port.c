@@ -1584,3 +1584,17 @@ void portPushTTS(char *ttsbuf)
     portAddTTS((uint8_t *)ttsbuf, ttslen);
 }
 
+
+void portSetApn(char *apn, char *userName, char *password)
+{
+    int ret;
+    nwy_nw_cfgdftpdn_t cfgpdn;
+    cfgpdn.pdpType = PDP_IP;
+    cfgpdn.authProt = AUTH_PAP;
+    strcpy(cfgpdn.apn, sysparam.apn);
+    strcpy(cfgpdn.userName, sysparam.apnuser);
+    strcpy(cfgpdn.password, sysparam.apnpassword);
+    ret=nwy_nw_set_cfgdftpdn_info(cfgpdn);
+    LogPrintf(DEBUG_ALL, "portSetApn==>%s", ret == 0 ? "Success" : "Fail");
+}
+

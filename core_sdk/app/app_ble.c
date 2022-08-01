@@ -129,6 +129,23 @@ void bleServCloseRequestClear(void)
 }
 
 /**************************************************
+@bref		请求开启蓝牙5分钟
+@param
+@return
+@note		如果要开蓝牙主机，则不开从机
+**************************************************/
+
+void bleServRequestOn5Minutes(void)
+{
+    if (bleScheduleGetCnt() != 0)
+    {
+        return ;
+    }
+    sysinfo.bleOnBySystem = 1;
+}
+
+
+/**************************************************
 @bref		蓝牙从机运行状态机
 @param
 @return
@@ -137,15 +154,27 @@ void bleServCloseRequestClear(void)
 
 void bleServRunTask(void)
 {
+    static uint16_t bleRunTick = 0;
     int ret;
+	
+    if (sysinfo.bleOnBySystem != 0)
+    {
+        if (++bleRunTick >= 300)
+        {
+            sysinfo.bleOnBySystem = 0;
+            bleRunTick = 0;
+        }
+    }
 
     bleServConnStatusChange();
     switch (bleServInfo.bleFsm)
     {
         case BLE_CHECK_STATE:
 
-            if (sysparam.bleen == 0 || bleServInfo.bleCloseReq == 1)
+            if ((sysparam.bleen == 0 && sysinfo.bleOnBySystem == 0) || bleServInfo.bleCloseReq == 1)
+            {
                 return;
+            }
             ret = nwy_read_ble_status();
             LogPrintf(DEBUG_ALL, "Device BLE was %s", ret ? "Open" : "Close");
             if (ret)
@@ -168,8 +197,8 @@ void bleServRunTask(void)
             bleServChangeFsm(BLE_CHECK_STATE);
             break;
         case BLE_NORMAL:
-
-            if (sysparam.bleen == 0 || bleServInfo.bleCloseReq == 1)
+			
+            if ((sysparam.bleen == 0 && sysinfo.bleOnBySystem == 0) || bleServInfo.bleCloseReq == 1)
             {
                 nwy_ble_disable();
                 LogMessage(DEBUG_ALL, "close BLE");
@@ -492,12 +521,25 @@ void bleScheduleInit(void)
         bleScheduleCtrl(1);
     }
 
-	if (sysparam.relayCtl)
+    if (sysparam.relayCtl)
     {
-    	//状态同步
+        //状态同步
         relayAutoRequest();
     }
 }
+
+/**************************************************
+@bref		读取蓝牙主机调度器当前的待链接数量
+@param
+@return
+@note
+**************************************************/
+
+uint8_t bleScheduleGetCnt(void)
+{
+    return bleSchedule.bleListCnt;
+}
+
 
 /**************************************************
 @bref		蓝牙调度器控制开关
@@ -705,7 +747,7 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 //顺便把继电器也给断了
                 sysparam.relayCtl = 1;
                 paramSaveAll();
-				relayAutoRequest();
+                relayAutoRequest();
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽报警...");
                 alarmRequestSet(ALARM_SHIELD_REQUEST);

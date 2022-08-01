@@ -1034,6 +1034,11 @@ uint8_t sysIsInRun(void)
     return 0;
 }
 
+void sysResetStartRun(void)
+{
+    sysinfo.sysStartTick = sysinfo.sysTick;
+}
+
 /**************************************************
 @bref		系统状态切换
 @param
@@ -1070,7 +1075,11 @@ static void sysStart(void)
         case MODE23:
             if (sysparam.MODE == MODE2)
             {
-                gpsRequestSet(GPS_REQ_KEEPON);
+                bleServRequestOn5Minutes();
+                if (sysparam.accctlgnss == 0)
+                {
+                    gpsRequestSet(GPS_REQ_KEEPON);
+                }
             }
             portGsensorCfg(1);
             break;
@@ -1078,7 +1087,7 @@ static void sysStart(void)
 
             break;
     }
-    sysinfo.sysStartTick = sysinfo.sysTick;
+    sysResetStartRun();
     gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
     networkConnectCtl(1);
     sysChaneState(SYS_RUN);
@@ -1094,7 +1103,7 @@ static void sysStart(void)
 static void sysEnterStopQuickly(void)
 {
     static uint8_t delaytick = 0;
-    if (sysinfo.gpsRequest == 0 && sysinfo.wifiRequest == 0 && sysinfo.lbsRequest == 0)
+    if (sysinfo.gpsRequest == 0 && sysinfo.wifiRequest == 0 && sysinfo.lbsRequest == 0 && getTerminalAccState() == 0)
     {
         delaytick++;
         if (delaytick >= 30)
@@ -1190,7 +1199,8 @@ static void sysStop(void)
 
 static void sysWait(void)
 {
-    if (sysinfo.gpsRequest != 0 || sysinfo.alarmrequest != 0 || sysinfo.lbsRequest != 0 || sysinfo.wifiRequest != 0)
+    if (sysparam.MODE == MODE2 || sysinfo.gpsRequest != 0 || sysinfo.alarmrequest != 0 || sysinfo.lbsRequest != 0 ||
+            sysinfo.wifiRequest != 0 || getTerminalAccState())
     {
         sysChaneState(SYS_START);
     }
@@ -1239,6 +1249,8 @@ static void sysAutoReq(void)
         gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
     }
 }
+
+
 
 /**************************************************
 @bref		系统任务
@@ -1408,8 +1420,11 @@ static void lightDetectionTask(void)
         //亮
         if (darknessTick >= 60)
         {
-            LogMessage(DEBUG_ALL, "Light alarm");
-            alarmRequestSet(ALARM_LIGHT_REQUEST);
+            if (sysparam.lightAlarm != 0)
+            {
+                LogMessage(DEBUG_ALL, "Light alarm");
+                alarmRequestSet(ALARM_LIGHT_REQUEST);
+            }
         }
         darknessTick = 0;
     }
