@@ -535,7 +535,6 @@ static void openGnssGpsBd(void)
 @param
 @note
 **************************************************/
-
 static void gpsRequestTask(void)
 {
     static gpsState_e gpsFsm = GPS_STATE_IDLE;
@@ -1512,7 +1511,7 @@ static void rebootOneDay(void)
         return ;
     if (sysinfo.gpsRequest != 0)
         return ;
-    portSystemReset();
+    //portSystemReset();
 }
 
 /**************************************************

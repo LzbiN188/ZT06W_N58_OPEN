@@ -561,6 +561,11 @@ static void do123Instruction(ITEM *item, char *message, instructionParam_s *para
 
 }
 
+static void updateApn(void)
+{
+    portSetApn(sysparam.apn, sysparam.apnuser, sysparam.apnpassword);
+}
+
 static void doAPNInstruction(ITEM *item, char *message)
 {
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
@@ -584,8 +589,8 @@ static void doAPNInstruction(ITEM *item, char *message)
         {
             strcpy((char *)sysparam.apnpassword, item->item_data[3]);
         }
-        portSetApn(sysparam.apn, sysparam.apnuser, sysparam.apnpassword);
         paramSaveAll();
+        startTimer(30, updateApn, 0);
         sprintf(message, "Update APN:%s,APN User:%s,APN Password:%s", sysparam.apn, sysparam.apnuser, sysparam.apnpassword);
     }
 

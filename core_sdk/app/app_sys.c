@@ -3,6 +3,7 @@
 #include "app_port.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include "nwy_osi_api.h"
 #define LOGPRINTF_MAX		1024
 
 
@@ -29,11 +30,22 @@ void LogMessage(uint8_t level, char *debug)
 **************************************************/
 void LogMessageWL(uint8_t level, char *debug, uint16_t len)
 {
+	static nwy_osiMutex_t * myMutex=NULL;
     uint16_t year = 0;
     uint8_t  month = 0, date = 0, hour = 0, minute = 0, second = 0;
     char msg[20];
     if (sysinfo.logLevel < level)
         return;
+    if (myMutex == NULL)
+    {
+        myMutex = nwy_create_mutex();
+        return;
+    }
+    if (myMutex == NULL)
+    {
+        return;
+    }
+    nwy_lock_mutex(myMutex, 0);
     portGetRtcDateTime(&year, &month, &date, &hour, &minute, &second);
     sprintf(msg, "[%02d:%02d:%02d] ", hour, minute, second);
     portUartSend(SYS_DEBUG_UART, (uint8_t *)msg, strlen(msg));
@@ -42,7 +54,9 @@ void LogMessageWL(uint8_t level, char *debug, uint16_t len)
     portUsbSend(msg, strlen(msg));
     portUsbSend(debug, len);
     portUsbSend("\r\n", 2);
+    nwy_unlock_mutex(myMutex);
 }
+
 /**************************************************
 @bref		格式化输出调试信息
 @param

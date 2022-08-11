@@ -27,23 +27,29 @@ void showgpsinfo(void)
 {
     char debug[300];
     uint8_t i, total;
+    uint32_t laValue, loValue;
     gpsinfo_s *gpsinfo;
     gpsinfo = &gpsinfonow;
-    sprintf(debug, "NMEA:%d/%d/%d  %02d:%02d:%02d;", gpsinfo->datetime.year, gpsinfo->datetime.month, gpsinfo->datetime.day,
-            gpsinfo->datetime.hour, gpsinfo->datetime.minute, gpsinfo->datetime.second);
-    sprintf(debug + strlen(debug), "%c %f %c %f;\r\n", gpsinfo->NS, gpsinfo->latitude, gpsinfo->EW, gpsinfo->longtitude);
-    sprintf(debug + strlen(debug), "Speed=%.2fKm/h;", gpsinfo->speed);
+    sprintf(debug, "NMEA:%02u/%02u/%02u %02u:%02u:%02u;", gpsinfo->datetime.year, gpsinfo->datetime.month,
+            gpsinfo->datetime.day, gpsinfo->datetime.hour, gpsinfo->datetime.minute, gpsinfo->datetime.second);
+    laValue = gpsinfo->latitude * 1000000;
+    loValue = gpsinfo->longtitude * 1000000;
+	
+    sprintf(debug + strlen(debug), "%c %lu.%lu %c %lu.%lu\r\n", gpsinfo->EW, laValue / 1000000, laValue % 1000000, gpsinfo->NS,
+            loValue / 1000000, loValue % 1000000);
     sprintf(debug + strlen(debug), "%s;", gpsinfo->fixstatus ? "FIXED" : "Invalid");
-    sprintf(debug + strlen(debug), "PDOP=%.2f;fixmode=%d;", gpsinfo->pdop, gpsinfo->fixmode);
-    sprintf(debug + strlen(debug), "GPS View=%d;Beidou View=%d;", gpsinfo->gpsviewstart, gpsinfo->beidouviewstart);
-    sprintf(debug + strlen(debug), "Use Star=%d;", gpsinfo->used_star);
+    loValue = gpsinfo->pdop * 100;
+    sprintf(debug + strlen(debug), "PDOP=%lu.%lu;", loValue / 100, loValue % 100);
+    sprintf(debug + strlen(debug), "fixmode=%u;", gpsinfo->fixmode);
+    sprintf(debug + strlen(debug), "GPS View=%u;Beidou View=%u;", gpsinfo->gpsviewstart, gpsinfo->beidouviewstart);
+    sprintf(debug + strlen(debug), "Use Star=%u;", gpsinfo->used_star);
     sprintf(debug + strlen(debug), "GPS CN:");
     total = sizeof(gpsinfo->gpsCn);
     for (i = 0; i < total; i++)
     {
         if (gpsinfo->gpsCn[i] != 0)
         {
-            sprintf(debug + strlen(debug), "%d;", gpsinfo->gpsCn[i]);
+            sprintf(debug + strlen(debug), "%u;", gpsinfo->gpsCn[i]);
         }
     }
     sprintf(debug + strlen(debug), "BeiDou CN:");
@@ -52,7 +58,7 @@ void showgpsinfo(void)
     {
         if (gpsinfo->beidouCn[i] != 0)
         {
-            sprintf(debug + strlen(debug), "%d;", gpsinfo->beidouCn[i]);
+            sprintf(debug + strlen(debug), "%u;", gpsinfo->beidouCn[i]);
         }
     }
     LogMessage(DEBUG_ALL, debug);
@@ -76,6 +82,11 @@ static uint8_t  gpsFilter(gpsinfo_s *gpsinfo)
         return 0 ;
     }
     if (gpsinfo->pdop > sysparam.pdop)
+    {
+        return 0;
+    }
+    if (gpsinfo->datetime.day == 0 || (gpsinfo->datetime.hour == 0 &&
+                                       gpsinfo->datetime.minute == 0 && gpsinfo->datetime.second == 0))
     {
         return 0;
     }
@@ -119,7 +130,7 @@ static void addGpsInfo(gpsinfo_s *gpsinfo)
     gpsfifo.currentindex = (gpsfifo.currentindex + 1) % GPSFIFOSIZE;
     //往队列中添加数据
     memcpy(&gpsfifo.gpsinfohistory[gpsfifo.currentindex], gpsinfo, sizeof(gpsinfo_s));
-    showgpsinfo();
+    //showgpsinfo();
 }
 /**************************************************
 @bref		清除当前gps
@@ -520,12 +531,16 @@ static nmeatype_e parseGetNmeaType(char *str)
 @note
 **************************************************/
 
-static uint8_t nemaCalcuateCrc(char *str, int len)
+uint8_t nemaCalcuateCrc(char *str, int len)
 {
     int i, index, size;
     unsigned char crc;
     crc = str[1];
     index = getCharIndex((uint8_t *)str, len, '*');
+    if (index < 0)
+    {
+        return crc;
+    }
     size = len - index;
     for (i = 2; i < len - size; i++)
     {
@@ -542,7 +557,7 @@ static uint8_t nemaCalcuateCrc(char *str, int len)
 @note
 **************************************************/
 
-static uint8_t chartohexcharvalue(char value)
+uint8_t chartohexcharvalue(char value)
 {
     if (value >= '0' && value <= '9')
         return value - '0';
@@ -561,16 +576,21 @@ static uint8_t chartohexcharvalue(char value)
 @note
 **************************************************/
 
-static uint32_t charstrToHexValue(char *value)
+uint32_t charstrToHexValue(char *value)
 {
     unsigned int calvalue = 0;
-    unsigned char i, j, len = strlen(value);
+    unsigned char i, j, len, hexVal;
+    len = strlen(value);
     j = 0;
     j = len;
+    if (len == 0)
+    {
+        return 0;
+    }
     for (i = 0; i < len; i++)
     {
-        value[i] = chartohexcharvalue(value[i]);
-        calvalue += value[i] * pow(16, j - 1);
+        hexVal = chartohexcharvalue(value[i]);
+        calvalue += hexVal * pow(16, j - 1);
         j--;
     }
     return calvalue;
@@ -583,14 +603,19 @@ static uint32_t charstrToHexValue(char *value)
 @return
 
 @note
+$GPGGA,092204.999,4250.5589,S,14718.5084,E,1,04,24.4,19.7,M,,,,0000*1F
 **************************************************/
 
 static void parseGPS(uint8_t *str, uint16_t len)
 {
     gpsitem_s item;
-    uint8_t nmeacrc, nmeatype;
-    int i = 0, data_len = 0, index;
+    uint8_t nmeatype, nmeacrc;
+    int i = 0, data_len = 0;
     memset(&item, 0, sizeof(gpsitem_s));
+    if (len == 0)
+    {
+        return;
+    }
     for (i = 0; i < len; i++)
     {
         if (str[i] == ',' || str[i] == '*')
@@ -607,16 +632,23 @@ static void parseGPS(uint8_t *str, uint16_t len)
         {
             item.item_data[item.item_cnt][data_len] = str[i];
             data_len++;
+            if (i + 1 == len)
+            {
+                item.item_cnt++;
+            }
             if (data_len >= GPSITEMSIZEMAX)
             {
                 return ;
             }
         }
     }
-    index = getCharIndex((uint8_t *)str, len, '*');
-    memcpy(item.item_data[item.item_cnt], str + index + 1, len - index - 1);
+
+    if (item.item_cnt == 0)
+    {
+        return;
+    }
     nmeacrc = nemaCalcuateCrc((char *)str, len);
-    if (nmeacrc == charstrToHexValue(item.item_data[item.item_cnt]))
+    if (nmeacrc == charstrToHexValue(item.item_data[item.item_cnt - 1]))
     {
         nmeatype = parseGetNmeaType(item.item_data[0]);
         switch (nmeatype)
@@ -930,7 +962,7 @@ int8_t calculateTheGPSCornerPoint(void)
     {
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[1]]);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[3]]);
-		
+
         jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[1]]);
         jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[3]]);
     }
@@ -941,7 +973,7 @@ int8_t calculateTheGPSCornerPoint(void)
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[2]]);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[3]]);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[4]]);
-		
+
         jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[0]]);
         jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[1]]);
         jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[2]]);
@@ -976,8 +1008,8 @@ void gpsUploadPointToServer(void)
         if (autoFenceCalculate() == 1)
         {
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, getCurrentGPSInfo());
-			//jt808BatchPushIn(getCurrentGPSInfo());
-			jt808SendToServer(TERMINAL_POSITION, getCurrentGPSInfo());
+            //jt808BatchPushIn(getCurrentGPSInfo());
+            jt808SendToServer(TERMINAL_POSITION, getCurrentGPSInfo());
             initLastPoint(getCurrentGPSInfo());
             tick = 0;
         }
