@@ -1511,7 +1511,7 @@ static void rebootOneDay(void)
         return ;
     if (sysinfo.gpsRequest != 0)
         return ;
-    //portSystemReset();
+    portSystemReset();
 }
 
 /**************************************************

@@ -85,8 +85,7 @@ static uint8_t  gpsFilter(gpsinfo_s *gpsinfo)
     {
         return 0;
     }
-    if (gpsinfo->datetime.day == 0 || (gpsinfo->datetime.hour == 0 &&
-                                       gpsinfo->datetime.minute == 0 && gpsinfo->datetime.second == 0))
+    if (gpsinfo->datetime.day == 0)
     {
         return 0;
     }
@@ -531,7 +530,7 @@ static nmeatype_e parseGetNmeaType(char *str)
 @note
 **************************************************/
 
-uint8_t nemaCalcuateCrc(char *str, int len)
+static uint8_t nemaCalcuateCrc(char *str, int len)
 {
     int i, index, size;
     unsigned char crc;
@@ -557,7 +556,7 @@ uint8_t nemaCalcuateCrc(char *str, int len)
 @note
 **************************************************/
 
-uint8_t chartohexcharvalue(char value)
+static uint8_t chartohexcharvalue(char value)
 {
     if (value >= '0' && value <= '9')
         return value - '0';
@@ -576,7 +575,7 @@ uint8_t chartohexcharvalue(char value)
 @note
 **************************************************/
 
-uint32_t charstrToHexValue(char *value)
+static uint32_t charstrToHexValue(char *value)
 {
     unsigned int calvalue = 0;
     unsigned char i, j, len, hexVal;
