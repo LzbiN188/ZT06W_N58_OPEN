@@ -512,7 +512,7 @@ static void doTTSInstruction(ITEM *item, char *message)
     }
     else
     {
-        //portPushTTS(item->item_data[1]);
+        portPushTTS(item->item_data[1]);
         strcpy(message, "TTS play done");
     }
 }

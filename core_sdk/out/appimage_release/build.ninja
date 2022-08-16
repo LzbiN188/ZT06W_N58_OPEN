@@ -46,7 +46,7 @@ build cmake_object_order_depends_target_hello_flash_ldscript: phony || CMakeFile
 
 build CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj: C_COMPILER__hello_flash_ldscript ../../ldscripts/app_flashimg.ld || cmake_object_order_depends_target_hello_flash_ldscript
   DEP_FILE = CMakeFiles\hello_flash_ldscript.dir\ldscripts\app_flashimg.ld.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections -E -P -x c
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections -E -P -x c
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash_ldscript.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash_ldscript.dir\ldscripts
@@ -71,7 +71,7 @@ build cmake_object_order_depends_target_hello_flash: phony || CMakeFiles/hello_f
 
 build CMakeFiles/hello_flash.dir/app/aes.c.obj: C_COMPILER__hello_flash ../../app/aes.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\aes.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -80,7 +80,7 @@ build CMakeFiles/hello_flash.dir/app/aes.c.obj: C_COMPILER__hello_flash ../../ap
 
 build CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj: C_COMPILER__hello_flash ../../app/app_atcmd.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_atcmd.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -89,7 +89,7 @@ build CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj: C_COMPILER__hello_flash ..
 
 build CMakeFiles/hello_flash.dir/app/app_ble.c.obj: C_COMPILER__hello_flash ../../app/app_ble.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_ble.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -98,7 +98,7 @@ build CMakeFiles/hello_flash.dir/app/app_ble.c.obj: C_COMPILER__hello_flash ../.
 
 build CMakeFiles/hello_flash.dir/app/app_gps.c.obj: C_COMPILER__hello_flash ../../app/app_gps.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_gps.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -107,7 +107,7 @@ build CMakeFiles/hello_flash.dir/app/app_gps.c.obj: C_COMPILER__hello_flash ../.
 
 build CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj: C_COMPILER__hello_flash ../../app/app_instructioncmd.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_instructioncmd.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -116,7 +116,7 @@ build CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj: C_COMPILER__hello
 
 build CMakeFiles/hello_flash.dir/app/app_jt808.c.obj: C_COMPILER__hello_flash ../../app/app_jt808.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_jt808.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -125,7 +125,7 @@ build CMakeFiles/hello_flash.dir/app/app_jt808.c.obj: C_COMPILER__hello_flash ..
 
 build CMakeFiles/hello_flash.dir/app/app_kernal.c.obj: C_COMPILER__hello_flash ../../app/app_kernal.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_kernal.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -134,7 +134,7 @@ build CMakeFiles/hello_flash.dir/app/app_kernal.c.obj: C_COMPILER__hello_flash .
 
 build CMakeFiles/hello_flash.dir/app/app_main.c.obj: C_COMPILER__hello_flash ../../app/app_main.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_main.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -143,7 +143,7 @@ build CMakeFiles/hello_flash.dir/app/app_main.c.obj: C_COMPILER__hello_flash ../
 
 build CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj: C_COMPILER__hello_flash ../../app/app_mir3da.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_mir3da.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -152,7 +152,7 @@ build CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj: C_COMPILER__hello_flash .
 
 build CMakeFiles/hello_flash.dir/app/app_net.c.obj: C_COMPILER__hello_flash ../../app/app_net.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_net.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -161,7 +161,7 @@ build CMakeFiles/hello_flash.dir/app/app_net.c.obj: C_COMPILER__hello_flash ../.
 
 build CMakeFiles/hello_flash.dir/app/app_param.c.obj: C_COMPILER__hello_flash ../../app/app_param.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_param.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -170,7 +170,7 @@ build CMakeFiles/hello_flash.dir/app/app_param.c.obj: C_COMPILER__hello_flash ..
 
 build CMakeFiles/hello_flash.dir/app/app_port.c.obj: C_COMPILER__hello_flash ../../app/app_port.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_port.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -179,7 +179,7 @@ build CMakeFiles/hello_flash.dir/app/app_port.c.obj: C_COMPILER__hello_flash ../
 
 build CMakeFiles/hello_flash.dir/app/app_protocol.c.obj: C_COMPILER__hello_flash ../../app/app_protocol.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_protocol.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -188,7 +188,7 @@ build CMakeFiles/hello_flash.dir/app/app_protocol.c.obj: C_COMPILER__hello_flash
 
 build CMakeFiles/hello_flash.dir/app/app_sn.c.obj: C_COMPILER__hello_flash ../../app/app_sn.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_sn.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -197,7 +197,7 @@ build CMakeFiles/hello_flash.dir/app/app_sn.c.obj: C_COMPILER__hello_flash ../..
 
 build CMakeFiles/hello_flash.dir/app/app_socket.c.obj: C_COMPILER__hello_flash ../../app/app_socket.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_socket.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -206,7 +206,7 @@ build CMakeFiles/hello_flash.dir/app/app_socket.c.obj: C_COMPILER__hello_flash .
 
 build CMakeFiles/hello_flash.dir/app/app_sys.c.obj: C_COMPILER__hello_flash ../../app/app_sys.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_sys.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -215,7 +215,7 @@ build CMakeFiles/hello_flash.dir/app/app_sys.c.obj: C_COMPILER__hello_flash ../.
 
 build CMakeFiles/hello_flash.dir/app/app_task.c.obj: C_COMPILER__hello_flash ../../app/app_task.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_task.c.obj.d
-  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -D FEATURE_NWY_OPEN_LITE_TTS_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
+  FLAGS = -std=gnu11   -D FEATURE_NWY_OPEN_LITE_PAHOMQTT_OFF -D FEATURE_NWY_OPEN_LITE_ALIMQTT_OFF -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -g -Os -Wall -fno-strict-aliasing -ffunction-sections -fdata-sections
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
@@ -230,10 +230,10 @@ build CMakeFiles/hello_flash.dir/app/app_task.c.obj: C_COMPILER__hello_flash ../
 #############################################
 # Link the executable hex\hello_flash.elf
 
-build hex/hello_flash.elf hex/hello_flash.img hex/hello_flash.map: C_EXECUTABLE_LINKER__hello_flash ../../components/lib/core_stub.o CMakeFiles/hello_flash.dir/app/aes.c.obj CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj CMakeFiles/hello_flash.dir/app/app_ble.c.obj CMakeFiles/hello_flash.dir/app/app_gps.c.obj CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj CMakeFiles/hello_flash.dir/app/app_jt808.c.obj CMakeFiles/hello_flash.dir/app/app_kernal.c.obj CMakeFiles/hello_flash.dir/app/app_main.c.obj CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj CMakeFiles/hello_flash.dir/app/app_net.c.obj CMakeFiles/hello_flash.dir/app/app_param.c.obj CMakeFiles/hello_flash.dir/app/app_port.c.obj CMakeFiles/hello_flash.dir/app/app_protocol.c.obj CMakeFiles/hello_flash.dir/app/app_sn.c.obj CMakeFiles/hello_flash.dir/app/app_socket.c.obj CMakeFiles/hello_flash.dir/app/app_sys.c.obj CMakeFiles/hello_flash.dir/app/app_task.c.obj | CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj ../../components/newlib/armca5/libc.a ../../components/newlib/armca5/libm.a ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
+build hex/hello_flash.elf hex/hello_flash.img hex/hello_flash.map: C_EXECUTABLE_LINKER__hello_flash ../../components/lib/core_stub.o CMakeFiles/hello_flash.dir/app/aes.c.obj CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj CMakeFiles/hello_flash.dir/app/app_ble.c.obj CMakeFiles/hello_flash.dir/app/app_gps.c.obj CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj CMakeFiles/hello_flash.dir/app/app_jt808.c.obj CMakeFiles/hello_flash.dir/app/app_kernal.c.obj CMakeFiles/hello_flash.dir/app/app_main.c.obj CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj CMakeFiles/hello_flash.dir/app/app_net.c.obj CMakeFiles/hello_flash.dir/app/app_param.c.obj CMakeFiles/hello_flash.dir/app/app_port.c.obj CMakeFiles/hello_flash.dir/app/app_protocol.c.obj CMakeFiles/hello_flash.dir/app/app_sn.c.obj CMakeFiles/hello_flash.dir/app/app_socket.c.obj CMakeFiles/hello_flash.dir/app/app_sys.c.obj CMakeFiles/hello_flash.dir/app/app_task.c.obj | CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj ../../components/lib/libnwyivtts.a ../../components/lib/libAiSound5.a ../../components/newlib/armca5/libc.a ../../components/newlib/armca5/libm.a ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
   FLAGS = -std=gnu11
   LINK_FLAGS = -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -Os
-  LINK_LIBRARIES = -T  CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj  -Wl,-Map=D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.map  -nostdlib  -Wl,--gc-sections  ../../components/newlib/armca5/libc.a  ../../components/newlib/armca5/libm.a  ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
+  LINK_LIBRARIES = -T  CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj  -Wl,-Map=D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.map  -nostdlib  -Wl,--gc-sections  ../../components/lib/libnwyivtts.a  ../../components/lib/libAiSound5.a  ../../components/newlib/armca5/libc.a  ../../components/newlib/armca5/libm.a  ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   POST_BUILD = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && dtools mkappimg D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.elf D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img"
   PRE_LINK = cd .

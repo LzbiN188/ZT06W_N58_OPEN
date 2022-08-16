@@ -1722,7 +1722,7 @@ void myApp100MSRun(void *param)
         kernalRun();
         softWdtRun();
         sysLedRunTask();
-        //portOutputTTS();
+        portOutputTTS();
         nwy_sleep(100);
     }
 }
