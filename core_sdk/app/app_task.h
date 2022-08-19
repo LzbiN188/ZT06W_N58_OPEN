@@ -13,6 +13,7 @@
 #define GPS_REQ_ACC					0x02
 #define GPS_REQ_KEEPON				0x04
 #define GPS_REQ_DEBUG				0x08
+#define GPS_REQ_BLE					0x10
 
 #define GPS_REQ_ALL					0xFF
 

@@ -5,7 +5,7 @@
 
 #define PARAM_VER		0x1F
 
-#define EEPROM_VERSION	"N58_CA_V4.2.11"
+#define EEPROM_VERSION	"N58_CA_V4.2.12"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -83,7 +83,9 @@ typedef struct
     //add new
     uint8_t relayFun;
 	uint8_t relaySpeed;
-    
+
+	char bleServer[50];
+	uint16_t bleServerPort;
 } systemParam_s;
 
 extern systemParam_s sysparam;

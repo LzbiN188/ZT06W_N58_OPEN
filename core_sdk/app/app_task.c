@@ -237,6 +237,7 @@ void motionStateUpdate(motion_src_e src, motionState_e newState)
         }
         terminalAccon();
         hiddenServCloseClear();
+        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
         jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
         //jt808BatchPushIn(getCurrentGPSInfo());
@@ -249,6 +250,7 @@ void motionStateUpdate(motion_src_e src, motionState_e newState)
             gpsRequestClear(GPS_REQ_ACC);
         }
         terminalAccoff();
+        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
         jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
         //jt808BatchPushIn(getCurrentGPSInfo());
@@ -1321,7 +1323,6 @@ static void voltageCheckTask(void)
 
     sysinfo.outsideVol = portGetOutSideVolAdcVol() * sysparam.adccal;
     sysinfo.batteryVol = portGetBatteryAdcVol();
-    protocolUpdateVol(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol));
 
     //µÍµç±¨¾¯
     if (sysinfo.outsideVol < sysparam.lowvoltage)

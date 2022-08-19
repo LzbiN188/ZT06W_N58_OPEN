@@ -47,6 +47,7 @@ typedef enum
     SETBLEWARNPARAM_INS,
     RELAYFUN_INS,
     RELAYSPEED_INS,
+    BLESERVER_INS,
 } cmd_e;
 
 

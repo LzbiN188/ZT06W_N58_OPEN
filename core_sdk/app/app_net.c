@@ -8,14 +8,16 @@
 #include "app_task.h"
 #include "app_port.h"
 #include "app_jt808.h"
-
+#include "stdlib.h"
 
 
 
 static serverConnect_s serverConnect;
 static serverConnect_s hiddenConnect;
+static serverConnect_s bleServConnect;
 static jt808_Connect_s jt808ServConn;
 static recordUpload_s recinfo;
+static bleInfo_s *bleHead = NULL;
 
 /**************************************************
 @bref		servr状态切换
@@ -133,6 +135,7 @@ static void serverConnRunTask(void)
             {
                 serverConnect.runTick = 0;
                 protocolUpdateRssi(portGetModuleRssi());
+                protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
                 sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
             }
             if (serverConnect.runTick % 3 == 0)
@@ -416,6 +419,7 @@ static void hiddenServerConnTask(void)
             {
                 hiddenConnect.runTick = 0;
                 protocolUpdateRssi(portGetModuleRssi());
+                protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
                 sendProtocolToServer(HIDE_LINK, PROTOCOL_13, NULL);
             }
             break;
@@ -597,6 +601,229 @@ void jt808AuthOk(void)
     ledStatusUpdate(SYSTEM_LED_LOGIN, 1);
 }
 
+
+
+/**************************************************
+@bref		添加待登录的从设备信息
+@param
+@return
+@note
+	SN:999913436051195,292,3.77,46
+**************************************************/
+
+void bleServerAddInfo(bleInfo_s dev)
+{
+    bleInfo_s *next;
+    if (bleHead == NULL)
+    {
+        bleHead = malloc(sizeof(bleInfo_s));
+        if (bleHead != NULL)
+        {
+            strncpy(bleHead->imei, dev.imei, 15);
+            bleHead->imei[15] = 0;
+            bleHead->startCnt = dev.startCnt;
+            bleHead->vol = dev.vol;
+            bleHead->batLevel = dev.batLevel;
+            bleHead->next = NULL;
+        }
+        else
+        {
+            LogPrintf(DEBUG_ALL, "bleServerAddInfo==>Fail");
+        }
+        return;
+    }
+    next = bleHead;
+    while (next != NULL)
+    {
+        if (next->next == NULL)
+        {
+            next->next = malloc(sizeof(bleInfo_s));
+            if (next->next != NULL)
+            {
+                next = next->next;
+
+                strncpy(next->imei, dev.imei, 15);
+                next->imei[15] = 0;
+                next->startCnt = dev.startCnt;
+                next->vol = dev.vol;
+                next->batLevel = dev.batLevel;
+                next->next = NULL;
+                next = next->next;
+            }
+            else
+            {
+                LogPrintf(DEBUG_ALL, "bleServerAddInfo==>Fail");
+                break;
+            }
+        }
+        else
+        {
+            next = next->next;
+        }
+    }
+}
+
+/**************************************************
+@bref		显示待连接队列
+@param
+@return
+@note
+**************************************************/
+
+void showBleList(void)
+{
+    uint8_t cnt;
+    bleInfo_s *dev;
+    dev = bleHead;
+    cnt = 0;
+    while (dev != NULL)
+    {
+        LogPrintf(DEBUG_ALL, "Dev[%d]:%s", ++cnt, dev->imei);
+        dev = dev->next;
+    }
+}
+
+/**************************************************
+@bref		servr状态切换
+@param
+	none
+@return
+	none
+@note
+**************************************************/
+
+static void bleServerChangeFsm(serverfsm_e newFsm)
+{
+    bleServConnect.connectFsm = newFsm;
+    bleServConnect.runTick = 0;
+}
+
+/**************************************************
+@bref		蓝牙待连接链路登录成
+@param
+@return
+@note
+**************************************************/
+
+void bleServerLoginReady(void)
+{
+    bleServerChangeFsm(SERV_READY);
+    bleServConnect.loginCnt = 0;
+    LogMessage(DEBUG_ALL, "ble login success");
+}
+
+
+/**************************************************
+@bref		服务器链接任务
+@param
+	none
+@return
+	none
+@note
+**************************************************/
+
+static void bleServerConnRunTask(void)
+{
+    static uint8_t tick = 0;
+    bleInfo_s *next;
+    gpsinfo_s *gpsinfo;
+
+    if (isNetworkNormal() == 0 || bleHead == NULL)
+    {
+        if (gpsRequestGet(GPS_REQ_BLE))
+        {
+            gpsRequestClear(GPS_REQ_BLE);
+        }
+        return;
+    }
+    if (socketGetUsedFlag(BLE_LINK) != 1)
+    {
+        protocolRegisterTcpSend(SoketDataSend);
+        bleServerChangeFsm(SERV_LOGIN);
+        socketAdd(BLE_LINK, sysparam.bleServer, sysparam.bleServerPort, soketDataRecv);
+        return;
+    }
+    if (socketGetConnectStatus(BLE_LINK) != 1)
+    {
+        return;
+    }
+
+    switch (bleServConnect.connectFsm)
+    {
+        case SERV_LOGIN:
+            if (strcmp(bleHead->imei, "888888887777777") == 0)
+            {
+                LogMessage(DEBUG_ALL, "not valid sn");
+                bleServerChangeFsm(SERV_END);
+                return;
+            }
+            tick = 0;
+            protoclUpdateSn(bleHead->imei);
+            LogMessage(DEBUG_ALL, "ble try login");
+            sendProtocolToServer(BLE_LINK, PROTOCOL_01, NULL);
+            bleServerChangeFsm(SERV_LOGIN_WAIT);
+            gpsRequestSet(GPS_REQ_BLE);
+            break;
+        case SERV_LOGIN_WAIT:
+            if (++bleServConnect.runTick >= 30)
+            {
+                bleServConnect.loginCnt++;
+                if (bleServConnect.loginCnt >= 2)
+                {
+                    //登录超时未成功
+                    LogMessage(DEBUG_ALL, "ble Login fail");
+                    bleServerChangeFsm(SERV_END);
+                }
+                else
+                {
+                    LogMessage(DEBUG_ALL, "ble Login timeout");
+                    bleServerChangeFsm(SERV_LOGIN);
+                }
+            }
+            break;
+        case SERV_READY:
+            if (bleServConnect.runTick++ == 0)
+            {
+                protocolUpdateRssi(portGetModuleRssi());
+                protocolUpdateSomeInfo(sysinfo.outsideVol, bleHead->vol, bleHead->batLevel,bleHead->startCnt,0);
+                sendProtocolToServer(BLE_LINK, PROTOCOL_13, NULL);
+            }
+            gpsinfo = getCurrentGPSInfo();
+
+            if (gpsinfo->fixstatus)
+            {
+                if (tick++ >= 10)
+                {
+                    sendProtocolToServer(BLE_LINK, PROTOCOL_12, gpsinfo);
+                    bleServerChangeFsm(SERV_END);
+                    break;
+                }
+            }
+            else
+            {
+                tick = 0;
+            }
+            if (bleServConnect.runTick >= 180)
+            {
+                sendProtocolToServer(BLE_LINK, PROTOCOL_12, getLastFixedGPSInfo());
+                bleServerChangeFsm(SERV_END);
+            }
+
+            break;
+        case SERV_END:
+            next = bleHead->next;
+            free(bleHead);
+            bleHead = next;
+            socketClose(BLE_LINK);
+            bleServerChangeFsm(SERV_LOGIN);
+            LogPrintf(DEBUG_ALL, "ble server done");
+            break;
+        default:
+            bleServerChangeFsm(SERV_LOGIN);
+            break;
+    }
+}
+
 /**************************************************
 @bref		设备链接服务器时，协议选择
 @param
@@ -614,6 +841,7 @@ void serverConnTask(void)
         serverConnRunTask();
     }
     hiddenServerConnTask();
+    bleServerConnRunTask();
 }
 
 
@@ -981,7 +1209,5 @@ void recordUploadTask(void)
             break;
     }
 }
-
-
 
 

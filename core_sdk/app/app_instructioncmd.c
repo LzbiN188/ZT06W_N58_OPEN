@@ -63,6 +63,7 @@ const instruction_s instructiontable[] =
     {SETBLEWARNPARAM_INS, "SETBLEWARNPARAM"},
     {RELAYFUN_INS, "RELAYFUN"},
     {RELAYSPEED_INS, "RELAYSPEED"},
+    {BLESERVER_INS, "BLESERVER"},
     {SN_INS, "*"},
 };
 
@@ -91,16 +92,12 @@ static int getInstructionid(uint8_t *cmdstr)
 
 static void bleSendEncryptData(uint8_t *buf, uint16_t len)
 {
-    uint8_t *ins;
     uint8_t enclen;
     char respon[300];
-    ins = getProtoclInstructionid();
-    //CMD[01020304]:
-    sprintf(respon, "CMD[%02X%02X%02X%02X]:%s", ins[0], ins[1], ins[2], ins[3], buf);
-    len += 14;
     encryptData(respon, &enclen, respon, len);
     bleServSendData(respon, enclen);
 }
+
 
 /**************************************************
 @bref		指令匹配，2条指令必须完全匹配
@@ -1437,6 +1434,30 @@ static void doRelaySpeedInstruction(ITEM *item, char *message)
     }
 }
 
+static void doBleServerInstruction(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "ble server was %s:%d", sysparam.bleServer, sysparam.bleServerPort);
+    }
+    else
+    {
+        if (item->item_data[1][0] != 0 && item->item_data[2][0] != 0)
+        {
+            strncpy((char *)sysparam.bleServer, item->item_data[1], 50);
+            stringToLowwer(sysparam.bleServer, strlen(sysparam.bleServer));
+            sysparam.bleServerPort = atoi((const char *)item->item_data[2]);
+            sprintf(message, "Update ble server %s:%d", sysparam.bleServer, sysparam.bleServerPort);
+            paramSaveAll();
+        }
+        else
+        {
+            strcpy(message, "please enter your param");
+        }
+
+    }
+}
+
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
 {
@@ -1566,6 +1587,9 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
             break;
         case RELAYSPEED_INS:
             doRelaySpeedInstruction(item, message);
+            break;
+        case BLESERVER_INS:
+            doBleServerInstruction(item, message);
             break;
         default:
             if (param->mode == MESSAGE_MODE)

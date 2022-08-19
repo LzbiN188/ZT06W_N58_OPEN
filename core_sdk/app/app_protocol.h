@@ -84,12 +84,16 @@ typedef struct
     uint8_t batteryLevel;
     uint8_t instructionId[4];
     uint8_t instructionIdSave[4];
+    uint8_t instructionIdBle[4];
     uint8_t mnc;
     uint8_t event;
 
     uint16_t Serial;
     uint16_t mcc;
     uint16_t lac;
+
+	uint16_t startUpCnt;
+	uint16_t runTime;
 
     uint32_t cid;
     float	outsideVol;
@@ -120,7 +124,7 @@ typedef struct
 {
     uint8_t audioType;
     uint16_t audioCnt;
-	uint16_t audioCurPack;
+    uint16_t audioCurPack;
     uint32_t audioSize;
     uint32_t audioId;
 } audioDownload_s;
@@ -187,7 +191,7 @@ void socketRecvPush(uint8_t link, char *protocol, int size);
 void protocolInit(void);
 
 void protoclUpdateSn(char *sn);
-void protocolUpdateVol(float outvol, float batvol, uint8_t batlev);
+void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev,uint16_t startCnt,uint16_t runTime);
 void protocolUpdateRssi(uint8_t rssi);
 void protocolUpdateSatelliteUsed(uint8_t gps, uint8_t bd);
 void protocolUpdateLbsInfo(uint16_t mcc, uint8_t mnc, uint16_t lac, uint32_t cid);
@@ -200,7 +204,11 @@ void protocolRegisterTcpSend(int (*tcpSend)(uint8_t, uint8_t *, uint16_t));
 void upgradeStartInit(void);
 void upgradeFromServer(void);
 
-void gpsRestoreWriteData(gpsRestore_s *gpsres , uint8_t num);
+void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num);
 uint8_t gpsRestoreReadData(void);
+
+void getInsid(void);
+void setInsId(void);
+
 
 #endif

@@ -9,6 +9,9 @@
 #include "aes.h"
 #include "app_port.h"
 #include "nwy_ble_client.h"
+#include "app_net.h"
+#include "app_protocol.h"
+#include "aes.h"
 
 static bleServer_s bleServInfo;
 static bleClinet_s bleClientInfo;
@@ -156,7 +159,7 @@ void bleServRunTask(void)
 {
     static uint16_t bleRunTick = 0;
     int ret;
-	
+
     if (sysinfo.bleOnBySystem != 0)
     {
         if (++bleRunTick >= 300)
@@ -197,7 +200,7 @@ void bleServRunTask(void)
             bleServChangeFsm(BLE_CHECK_STATE);
             break;
         case BLE_NORMAL:
-			
+
             if ((sysparam.bleen == 0 && sysinfo.bleOnBySystem == 0) || bleServInfo.bleCloseReq == 1)
             {
                 nwy_ble_disable();
@@ -210,6 +213,7 @@ void bleServRunTask(void)
             break;
     }
 }
+
 
 /**************************************************
 @bref		蓝牙数据接收
@@ -224,6 +228,8 @@ static void bleServRecvParser(uint8_t *buf, uint8_t len)
     char dec[256];
     char debug[101];
     uint8_t declen, debugLen;
+    ITEM item;
+    bleInfo_s devInfo;
     instructionParam_s insParam;
     LogPrintf(DEBUG_ALL, "BLERecv==>%d Bytes", len);
     debugLen = len > 50 ? 50 : len;
@@ -241,12 +247,32 @@ static void bleServRecvParser(uint8_t *buf, uint8_t len)
     dec[declen] = '#';
     declen += 1;
     dec[declen] = 0;
+    LogPrintf(DEBUG_ALL, "BLERECV==>%s", dec);
 
     if (dec[0] == 'B' && dec[1] == 'L' && dec[2] == ':')
     {
+    	//有问题这里，待解决
         memset(&insParam, 0, sizeof(instructionParam_s));
         insParam.mode = BLE_MODE;
         instructionParser((uint8_t *)dec + 3, declen - 3, &insParam);
+    }
+    else if (dec[0] == 'S' && dec[1] == 'N' && dec[2] == ':')
+    {
+        stringToItem(&item, (uint8_t *) dec + 3, declen - 3);
+        if (item.item_cnt == 4)
+        {
+            strncpy(devInfo.imei, item.item_data[0], 15);
+            devInfo.imei[15] = 0;
+            devInfo.startCnt = atoi(item.item_data[1]);
+            devInfo.vol = atof(item.item_data[2]);
+            devInfo.batLevel = atoi(item.item_data[3]);
+            bleServerAddInfo(devInfo);
+        }
+    }
+    else if (dec[0] == 'R' && dec[1] == 'E' && dec[2] == ':')
+    {
+    	setInsId();
+		sendProtocolToServer(BLE_LINK, PROTOCOL_21, (void *)dec);
     }
 }
 

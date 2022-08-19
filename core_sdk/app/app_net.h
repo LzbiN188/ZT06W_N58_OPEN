@@ -7,6 +7,7 @@
 #define JT808_LINK		1
 #define HIDE_LINK		2
 #define AGPS_LINK		3
+#define BLE_LINK		4
 #define UPGRADE_LINK	5
 
 
@@ -18,6 +19,7 @@ typedef enum
     SERV_LOGIN,
     SERV_LOGIN_WAIT,
     SERV_READY,
+    SERV_END
 } serverfsm_e;
 
 typedef struct
@@ -69,6 +71,15 @@ typedef struct
 
 } recordUpload_s;
 
+typedef struct bleDev
+{
+    char imei[16];
+    uint8_t batLevel;
+    uint16_t startCnt;
+    float   vol;
+    struct bleDev *next;
+} bleInfo_s;
+
 
 void serverLoginRespon(void);
 uint8_t serverIsReady(void);
@@ -81,6 +92,10 @@ void hiddenServLoginRespon(void);
 void hiddenServReconnect(void);
 uint8_t hiddenServIsReady(void);
 
+void bleServerAddInfo(bleInfo_s dev);
+void showBleList(void);
+
+void bleServerLoginReady(void);
 
 void upgradeRunTask(void);
 

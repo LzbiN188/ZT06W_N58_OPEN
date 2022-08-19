@@ -10,7 +10,8 @@
 #include "app_task.h"
 #include "nwy_file.h"
 #include "app_jt808.h"
-
+#include "aes.h"
+#include "app_ble.h"
 static protocol_s 		protocolInfo;
 static gpsRestore_s		gpsres;
 static audioDownload_s 	audiofile;
@@ -388,10 +389,10 @@ int createProtocol13(char *dest)
     dest[pdu_len++ ] = 0;//感光
 
 
-    dest[pdu_len++ ] = (sysparam.startUpCnt >> 8) & 0xff; //模式一次数
-    dest[pdu_len++ ] = sysparam.startUpCnt & 0xff;
-    dest[pdu_len++ ] = (sysparam.runTime >> 8) & 0xff; //模式二次数
-    dest[pdu_len++ ] = sysparam.runTime & 0xff;
+    dest[pdu_len++ ] = (protocolInfo.startUpCnt >> 8) & 0xff; //模式一次数
+    dest[pdu_len++ ] = protocolInfo.startUpCnt & 0xff;
+    dest[pdu_len++ ] = (protocolInfo.runTime >> 8) & 0xff; //模式二次数
+    dest[pdu_len++ ] = protocolInfo.runTime & 0xff;
 
 
     ret = createProtocolTail_78(dest, pdu_len,  protocolInfo.Serial);
@@ -1131,12 +1132,12 @@ static int createUpdateProtocol(char *dest, uint8_t cmd)
 @return
 @note
 **************************************************/
-static void sendTcpDataDebugShow(char *txdata, int txlen)
+static void sendTcpDataDebugShow(uint8_t link, char *txdata, int txlen)
 {
     int debuglen, dlen;
     char senddata[300];
     debuglen = txlen > 128 ? 128 : txlen;
-    strcpy(senddata, "TCP Send: ");
+    sprintf(senddata, "Socket[%d]Send(%d): ", link, txlen);
     dlen = strlen(senddata);
     changeByteArrayToHexString((uint8_t *)txdata, (uint8_t *)senddata + dlen, (uint16_t) debuglen);
     senddata[dlen + debuglen * 2] = 0;
@@ -1261,7 +1262,7 @@ void sendProtocolToServer(uint8_t link, int type, void *param)
     }
 
 
-    sendTcpDataDebugShow(debugP, txlen);
+    sendTcpDataDebugShow(link, debugP, txlen);
 
 
 
@@ -1273,8 +1274,12 @@ void sendProtocolToServer(uint8_t link, int type, void *param)
                 if (serverIsReady() == 0 || tcpSendData(link, (uint8_t *)txdata, txlen) == 0)
                 {
                     LogMessage(DEBUG_ALL, "gps send fail,save to file");
-                    gpsRestoreWriteData(&gpsres,1);
+                    gpsRestoreWriteData(&gpsres, 1);
                 }
+            }
+            else
+            {
+                tcpSendData(link, (uint8_t *)txdata, txlen);
             }
             break;
         case PROTOCOL_61:
@@ -1307,6 +1312,10 @@ void protoclparser01(uint8_t link, char *protocol, int size)
     {
         hiddenServLoginRespon();
     }
+    else if (link == BLE_LINK)
+    {
+        bleServerLoginReady();
+    }
     else if (link == UPGRADE_LINK)
     {
         upgradeLoginReady();
@@ -1333,7 +1342,7 @@ void protoclparser13(uint8_t link, char *protocol, int size)
 void protoclparser16(uint8_t link, char *protocol, int size)
 {
     LogMessage(DEBUG_ALL, "alarm respon");
-	alarmRequestClearSave();
+    alarmRequestClearSave();
 }
 
 
@@ -1380,7 +1389,7 @@ static void protoclparser51(uint8_t link, char *protocol, int size)
 static void protoclparser52(uint8_t link, char *protocol, int size)
 {
     audiofile.audioCurPack = protocol[5] << 8 | protocol[6];
-    portSaveAudio(AUDIOFILE,(uint8_t *)protocol + 7, size - 15);
+    portSaveAudio(AUDIOFILE, (uint8_t *)protocol + 7, size - 15);
     LogPrintf(DEBUG_ALL, "audio receive packId %d ,size %d Byte", audiofile.audioCurPack, size - 15);
     sendProtocolToServer(link, PROTOCOL_52, NULL);
     if ((audiofile.audioCurPack + 1) == audiofile.audioCnt)
@@ -1428,6 +1437,56 @@ static void protoclparser63(uint8_t link, char *protocol, int size)
 }
 
 /**************************************************
+@bref		保存指令ID
+@param
+@return
+@note
+**************************************************/
+
+void setInsId(void)
+{
+    protocolInfo.instructionId[0] = protocolInfo.instructionIdBle[0];
+    protocolInfo.instructionId[1] = protocolInfo.instructionIdBle[1];
+    protocolInfo.instructionId[2] = protocolInfo.instructionIdBle[2];
+    protocolInfo.instructionId[3] = protocolInfo.instructionIdBle[3];
+}
+
+/**************************************************
+@bref		重置指令ID
+@param
+@return
+@note
+**************************************************/
+
+void getInsid(void)
+{
+    protocolInfo.instructionIdBle[0] = protocolInfo.instructionId[0];
+    protocolInfo.instructionIdBle[1] = protocolInfo.instructionId[1];
+    protocolInfo.instructionIdBle[2] = protocolInfo.instructionId[2];
+    protocolInfo.instructionIdBle[3] = protocolInfo.instructionId[3];
+}
+/**************************************************
+@bref		将指令透传至蓝牙设备
+@param
+@return
+@note
+**************************************************/
+
+static void bleSendToDevice(uint8_t *buf, uint16_t len)
+{
+    uint8_t *ins;
+    uint8_t enclen;
+    char respon[300];
+    ins = getProtoclInstructionid();
+    //CMD[01020304]:
+    sprintf(respon, "CMD[%02X%02X%02X%02X]:%s", ins[0], ins[1], ins[2], ins[3], buf);
+    len += 14;
+    encryptData(respon, &enclen, respon, len);
+    getInsid();
+    bleServSendData(respon, enclen);
+}
+
+/**************************************************
 @bref		解析透传协议
 @param
 @return
@@ -1435,6 +1494,7 @@ static void protoclparser63(uint8_t link, char *protocol, int size)
 **************************************************/
 static void protoclparser80(uint8_t link, char *protocol, int size)
 {
+    uint8_t *instruction;
 
     uint8_t instructionlen;
     instructionParam_s insParam;
@@ -1448,10 +1508,19 @@ static void protoclparser80(uint8_t link, char *protocol, int size)
         LogPrintf(DEBUG_ALL, "protoclparser80==>%d,%d", instructionlen, size);
         return;
     }
-    memset(&insParam, 0, sizeof(instructionParam_s));
-    insParam.mode = NETWORK_MODE;
-    insParam.link = link;
-    instructionParser((uint8_t *)protocol + 9, instructionlen, &insParam);
+    if (link == BLE_LINK)
+    {
+        getInsid();
+        instruction = (uint8_t *)protocol + 9;
+        bleSendToDevice(instruction, instructionlen);
+    }
+    else
+    {
+        memset(&insParam, 0, sizeof(instructionParam_s));
+        insParam.mode = NETWORK_MODE;
+        insParam.link = link;
+        instructionParser((uint8_t *)protocol + 9, instructionlen, &insParam);
+    }
 }
 
 /**************************************************
@@ -1819,11 +1888,13 @@ void protoclUpdateSn(char *sn)
 @note
 **************************************************/
 
-void protocolUpdateVol(float outvol, float batvol, uint8_t batlev)
+void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev,uint16_t startCnt,uint16_t runTime)
 {
     protocolInfo.outsideVol = outvol;
     protocolInfo.batteryVol = batvol;
     protocolInfo.batteryLevel = batlev;
+	protocolInfo.startUpCnt=startCnt;
+	protocolInfo.runTime=runTime;
 }
 
 /**************************************************
@@ -2190,7 +2261,7 @@ static void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len)
     dest[pdu_len++] = 1;
     pdu_len = createProtocolTail_78(dest, pdu_len, 0xFFFF);
     *len = pdu_len;
-    sendTcpDataDebugShow(dest, pdu_len);
+    sendTcpDataDebugShow(NORMAL_LINK, dest, pdu_len);
 }
 
 /**************************************************
@@ -2202,11 +2273,11 @@ static void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len)
 @note
 **************************************************/
 
-void gpsRestoreWriteData(gpsRestore_s *gpsres , uint8_t num)
+void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num)
 {
     uint16_t paramsize, fileOperation;
     int fd, writelen;
-    paramsize = sizeof(gpsRestore_s)*num;
+    paramsize = sizeof(gpsRestore_s) * num;
     if (nwy_sdk_fexist(GPS_RESTORE_FILE_NAME) == true)
     {
         fileOperation = NWY_WRONLY | NWY_APPEND;
@@ -2247,7 +2318,7 @@ uint8_t gpsRestoreReadData(void)
     uint8_t gpsget[400];
     char  dest[1200];
     uint8_t gpscount, i;
-    uint16_t  fileOperation, destlen, protocollen=0;
+    uint16_t  fileOperation, destlen, protocollen = 0;
     uint32_t  fileSize;
     gpsRestore_s *gpsinfo;
 
@@ -2287,7 +2358,7 @@ uint8_t gpsRestoreReadData(void)
             gpsinfo = (gpsRestore_s *)(gpsget + (20 * i));
             if (sysparam.protocol == JT808_PROTOCOL_TYPE)
             {
-            	//jt808BatchRestorePushIn(gpsinfo,1);
+                //jt808BatchRestorePushIn(gpsinfo,1);
                 protocollen = jt808gpsRestoreDataSend((uint8_t *)dest + destlen, gpsinfo);
             }
             else
@@ -2298,7 +2369,7 @@ uint8_t gpsRestoreReadData(void)
         }
         if (sysparam.protocol == JT808_PROTOCOL_TYPE)
         {
-        	//jt808BatchPushOut();
+            //jt808BatchPushOut();
             jt808TcpSend((uint8_t *)dest, destlen);
         }
         else
