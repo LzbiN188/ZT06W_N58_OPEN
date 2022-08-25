@@ -4,98 +4,49 @@
 #include "nwy_data.h"
 #include "nwy_network.h"
 #include "nwy_data.h"
-#include "app_kernal.h"
-#include "app_port.h"
-#include "stdlib.h"
+#include "nwy_socket.h"
 #include "app_net.h"
-#include "app_task.h"
+#include "app_customercmd.h"
 #include "app_param.h"
+#include "app_task.h"
+#include "app_protocol.h"
 
-static socketInfo_s 	socketlist[SOCKET_LIST_MAX];
-static networkInfo_s	networkInfo;
 
-/**************************************************
-@bref		socket列表初始化
-@param
-@note
-**************************************************/
+
+static SOCKET_INFO socketlist[SOCKET_LIST_MAX];
+static NETWORK_INFO	networkInfo;
+
+static void changeNetFsm(NETWORK_FSM fsm);
+
+
 void socketListInit(void)
 {
     memset(&socketlist, 0, sizeof(socketlist));
 }
-/**************************************************
-@bref		网络信息初始化
-@param
-@note
-**************************************************/
-
-void networkInfoInit(void)
+void networkInit(void)
 {
     memset(&networkInfo, 0, sizeof(networkInfo));
-    networkInfo.csqSearchTime = 120;
 }
-
-/**************************************************
-@bref		是否开启网络
-@param
-	onoff	1：开		0：关
-@note
-**************************************************/
 
 void networkConnectCtl(unsigned char onoff)
 {
-    static uint8_t beforeState = 2;
-    if (beforeState == onoff)
-    {
-        return;
-    }
     networkInfo.networkonoff = onoff;
-    beforeState = networkInfo.networkonoff;
-    LogPrintf(DEBUG_ALL, "%s network", onoff ? "Enable" : "Disable");
+    LogPrintf(DEBUG_ALL, "%s network\r\n", onoff ? "Enable" : "Disable");
     if (onoff == 0)
     {
-        netStopDataCall();
-        portSetRadio(0);
-    }
-    else
-    {
-        portSetRadio(1);
+        socketDeleteAll();
+		netStopDataCall();
+		changeNetFsm(CHECK_SIM);
     }
 }
-
-
-
-/**************************************************
-@bref		重设信号搜索时长
-@param
-@note
-**************************************************/
-
-void netResetCsqSearch(void)
+int socketAdd(unsigned char index, char *domain, unsigned int port, void (*rxFun)(SOCKET_INFO *socketinfo, char *rxbuf,
+              uint16_t len))
 {
-    networkInfo.csqSearchTime = 120;
-}
-
-/**************************************************
-@bref		添加socket
-@param
-	sockId	套接字ID
-	domian	服务器域名
-	port	端口号
-	rxFun	数据接收接口
-@return
-	1 		添加成功
-	<0		添加失败
-@note
-**************************************************/
-int socketAdd(unsigned char sockId, char *domain, unsigned int port, void (*rxFun)(struct SOCK_INFO *socketinfo,
-              char *rxbuf, uint16_t len))
-{
-    if (sockId > SOCKET_LIST_MAX)
+    if (index > SOCKET_LIST_MAX)
     {
         return -1;
     }
-    if (socketlist[sockId].useFlag != 0)
+    if (socketlist[index].useFlag != 0)
     {
         return -2;
     }
@@ -111,125 +62,90 @@ int socketAdd(unsigned char sockId, char *domain, unsigned int port, void (*rxFu
     {
         return -5;
     }
-    if (domain[0] == 0)
-    {
-        return -6;
-    }
-    strcpy(socketlist[sockId].domain, domain);
-    socketlist[sockId].port = port;
-    socketlist[sockId].useFlag = 1;
-    socketlist[sockId].rxFun = rxFun;
-    socketlist[sockId].socketId = -1;
-    socketlist[sockId].index = sockId;
-    LogPrintf(DEBUG_ALL, "socketAdd[%d]", sockId);
+    strcpy(socketlist[index].domain, domain);
+    socketlist[index].port = port;
+    socketlist[index].useFlag = 1;
+    socketlist[index].rxFun = rxFun;
+    socketlist[index].socketId = -1;
+    socketlist[index].index = index;
+    LogPrintf(DEBUG_ALL, "socketAdd==>%d\r\n", index);
     return 1;
 }
-/**************************************************
-@bref		删除socket
-@param
-	socketinfo socket信息
-@return
-	>0 		成功
-	<0		失败
-@note
-**************************************************/
 
-static int socketDel(socketInfo_s *socketinfo)
+int socketDel(SOCKET_INFO *socketinfo)
 {
     int ret = 0;
-    if (socketinfo->useFlag == 0)
+    if (socketinfo->useFlag != 1)
     {
-        LogPrintf(DEBUG_ALL, "socket[%d] not exit", socketinfo->socketId);
+        LogPrintf(DEBUG_ALL, "socket %d no exit\r\n", socketinfo->socketId);
         return ret;
     }
 
     if (socketinfo->socketConnect)
     {
+        LogMessage(DEBUG_ALL, "socket shutdown\r\n");
         nwy_socket_shutdown(socketinfo->socketId, SHUT_RD);
     }
     if (socketinfo->socketOpen)
     {
+        LogMessage(DEBUG_ALL, "socket close\r\n");
         nwy_socket_close(socketinfo->socketId);
     }
     ret = 1;
-    LogPrintf(DEBUG_ALL, "Delete socket[%d],SocketId[%d]", socketinfo->index, socketinfo->socketId);
-    memset(socketinfo, 0, sizeof(socketInfo_s));
+    LogPrintf(DEBUG_ALL, "Delete Index[%d],SocketId[%d]\r\n", socketinfo->index, socketinfo->socketId);
+    memset(socketinfo, 0, sizeof(SOCKET_INFO));
     socketinfo->socketId = -1;
     return ret;
 }
-/**************************************************
-@bref		删除所有socket
-@param
-	socketinfo socket信息
-@return
-	none
-@note
-**************************************************/
+
 
 void socketDeleteAll(void)
 {
-    uint8_t i = 0, flag = 0;
+    uint8_t i = 0;
+    LogMessage(DEBUG_ALL, "Delete all socket\r\n");
     for (i = 0; i < SOCKET_LIST_MAX; i++)
     {
         if (socketlist[i].useFlag)
         {
-            flag = 1;
-            LogPrintf(DEBUG_ALL, "Delete socket[%d]", i);
-            socketDel(&socketlist[i]);
+            LogPrintf(DEBUG_ALL, "Delete index:%d\r\n", i);
+            socketClose(socketlist[i].index);
         }
     }
-    if (flag)
-    {
-        LogMessage(DEBUG_ALL, "Delete all socket done");
-    }
 }
 
-
-/**************************************************
-@bref		删除某个socket
-@param
-	sockId 	对应socket的ID
-@return
-	1		成功
-	0		失败
-@note
-**************************************************/
-
-int socketClose(uint8_t sockId)
+int socketClose(uint8_t i)
 {
-    if (sockId > SOCKET_LIST_MAX)
+    if (i > SOCKET_LIST_MAX)
         return -1;
-    if (socketlist[sockId].useFlag == 0)
+    if (socketlist[i].useFlag != 1)
         return -2;
-    LogPrintf(DEBUG_ALL, "close socket[%d]", sockId);
-    socketDel(&socketlist[sockId]);
+    LogPrintf(DEBUG_ALL, "socketClose==>%d\r\n", i);
+    if (socketlist[i].index != NORMAL_LINK)
+    {
+        if (socketlist[i].socketConnect)
+        {
+            customerLogPrintf("%d,CLOSE\r\n", socketlist[i].index);
+        }
+    }
+    socketDel(&socketlist[i]);
     return 1;
 }
-/**************************************************
-@bref		切换状态
-@param
-	fsm		新状态
-@return
-	none
-@note
-**************************************************/
 
-static void changeNetFsm(socketFsm_e fsm)
+static void changeNetFsm(NETWORK_FSM fsm)
 {
+    if (fsm == CHECK_SOCKET)
+    {
+        updateSystemLedStatus(SYSTEM_LED_NETREGOK, 1);
+    }
+    else
+    {
+        updateSystemLedStatus(SYSTEM_LED_NETREGOK, 0);
+    }
     networkInfo.netFsm = fsm;
     networkInfo.netTick = 0;
 }
-/**************************************************
-@bref		网络注册检查
-@param
-	none
-@return
-	1		成功
-	0		失败
-@note
-**************************************************/
 
-static uint8_t netCheckRegister(void)
+uint8_t netCheckRegister(void)
 {
     uint8_t result = 0;
     int ret;
@@ -242,15 +158,14 @@ static uint8_t netCheckRegister(void)
         if (reg_info.data_regs_valid)
         {
             result = 1;
-            LogPrintf(DEBUG_ALL, "Data Register==>Reg:%d,Roam:%d,RadioTech:%d", reg_info.data_regs.regs_state,
+            LogPrintf(DEBUG_ALL, "Data Register==>Reg:%d,Roam:%d,RadioTech:%d\r\n", reg_info.data_regs.regs_state,
                       reg_info.data_regs.roam_state,
                       reg_info.data_regs.radio_tech);
-            portSetApn(sysparam.apn,sysparam.apnuser,sysparam.apnpassword);
         }
         //语音域
         if (reg_info.voice_regs_valid)
         {
-            LogPrintf(DEBUG_ALL, "Voice Register==>Reg:%d,Roam:%d,RadioTech:%d", reg_info.voice_regs.regs_state,
+            LogPrintf(DEBUG_ALL, "Voice Register==>Reg:%d,Roam:%d,RadioTech:%d\r\n", reg_info.voice_regs.regs_state,
                       reg_info.voice_regs.roam_state,
                       reg_info.voice_regs.radio_tech);
         }
@@ -258,72 +173,38 @@ static uint8_t netCheckRegister(void)
     return result;
 }
 
-/**************************************************
-@bref		数据拨号状态切换
-@param
-	none
-@return
-	none
-@note
-**************************************************/
-
 static void netchangeDataCallFsm(uint8_t fsm)
 {
     networkInfo.dataCallFsm = fsm;
 }
-
-/**************************************************
-@bref		数据拨号状态返回
-@param
-	hndl
-	ind_state
-@return
-	none
-@note
-**************************************************/
-
 static void netdataStateCallBack(int hndl,  nwy_data_call_state_t ind_state)
 {
-    LogPrintf(DEBUG_ALL, "Profile id:%d,State:%d", hndl, ind_state);
+    LogPrintf(DEBUG_ALL, "Profile id:%d,State:%d\r\n", hndl, ind_state);
     networkInfo.dataCallState = ind_state;
     if (networkInfo.dataCallState == NWY_DATA_CALL_DISCONNECTED)
     {
-        LogMessage(DEBUG_ALL, "DataCall Disconnected");
-        if (networkInfo.dataCallFsm == DATA_CALL_START)
-        {
-            netchangeDataCallFsm(DATA_CALL_STOP);
-            LogMessage(DEBUG_ALL, "change to datacall stop");
-        }
-        changeNetFsm(CHECK_SIGNAL);
+        socketDeleteAll();
+        changeNetFsm(CHECK_DATACALL);
+		netchangeDataCallFsm(DATA_CALL_RELEALSE);
     }
 }
-
 
 void netStopDataCall(void)
 {
-    LogMessage(DEBUG_ALL, "netStopDataCall");
-    socketDeleteAll();
-    if (networkInfo.dataServerHandle > 0)
+	//int ret;
+    if (networkInfo.dataServerHandle <= 0)
     {
-        nwy_data_relealse_srv_handle(networkInfo.dataServerHandle);
-        networkInfo.dataServerHandle = 0;
-        networkInfo.dataCallState = NWY_DATA_CALL_INVALID;
-        netchangeDataCallFsm(DATA_CALL_GET_SOURSE);
+        return;
     }
-
-    changeNetFsm(CHECK_SIM);
+    //ret=nwy_data_stop_call(networkInfo.dataServerHandle);
+	//LogPrintf(DEBUG_ALL, "netStopDataCall==>%s\r\n", ret == 0 ? "Success" : "Fail");
+	LogMessage(DEBUG_ALL,"netStopDataCall\r\n");
+    nwy_data_relealse_srv_handle(networkInfo.dataServerHandle);
+    networkInfo.dataServerHandle = 0;
+	networkInfo.dataCallState=NWY_DATA_CALL_INVALID;
+    netchangeDataCallFsm(DATA_CALL_GET_SOURSE);
 }
-/**************************************************
-@bref		数据拨号
-@param
-	none
-@return
-	1		成功
-	0		失败
-@note
-**************************************************/
-
-static uint8_t netCheckDataCall(void)
+uint8_t netCheckDataCall(void)
 {
     int ret;
     nwy_data_start_call_v02_t startCallParam;
@@ -336,9 +217,8 @@ static uint8_t netCheckDataCall(void)
         case DATA_CALL_GET_SOURSE:
             if (networkInfo.dataServerHandle <= 0)
             {
-                networkInfo.dataCallState = NWY_DATA_CALL_INVALID;
                 networkInfo.dataServerHandle = nwy_data_get_srv_handle(netdataStateCallBack);
-                LogPrintf(DEBUG_ALL, "Create data server handle %s ==>%d", networkInfo.dataServerHandle > 0 ? "success" : "fail",
+                LogPrintf(DEBUG_ALL, "Create data server handle %s ==>%d\r\n", networkInfo.dataServerHandle > 0 ? "success" : "fail",
                           networkInfo.dataServerHandle);
                 if (networkInfo.dataServerHandle <= 0)
                 {
@@ -347,7 +227,6 @@ static uint8_t netCheckDataCall(void)
                     if (getSrvTick > 7)
                     {
                         getSrvTick = 0;
-                        portSystemReset();
                     }
                     break;
                 }
@@ -376,22 +255,23 @@ static uint8_t netCheckDataCall(void)
                     result = 1;
                     dataCallTick = 0;
                     networkInfo.dataCallCount = 0;
+                    LogPrintf(DEBUG_ALL, "Star data call success\r\n");
                 }
                 else
                 {
+                    LogPrintf(DEBUG_ALL, "Star data call fail\r\n");
                     if (dataCallTick++ > 30)
                     {
                         dataCallTick = 0;
                         //数据拨号超时
                         networkInfo.dataCallCount++;
-                        netchangeDataCallFsm(DATA_CALL_STOP);
+                        netchangeDataCallFsm(DATA_CALL_RELEALSE);
                     }
                 }
-                LogPrintf(DEBUG_ALL, "Start datacall %s", ret == 0 ? "success" : "fail");
             }
             else
             {
-                LogMessage(DEBUG_ALL, "Datacall connected");
+                LogMessage(DEBUG_ALL, "Data call connected\r\n");
                 result = 1;
                 dataCallTick = 0;
                 networkInfo.dataCallCount = 0;
@@ -399,27 +279,26 @@ static uint8_t netCheckDataCall(void)
             break;
         //停止拨号
         case DATA_CALL_STOP:
-            socketDeleteAll();
             ret = nwy_data_stop_call(networkInfo.dataServerHandle);
-            LogPrintf(DEBUG_ALL, "Stop call %s", ret == 0 ? "Success" : "Fail");
+            LogPrintf(DEBUG_ALL, "Stop call %s\r\n", ret == 0 ? "Success" : "Fail");
             netchangeDataCallFsm(DATA_CALL_RELEALSE);
             break;
         //释放资源
         case DATA_CALL_RELEALSE:
+            socketDeleteAll();
             nwy_data_relealse_srv_handle(networkInfo.dataServerHandle);
-            LogPrintf(DEBUG_ALL, "Relealse data handle %d", networkInfo.dataServerHandle);
+            LogPrintf(DEBUG_ALL, "Relealse data handle %d\r\n", networkInfo.dataServerHandle);
             networkInfo.dataServerHandle = 0;
             netchangeDataCallFsm(DATA_CALL_GET_SOURSE);
             if (networkInfo.dataCallCount >= 3)
             {
                 networkInfo.dataCallCount = 0;
-                LogMessage(DEBUG_ALL, "Data Call too much time");
-                portSystemReset();
+                LogMessage(DEBUG_ALL, "Data Call too much time\r\n");
             }
             else
             {
                 //拨号失败，则查卡
-                LogMessage(DEBUG_ALL, "recheckout sim");
+                LogMessage(DEBUG_ALL, "Data Call fail,recheck sim\r\n");
                 changeNetFsm(CHECK_SIM);
             }
             break;
@@ -430,16 +309,7 @@ static uint8_t netCheckDataCall(void)
     return result;
 }
 
-/**************************************************
-@bref		数据接收
-@param
-	sockinfo	套接字信息
-@return
-	none
-@note
-**************************************************/
-
-static void socketDataRecv(socketInfo_s *sockinfo)
+static void socketDataRecv(SOCKET_INFO *sockinfo)
 {
     char rxbuf[1560];
     char debugstr[257];
@@ -451,7 +321,7 @@ static void socketDataRecv(socketInfo_s *sockinfo)
         debuglen = ret > 128 ? 128 : ret;
         changeByteArrayToHexString((uint8_t *)rxbuf, (uint8_t *)debugstr, (uint16_t) debuglen);
         debugstr[debuglen * 2] = 0;
-        LogPrintf(DEBUG_ALL, "socket[%d],Rx[%d]: %s", sockinfo->index, ret, debugstr);
+        LogPrintf(DEBUG_ALL, "Ind%d,Rx[%d]:%s\r\n", sockinfo->index, ret, debugstr);
         if (sockinfo->rxFun != NULL)
         {
             sockinfo->rxFun(sockinfo, rxbuf, ret);
@@ -460,27 +330,19 @@ static void socketDataRecv(socketInfo_s *sockinfo)
     else if (ret == 0)
     {
         //释放socket资源
-
-        LogPrintf(DEBUG_ALL, "socketDataRecv==>Socket[%d] was closed", sockinfo->index);
-        if (sockinfo->index == AGPS_LINK)
+        LogPrintf(DEBUG_ALL, "socketDataRecv==>Socket %d close\r\n", sockinfo->index);
+        if (sockinfo->index != NORMAL_LINK)
         {
-            agpsRequestClear();
+            customerLogPrintf("%d,CLOSED\r\n", sockinfo->index);
         }
-        appSendThreadEvent(THREAD_EVENT_SOCKET_CLOSE, sockinfo->index);
-        //socketDel(sockinfo);
+        if (sockinfo->index == NORMAL_LINK)
+        {
+            UpdateStop();
+        }
+        socketDel(sockinfo);
     }
 }
 
-
-
-/**************************************************
-@bref		查找套接字信息
-@param
-	socketid	套接字ID
-@return
-	none
-@note
-**************************************************/
 
 static void searchSocket(int socketid)
 {
@@ -494,16 +356,6 @@ static void searchSocket(int socketid)
         }
     }
 }
-
-/**************************************************
-@bref		处理套接字错误
-@param
-	socketid	套接字ID
-@return
-	none
-@note
-**************************************************/
-
 static void errorSocket(int socketid)
 {
     uint8_t i;
@@ -511,35 +363,38 @@ static void errorSocket(int socketid)
     {
         if (socketid == socketlist[i].socketId)
         {
-            socketlist[i].socketConnect = 0;
-            LogPrintf(DEBUG_ALL, "socket[%d] ERR", i);
+            if (socketlist[i].index != NORMAL_LINK)
+            {
+                customerLogPrintf("%d,CLOSED\r\n", socketlist[i].index);
+
+            }
+            if (socketlist[i].index == NORMAL_LINK)
+            {
+                UpdateStop();
+            }
+            socketDel(&socketlist[i]);
+            LogPrintf(DEBUG_ALL, "errorSocket==>%d\r\n", i);
             break;
         }
     }
 
 }
-/**************************************************
-@bref		套接字状态回调
-@param
-	socketid	套接字ID
-	event		套接字状态事件
-@return
-	none
-@note
-**************************************************/
 
 static void socketCallBack(int socketid, nwy_socket_event event)
 {
     switch (event)
     {
         case NWY_LWIP_EVENT_ACCEPT:
+            LogMessage(DEBUG_ALL, "accept\r\n");
             break;
         case NWY_LWIP_EVENT_SENT:
+            LogPrintf(DEBUG_ALL, "Socket :%d,send data\r\n", socketid);
             break;
         case NWY_LWIP_EVENT_RECV:
             searchSocket(socketid);
             break;
         case NWY_LWIP_EVENT_CONNECTED:
+            //LogMessage(DEBUG_ALL, "connect\r\n");
             break;
         case NWY_LWIP_EVENT_POLL:
             searchSocket(socketid);
@@ -550,61 +405,8 @@ static void socketCallBack(int socketid, nwy_socket_event event)
     }
 }
 
-/**************************************************
-@bref		ip转换成uint32类型
-@param
-	ip		ip信息
-@return
-	none
-@note
-**************************************************/
 
-static uint32_t netIpChange(char *ip)
-{
-    char number[5];
-    uint8_t save[4];
-    uint8_t iplen, i, j, k, val;
-    uint32_t ipchange;
-    iplen = strlen(ip);
-    j = 0;
-    k = 0;
-    for (i = 0; i < iplen; i++)
-    {
-        if (ip[i] == '.')
-        {
-            number[j] = 0;
-            j = 0;
-            val = atoi(number);
-            save[k++] = val;
-        }
-        else
-        {
-            number[j++] = ip[i];
-            if (i == (iplen - 1))
-            {
-                number[j] = 0;
-                val = atoi(number);
-                save[k++] = val;
-            }
-        }
-    }
-    ipchange = save[3] << 24;
-    ipchange |= save[2] << 16;
-    ipchange |= save[1] << 8;
-    ipchange |= save[0];
-    return ipchange;
-}
-
-/**************************************************
-@bref		创建套接字，连接服务器
-@param
-	socketinfo		socket信息
-@return
-	none
-@note
-**************************************************/
-
-static int netSocketConnectCheck(socketInfo_s *socketinfo)
+static int netSocketConnectCheck(SOCKET_INFO *socketinfo)
 {
     int result = 0;
     int  on, opt, value;
@@ -620,31 +422,31 @@ static int netSocketConnectCheck(socketInfo_s *socketinfo)
         if (domainIP == NULL || strlen(domainIP) == 0)
         {
             socketinfo->dnscount++;
-            LogPrintf(DEBUG_ALL, "%s dns fail", socketinfo->domain);
-            if (socketinfo->dnscount > 10)
+            LogPrintf(DEBUG_ALL, "%s dns fail\r\n", socketinfo->domain);
+            if (socketinfo->dnscount > 5)
             {
                 socketinfo->dnscount = 0;
-                LogMessage(DEBUG_ALL, "dns timeout");
+                LogMessage(DEBUG_ALL, "dns timeout\r\n");
                 result = -1; //dns fail
             }
             return result;
         }
         socketinfo->dnscount = 0;
-        LogPrintf(DEBUG_ALL, "DNS IP:%s", domainIP);
+        LogPrintf(DEBUG_ALL, "DNS IP:%s\r\n", domainIP);
         socketinfo->socketInfo.sin_addr.s_addr = netIpChange(domainIP);
         socketinfo->domainIP = 1;
     }
     //获取socket资源
     if (socketinfo->socketOpen == 0)
     {
-        LogMessage(DEBUG_ALL, "socket open ...");
+        LogMessage(DEBUG_ALL, "socket open...\r\n");
         socketinfo->socketId = nwy_socket_open(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (socketinfo->socketId < 0)
         {
             result = -2;
             return result;//open socket fail
         }
-        LogPrintf(DEBUG_ALL, "socket open success==>SockId:%d", socketinfo->socketId);
+        LogPrintf(DEBUG_ALL, "socket open success==>SockId:%d\r\n", socketinfo->socketId);
         socketinfo->socketInfo.sin_len = sizeof(struct sockaddr_in);
         socketinfo->socketInfo.sin_family = AF_INET;
         socketinfo->socketInfo.sin_port = htons(socketinfo->port);
@@ -654,7 +456,7 @@ static int netSocketConnectCheck(socketInfo_s *socketinfo)
         nwy_socket_setsockopt(socketinfo->socketId, IPPROTO_TCP, TCP_NODELAY, (void *)&opt, sizeof(opt));
         if (nwy_socket_set_nonblock(socketinfo->socketId) != 0)
         {
-            LogMessage(DEBUG_ALL, "socket set nonblock==>error");
+            LogMessage(DEBUG_ALL, "socket set nonblock==>error\r\n");
             result = -3;
             return result;//set socket error
         }
@@ -663,22 +465,22 @@ static int netSocketConnectCheck(socketInfo_s *socketinfo)
 
     if (socketinfo->socketConnect == 0)
     {
-        LogPrintf(DEBUG_ALL, "Connect to %s:%d", socketinfo->domain, socketinfo->port);
+        LogPrintf(DEBUG_ALL, "Connect to %s:%d\r\n", socketinfo->domain, socketinfo->port);
         nwy_socket_connect(socketinfo->socketId, &socketinfo->socketInfo, sizeof(socketinfo->socketInfo));
-        LogPrintf(DEBUG_ALL, "Connect Result:%d", nwy_socket_errno());
+        LogPrintf(DEBUG_ALL, "Connect Result:%d\r\n", nwy_socket_errno());
         //创建链接15秒超时
         if (socketinfo->socketConnectTick++ > 15)
         {
             socketinfo->socketConnectTick = 0;
-            LogMessage(DEBUG_ALL, "TCP Connect Timeout");
+            LogMessage(DEBUG_ALL, "TCP Connect Timeout\r\n");
             result = -4;
             return result;//connect tcp error
         }
         //链接创建成功
         if (EISCONN == nwy_socket_errno())
         {
-            LogMessage(DEBUG_ALL, "TCP Connect OK");
-
+            LogMessage(DEBUG_ALL, "TCP Connect OK\r\n");
+            nwy_socket_event_report_reg(socketCallBack);
             socketinfo->socketConnect = 1;
             result = 1;
             socketinfo->socketConnectTick = 0;
@@ -688,7 +490,7 @@ static int netSocketConnectCheck(socketInfo_s *socketinfo)
         //链接创建失败
         if (EINPROGRESS != nwy_socket_errno() && EALREADY != nwy_socket_errno())
         {
-            LogMessage(DEBUG_ALL, "Socket create fail");
+            LogMessage(DEBUG_ALL, "Socket create fail\r\n");
             result = -5;
             return result;
         }
@@ -700,224 +502,113 @@ static int netSocketConnectCheck(socketInfo_s *socketinfo)
     return result;
 }
 
-static void netWorkRestore(void)
+void socketcheck(void)
 {
-    networkConnectCtl(1);
-}
-
-
-/**************************************************
-@bref		检查套接字信息
-@param
-	none
-@return
-	none
-@note
-**************************************************/
-
-static void socketcheck(void)
-{
-    static uint8_t errCnt = 0;
-    static uint8_t hiddenSocketErr = 0;
-    int sockId = 0;
+    int i = 0;
     int ret;
-    for (sockId = 0; sockId < SOCKET_LIST_MAX; sockId++)
+    for (i = 0; i < SOCKET_LIST_MAX; i++)
     {
-        if (socketlist[sockId].useFlag)
+        if (socketlist[i].useFlag)
         {
-            ret = netSocketConnectCheck(&socketlist[sockId]);
+            ret = netSocketConnectCheck(&socketlist[i]);
             if (ret == 1)
             {
-                LogPrintf(DEBUG_ALL, "SockId[%d]==>%s:%d Connect Success", sockId, socketlist[sockId].domain, socketlist[sockId].port);
-                if (sockId == NORMAL_LINK || sockId == JT808_LINK)
+                if (socketlist[i].index != NORMAL_LINK)
                 {
-                    errCnt = 0;
-                }
-                else if (sockId == HIDE_LINK)
-                {
-                    hiddenSocketErr = 0;
+                    customerLogPrintf("+CIPOPEN: <%d,TCP,%s,%d>,OK\r\n", i, socketlist[i].domain, socketlist[i].port);
                 }
             }
             else if (ret < 0)
             {
-                LogPrintf(DEBUG_ALL, "SockId[%d]==>%s:%d Connect Fail,Ret:%d", sockId, socketlist[sockId].domain,
-                          socketlist[sockId].port, ret);
-                socketClose(sockId);
-                if ((sockId == NORMAL_LINK && sysparam.protocol == ZT_PROTOCOL_TYPE)\
-                        || (sockId == JT808_LINK && sysparam.protocol == JT808_PROTOCOL_TYPE))
+                if (socketlist[i].index == NORMAL_LINK)
                 {
-                    ++errCnt;
-                    if (errCnt >= 5)
-                    {
-                        LogMessage(DEBUG_ALL, "socket err too much time");
-                        portSystemReset();
-                    }
-                    else
-                    {
-                        networkConnectCtl(0);
-                        startTimer(20, netWorkRestore, 0);
-                    }
+                    UpdateStop();
                 }
-                if (sockId == HIDE_LINK)
+                else
                 {
-                    ++hiddenSocketErr;
-                    if (hiddenSocketErr >= 5)
-                    {
-                        hiddenSocketErr = 0;
-                        hiddenServCloseRequest();
-                    }
+                    customerLogPrintf("+CIPOPEN: <%d,TCP,%s,%d>,ERROR,%d\r\n", i, socketlist[i].domain, socketlist[i].port, -ret);
+                    socketDel(&socketlist[i]);
                 }
             }
         }
     }
 }
 
-/**************************************************
-@bref		发送信息
-@param
-	sockId	对应套接字id
-	data	待发送数据
-	len		待发送长度
-@return
-	1		成功
-	<0		失败
-@note
-**************************************************/
-
-int socketSendData(unsigned char sockId, unsigned char *data, unsigned int len)
+int socketSendData(unsigned char link, unsigned char *data, unsigned int len)
 {
     int sendlen;
     int ret;
-    if (sockId > SOCKET_LIST_MAX)
+    if (link > SOCKET_LIST_MAX)
     {
         return -1;
     }
-    if (socketlist[sockId].useFlag == 0)
+    if (socketlist[link].useFlag == 0)
     {
         return -2;
     }
-    if (socketlist[sockId].socketConnect == 0)
-    {
-        return -3;
-    }
 
-    sendlen = nwy_socket_send(socketlist[sockId].socketId, data, len, 0);
-    LogPrintf(DEBUG_ALL, "socket[%d]==>RequestSend:%d,SendOk:%d", sockId, len, sendlen);
+    sendlen = nwy_socket_send(socketlist[link].socketId, data, len, 0);
+    LogPrintf(DEBUG_ALL, "RequestSend:%d,SendOk:%d\r\n", len, sendlen);
     ret = 1;
     if (sendlen < 0)
     {
-        socketDel(&socketlist[sockId]);
-        ret = -4;
+        socketDel(&socketlist[link]);
+        ret = -3;
     }
     return ret;
 }
-
-
-/**************************************************
-@bref		恢复网络
-@param
-@note
-**************************************************/
-
-static void radioRestore(void)
-{
-    portSetRadio(1);
-}
-
-
-/**************************************************
-@bref		负责网络连接
-@param
-	none
-@return
-	none
-@note
-**************************************************/
-
-void networkConnectTask(void)
+void networkConnect(void)
 {
     uint8_t csq;
     if (networkInfo.networkonoff == 0)
     {
         return ;
     }
-
-    if (sysIsInRun() == 0)
-    {
-        networkConnectCtl(0);
-        return;
-    }
-
-
     switch (networkInfo.netFsm)
     {
         case CHECK_SIM:
             if (nwy_sim_get_card_status() == NWY_SIM_STATUS_READY)
             {
-                LogMessage(DEBUG_ALL, "Sim OK");
+                LogMessage(DEBUG_ALL, "Sim OK\r\n");
                 changeNetFsm(CHECK_SIGNAL);
             }
             else
             {
-                LogMessage(DEBUG_ALL, "no sim card");
-                if (networkInfo.netTick >= 60)
-                {
-                    portSystemReset();
-                }
+                LogMessage(DEBUG_ALL, "no sim card\r\n");
                 break;
             }
         case CHECK_SIGNAL:
             nwy_nw_get_signal_csq(&csq);
-            if (csq >= 8 && csq <= 31)
+            if (csq >= 5 && csq <= 31)
             {
-                networkInfo.csqSearchTime = 120;
-                LogMessage(DEBUG_ALL, "Signal OK");
+                LogMessage(DEBUG_ALL, "Signal OK\r\n");
                 changeNetFsm(CHECK_REGISTER);
             }
             else
             {
-                LogPrintf(DEBUG_ALL, "Signal fail :%d", csq);
-                if (networkInfo.netTick >= networkInfo.csqSearchTime)
-                {
-                    networkInfo.csqSearchTime += 120;
-                    networkInfo.csqSearchTime = networkInfo.csqSearchTime > 3600 ? 3600 : networkInfo.csqSearchTime;
-                    portSetRadio(0);
-                    changeNetFsm(CHECK_SIM);
-                    startTimer(50, radioRestore, 0);
-                }
+                LogPrintf(DEBUG_ALL, "Signal fail :%d\r\n", csq);
                 break;
             }
         case CHECK_REGISTER:
             if (netCheckRegister())
             {
-                networkInfo.netRegCnt = 0;
-                LogMessage(DEBUG_ALL, "Register OK");
+                LogMessage(DEBUG_ALL, "Register OK\r\n");
                 changeNetFsm(CHECK_DATACALL);
             }
             else
             {
-                LogMessage(DEBUG_ALL, "Register fail");
-                if (networkInfo.netTick >= 90)
-                {
-                    LogMessage(DEBUG_ALL, "Register timeout");
-                    changeNetFsm(CHECK_SIM);
-                    if (++networkInfo.netRegCnt >= 4)
-                    {
-                        portSystemReset();
-                    }
-                }
+                LogMessage(DEBUG_ALL, "Register fail\r\n");
+                break;
             }
-            break;
         case CHECK_DATACALL:
             if (netCheckDataCall())
             {
-                LogMessage(DEBUG_ALL, "DataCall success");
-                nwy_socket_event_report_reg(socketCallBack);
+                LogMessage(DEBUG_ALL, "Data call ok\r\n");
                 changeNetFsm(CHECK_SOCKET);
             }
             else
             {
-                LogMessage(DEBUG_ALL, "DataCall waitting...");
+                LogMessage(DEBUG_ALL, "Data call not ready\r\n");
                 break;
             }
 
@@ -928,55 +619,26 @@ void networkConnectTask(void)
     networkInfo.netTick++;
 }
 
-/**************************************************
-@bref		查询网络状况是否正常
-@param
-	none
-@return
-	none
-@note
-**************************************************/
-
-uint8_t isNetworkNormal(void)
+void firmWareRecv(SOCKET_INFO *socketinfo, char *rxbuf, uint16_t len)
 {
-    if (networkInfo.networkonoff == 0)
-        return 0;
-    if (networkInfo.netFsm == CHECK_SOCKET)
-        return 1;
-    return 0;
+    protocolReceivePush(NORMAL_LINK, rxbuf, len);
 }
 
-/**************************************************
-@bref		查找对应socket是否被使用
-@param
-	none
-@return
-	none
-@note
-**************************************************/
-
-uint8_t socketGetUsedFlag(uint8_t sockeId)
+void updateFirmware(void)
 {
-    if (sockeId >= SOCKET_LIST_MAX)
-        return 0;
-
-    return socketlist[sockeId].useFlag;
+    if (sysinfo.updateStatus == 0)
+        return;
+    if (socketlist[NORMAL_LINK].useFlag == 0)
+    {
+        socketAdd(NORMAL_LINK, (char *)sysparam.updateServer, sysparam.updateServerPort, firmWareRecv);
+        return ;
+    }
+    if (socketlist[NORMAL_LINK].socketConnect)
+    {
+        UpdateProtocolRunFsm();
+    }
+    else
+    {
+        LogPrintf(DEBUG_ALL, "wait for update link normal\r\n");
+    }
 }
-
-/**************************************************
-@bref		查询socket连接状态
-@param
-	none
-@return
-	none
-@note
-**************************************************/
-
-uint8_t socketGetConnectStatus(uint8_t sockeId)
-{
-    if (sockeId >= SOCKET_LIST_MAX)
-        return 0;
-
-    return socketlist[sockeId].socketConnect;
-}
-

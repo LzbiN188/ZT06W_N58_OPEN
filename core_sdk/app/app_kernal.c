@@ -1,24 +1,24 @@
 #include "app_kernal.h"
-#include "stdlib.h"
-#include "stdio.h"
+
+
 
 static uint8_t timer_list[TIMER_MAX];
-static appTimer *timer_head = NULL;
-static uint32_t systick = 0;
+static appTimer *timer_head=NULL;
+static uint32_t systick=0;
 
 //此函数务必被调用，内核系统的时基
-void kernalTickInc(void)
+void systemTickInc(void)
 {
     systick++;
 }
-uint32_t kernalGetTick(void)
+uint32_t getSystemTick(void)
 {
     return systick;
 }
 
-void kernalTimerInit(void)
+void appTimerInit(void)
 {
-    memset(timer_list, 0, TIMER_MAX);
+	memset(timer_list,0,TIMER_MAX);
 }
 
 /************************Kernal**********************************/
@@ -32,9 +32,9 @@ static uint8_t Create_Timer(uint32_t time, uint8_t timer_id, void (*fun)(void), 
         {
             return 0;
         }
-        memset(timer_head, 0, sizeof(appTimer));
+		memset(timer_head,0,sizeof(appTimer));
         timer_head->timer_id = timer_id;
-        timer_head->start_tick = kernalGetTick();
+        timer_head->start_tick = getSystemTick();
         timer_head->stop_tick = timer_head->start_tick + time;
         timer_head->repeat = repeat;
         timer_head->repeattime = time;
@@ -51,12 +51,12 @@ static uint8_t Create_Timer(uint32_t time, uint8_t timer_id, void (*fun)(void), 
             if (next->next == NULL)
             {
                 return 0;
-            }
-            memset(next->next, 0, sizeof(appTimer));
+            }			
+			memset(next->next,0,sizeof(appTimer));
             next = next->next;
             next->fun = fun;
             next->next = NULL;
-            next->start_tick = kernalGetTick();
+            next->start_tick = getSystemTick();
             next->stop_tick = next->start_tick + time;
             next->repeat = repeat;
             next->repeattime = time;
@@ -73,17 +73,6 @@ static uint8_t Create_Timer(uint32_t time, uint8_t timer_id, void (*fun)(void), 
     return 1;
 }
 
-/**************************************************
-@bref		创建定时器
-@param
-	time	轮询实际
-	fun		回调函数
-	repeat	是否重复
-@return
-
-@note
-**************************************************/
-
 int8_t startTimer(uint32_t time, void (*fun)(void), uint8_t repeat)
 {
     int i = 0;
@@ -94,7 +83,7 @@ int8_t startTimer(uint32_t time, void (*fun)(void), uint8_t repeat)
             if (Create_Timer(time, i, fun, repeat) == 1)
             {
                 timer_list[i] = 1;
-                LogPrintf(DEBUG_ALL, "startTimer==>%d success", i);
+				LogPrintf(DEBUG_ALL,"startTimer==>%d success\r\n",i);
                 return i;
             }
             else
@@ -103,18 +92,10 @@ int8_t startTimer(uint32_t time, void (*fun)(void), uint8_t repeat)
             }
         }
     }
-    LogPrintf(DEBUG_ALL, "startTimer==>start Error!(%d)", i);
+    LogPrintf(DEBUG_ALL, "startTimer==>start Error!(%d)\n", i);
     return -1;
 
 }
-/**************************************************
-@bref		停止定时器，不能在定时器回调函数中调用此函数
-@param
-	timer_id	定时器id
-@return
-
-@note
-**************************************************/
 
 void stopTimer(uint8_t timer_id)
 {
@@ -125,7 +106,7 @@ void stopTimer(uint8_t timer_id)
     {
         if (next->timer_id == timer_id)
         {
-            LogPrintf(DEBUG_ALL, "stop cycle task %d", next->timer_id);
+            LogPrintf(DEBUG_ALL, "stop cycle task %d\n", next->timer_id);
             if (next == timer_head)
             {
                 next = next->next;
@@ -145,43 +126,6 @@ void stopTimer(uint8_t timer_id)
     }
 }
 
-/**************************************************
-@bref		取消定时器
-@param
-	timer_id	定时器id
-@return
-
-@note
-**************************************************/
-
-void cancelTimer(uint8_t timer_id)
-{
-    appTimer *next;
-    next = timer_head;
-    while (next != NULL)
-    {
-        if (next->timer_id == timer_id)
-        {
-            LogPrintf(DEBUG_ALL, "cancelTimer %d", next->timer_id);
-            next->funStop=1;
-			next->suspend=0;
-			next->repeat=0;
-			next->stop_tick=0;
-            break;
-        }
-        next = next->next;
-    }
-}
-
-/**************************************************
-@bref		定时器停止重复，并执行最后一次
-@param
-	timer_id
-@return
-
-@note
-**************************************************/
-
 void stopTimerRepeat(uint8_t timer_id)
 {
     appTimer *next;
@@ -195,14 +139,6 @@ void stopTimerRepeat(uint8_t timer_id)
         next = next->next;
     }
 }
-/**************************************************
-@bref		定时器核心执行程序
-@param
-@return
-
-@note
-**************************************************/
-
 void kernalRun(void)
 {
     appTimer *next, *pre, *cur;
@@ -211,18 +147,15 @@ void kernalRun(void)
     pre = next;
     while (next != NULL)
     {
-        if (next->suspend == 0 && next->stop_tick <= kernalGetTick())
+        if (next->suspend == 0 && next->stop_tick <= getSystemTick())
         {
-            if (next->funStop == 0)
-            {
-                next->fun();
-            }
+            next->fun();
             if (next->repeat == 0)
             {
                 if (next == timer_head)
                 {
                     timer_list[next->timer_id] = 0;
-                    sprintf(debug, "destroy task %d", next->timer_id);
+                    sprintf(debug, "destroy task %d\n", next->timer_id);
                     LogMessage(DEBUG_ALL, debug);
                     next = next->next;
                     free(timer_head);
@@ -231,7 +164,7 @@ void kernalRun(void)
                 }
                 cur = next;
                 timer_list[cur->timer_id] = 0;
-                sprintf(debug, "destroy task %d", cur->timer_id);
+                sprintf(debug, "destroy task %d\n", cur->timer_id);
                 LogMessage(DEBUG_ALL, debug);
                 pre->next = cur->next;
                 next = pre;
@@ -239,13 +172,13 @@ void kernalRun(void)
             }
             else
             {
-                next->stop_tick = kernalGetTick() + next->repeattime;
+                next->stop_tick = getSystemTick() + next->repeattime;
             }
         }
         pre = next;
         next = next->next;
     }
-    kernalTickInc();
+	systemTickInc();
 }
 
 //挂起任务
@@ -259,7 +192,7 @@ void systemTaskSuspend(uint8_t taskid)
         if (next->timer_id == taskid)
         {
             next->suspend = 1;
-            sprintf(debug, "systemTaskSuspend:%d", taskid);
+            sprintf(debug, "systemTaskSuspend:%d\n", taskid);
             LogMessage(DEBUG_ALL, debug);
             return ;
         }
@@ -285,7 +218,7 @@ void systemTaskResume(uint8_t taskid)
         next = next->next;
     }
 }
-//创建任务
+
 int8_t createSystemTask(void(*fun)(void), uint32_t cycletime)
 {
     return startTimer(cycletime, fun, 1);

@@ -1,99 +1,99 @@
 #ifndef APP_PARAM
 #define APP_PARAM
-
 #include "nwy_osi_api.h"
 
-#define PARAM_VER		0x1F
+#define EEPROM_VER				0X2B
+#define EEPROM_VERSION			"WT07_V4.1.0"
 
-#define EEPROM_VERSION	"N58_CA_V4.2.12"
+#define CUPDATE_FLAT			0xAB
 
-#define JT808_PROTOCOL_TYPE			8
-#define ZT_PROTOCOL_TYPE			0
-
+/*EPROM中的数据*/
 typedef struct
 {
-    char paramVersion;
-    char apn[50];
-    char apnuser[50];
-    char apnpassword[50];
-    char SN[20];
-    char Server[50];
-    char updateServer[50];
-    char agpsServer[50];
-    char agpsUser[50];
-    char agpsPswd[50];
-    char sosnumber1[20];
-    char sosnumber2[20];
-    char sosnumber3[20];
-    char jt808Server[50];
-    char hiddenServer[50];
-    signed char utc;
-
-    uint8_t MODE;
-    uint8_t lightAlarm;
-    uint8_t gapDay;
+    uint8_t VERSION;   /*当前软件版本号*/
+    uint8_t MODE;      /*系统工作模式*/
+    uint8_t lightAlarm;/*光感触发功能是否开启*/
+    uint8_t gapDay;    /*模式一间隔天数*/
+    uint8_t heartbeatgap;
     uint8_t ledctrl;
     uint8_t poitype;
     uint8_t accctlgnss;
+    uint8_t apn[50];
+    uint8_t apnuser[50];
+    uint8_t apnpassword[50];
+    uint8_t lowvoltage;
     uint8_t bf;
-    uint8_t cm;
-    uint8_t protocol;
-    uint8_t vol;
-    uint8_t accdetmode;
+    uint8_t fence;
+    uint8_t SN[20];
+    uint8_t Server[50];
     uint8_t bleen;
-    uint8_t relayCtl;
-    uint8_t hiddenServOnoff;
+    uint8_t cm;
+    uint8_t updateServer[50];
+    uint8_t agpsServer[50];
+    uint8_t sosnumber1[20];
+    uint8_t sosnumber2[20];
+    uint8_t sosnumber3[20];
 
+    int8_t utc;
+
+    uint16_t updateServerPort;
+    uint16_t agpsPort;
+    uint16_t gpsuploadgap;
+    uint16_t  AlarmTime[5];  /*每日时间，0XFFFF，表示未定义，单位分钟*/
+    uint16_t  gapMinutes;    /*模式三间隔周期，单位分钟*/
+    uint16_t  pdop;
+    uint16_t  mode1startuptime;
+	
+    uint32_t  mode2worktime;  /*模式二的工作时间，单位分钟*/
+    uint32_t ServerPort;
+
+    double latitude;
+    double longtitude;
+    float  adccal;
+    float protectVoltage;
+
+	uint8_t protocol;	
     uint8_t jt808isRegister;
-    uint8_t jt808sn[7];
+    uint8_t jt808sn[6];
+    uint8_t jt808manufacturerID[5];
+    uint8_t jt808terminalType[20];
+    uint8_t jt808terminalID[7];
     uint8_t jt808AuthCode[50];
     uint8_t jt808AuthLen;
 
+	uint8_t overspeed;
+	uint8_t rettsPlaytime;
+	uint8_t vol;
 
-    uint8_t bleConnMac[5][20];
-    uint8_t bleAutoDisc;
-    uint8_t bleRfThreshold;
-	uint8_t blePreShieldVoltage;
-	uint8_t blePreShieldDetCnt;
-	uint8_t blePreShieldHoldTime;
+	uint8_t alarmMusicIndex;
+	uint8_t accdetmode;
+	
+	uint8_t volTable1;
+	uint8_t volTable2;
+	uint8_t volTable3;
+	uint8_t volTable4;
+	uint8_t volTable5;
+	uint8_t volTable6;
+
+	uint32_t mileage;
+	uint8_t overspeedTime;
+	uint8_t blename[30];
+
+    uint8_t agpsUser[50];
+    uint8_t agpsPswd[50];
+
+	uint8_t cUpdate;
+
+} SYSTEM_FLASH_DEFINE;
+
+extern SYSTEM_FLASH_DEFINE sysparam;
 
 
-    uint16_t heartbeatgap;
-    uint16_t gpsuploadgap;
-    uint16_t fence;
-    uint16_t updateServerPort;
-    uint16_t AlarmTime[5];
-    uint16_t gapMinutes;
-    uint16_t startUpCnt;
-    uint16_t ServerPort;
-    uint16_t agpsPort;
-    uint16_t jt808Port;
-    uint16_t hiddenPort;
-    uint16_t bleOutThreshold;
-	uint16_t alarmRequest;
-
-    uint32_t runTime;
-
-    float adccal;
-    float pdop;
-    float lowvoltage;
-    float accOnVoltage;
-    float accOffVoltage;
-
-    //add new
-    uint8_t relayFun;
-	uint8_t relaySpeed;
-
-	char bleServer[50];
-	uint16_t bleServerPort;
-} systemParam_s;
-
-extern systemParam_s sysparam;
-
+void paramInit(void);
+void paramDefaultInit(uint8_t level);
 
 void paramSaveAll(void);
 void paramGetAll(void);
-void paramSetDefault(uint8_t lev);
-void paramInit(void);
+
 
 #endif

@@ -1,707 +1,629 @@
 #include "app_task.h"
 #include "app_port.h"
 #include "app_sys.h"
-#include "app_atcmd.h"
-#include "app_socket.h"
-#include "app_kernal.h"
-#include "app_protocol.h"
-#include "app_param.h"
-#include "app_net.h"
 #include "app_gps.h"
-#include "app_mir3da.h"
+#include "app_atcmd.h"
+#include "app_net.h"
+#include "app_param.h"
+#include "app_protocol.h"
+#include "nwy_vir_at.h"
+#include "nwy_sim.h"
+#include "nwy_voice.h"
+#include "nwy_wifi.h"
 #include "app_instructioncmd.h"
+#include "nwy_sms.h"
+#include "app_port.h"
+#include "nwy_pm.h"
+#include "nwy_ble.h"
+#include "app_mir3da.h"
+#include "app_protocol.h"
 #include "app_ble.h"
-#include "app_jt808.h"
+#include "app_protocol_808.h"
+#include "nwy_loc.h"
+#include "app_gps.h"
+#include "nwy_audio_api.h"
+#include "app_customercmd.h"
+#include "nwy_usb_serial.h"
+#include "app_socket.h"
+#include "app_mcu.h"
+#include "app_kernal.h"
 
-
-extern nwy_osiThread_t *myAppEventThread;
-static sysLedCtrl_s sysLedCtrl;
-static motionInfo_s motionInfo;
-
-systemInfo_s sysinfo;
-/**************************************************
-@bref		系统灯1控制
-@param
-@note
-**************************************************/
-
-static void sysLed1CtrlTask(void)
+/*-------------------------------------------------------------------------------------*/
+//显示时间
+void showSystemTimeTask(void)
+{
+    uint16_t year = 0;
+    uint8_t  month = 0, date = 0, hour = 0, minute = 0, second = 0;
+    if (sysinfo.taskSuspend)
+        return;
+    getRtcDateTime(&year, &month, &date, &hour, &minute, &second);
+    LogPrintf(DEBUG_ALL, "<%d-%d-%2d %02d:%02d:%02d>\r\n", year, month, date, hour, minute, second);
+}
+/*-------------------------------------------------------------------------------------*/
+/*LED 控制相关功能*/
+static SystemLEDInfo sysledinfo;
+static void gpsLedTask(void)
 {
     static uint8_t tick = 0;
-
-    if (sysLedCtrl.sysLed1OnTime == 0)
+    if (sysinfo.System_Tick >= 300)
     {
-        LED1_OFF;
+        if (sysparam.ledctrl == 0 || sysinfo.GPSRequest == 0)
+        {
+            GPSLEDOFF;
+            return ;
+        }
+    }
+    if (sysledinfo.sys_gps_led_on_time == 0)
+    {
+        GPSLEDOFF;
         return ;
     }
-    else if (sysLedCtrl.sysLed1OffTime == 0)
+    else if (sysledinfo.sys_gps_led_off_time == 0)
     {
-        LED1_ON;
+        GPSLEDON;
         return ;
     }
     tick++;
-    if (sysLedCtrl.sysLed1Onoff == 1)
+    //on status
+    if (sysledinfo.sys_gps_led_onoff == 1)
     {
-        LED1_ON;
-        if (tick >= sysLedCtrl.sysLed1OnTime)
+        GPSLEDON;
+        if (tick >= sysledinfo.sys_gps_led_on_time)
         {
             tick = 0;
-            sysLedCtrl.sysLed1Onoff = 0;
+            sysledinfo.sys_gps_led_onoff = 0;
         }
     }
+    //off status
     else
     {
-        LED1_OFF;
-        if (tick >= sysLedCtrl.sysLed1OffTime)
+        GPSLEDOFF;
+        if (tick >= sysledinfo.sys_gps_led_off_time)
         {
             tick = 0;
-            sysLedCtrl.sysLed1Onoff = 1;
+            sysledinfo.sys_gps_led_onoff = 1;
         }
     }
 }
 
-/**************************************************
-@bref		系统灯2控制
-@param
-@note
-**************************************************/
-
-static void sysLed2CtrlTask(void)
+static void signalLedTask(void)
 {
     static uint8_t tick = 0;
-
-    if (sysLedCtrl.sysLed2OnTime == 0)
+    if (sysinfo.System_Tick >= 300)
     {
-        LED2_OFF;
+        if (sysparam.ledctrl == 0 || sysinfo.GPSRequest == 0)
+        {
+            SIGNALLEDOFF;
+            return ;
+        }
+    }
+    //如果开时长为0,那么LED 常灭
+    if (sysledinfo.sys_led_on_time == 0)
+    {
+        SIGNALLEDOFF;
         return ;
     }
-    else if (sysLedCtrl.sysLed2OffTime == 0)
+    //如果关时长为0,那么LED 常亮
+    else if (sysledinfo.sys_led_off_time == 0)
     {
-        LED2_ON;
+        SIGNALLEDON;
         return ;
     }
     tick++;
-    if (sysLedCtrl.sysLed2Onoff == 1)
+    if (sysledinfo.sys_led_onoff == 1) //on status
     {
-        LED2_ON;
-        if (tick >= sysLedCtrl.sysLed2OnTime)
+        SIGNALLEDON;
+        if (tick >= sysledinfo.sys_led_on_time)
         {
             tick = 0;
-            sysLedCtrl.sysLed2Onoff = 0;
+            sysledinfo.sys_led_onoff = 0;
         }
     }
-    else
+    else//off status
     {
-        LED2_OFF;
-        if (tick >= sysLedCtrl.sysLed2OffTime)
+        SIGNALLEDOFF;
+        if (tick >= sysledinfo.sys_led_off_time)
         {
             tick = 0;
-            sysLedCtrl.sysLed2Onoff = 1;
+            sysledinfo.sys_led_onoff = 1;
         }
     }
 }
-
-/**************************************************
-@bref		设置灯闪烁实际
-@param
-	type	SYS_LED1_CTRL
-			SYS_LED2_CTRL
-	ontime	亮时长
-	offtime 灭时长
-@note
-**************************************************/
-
-static void ledSetPeriod(uint8_t type, uint8_t ontime, uint8_t offtime)
+static void serverLedTask(void)
 {
-    switch (type)
-    {
-        case SYS_LED1_CTRL:
-            sysLedCtrl.sysLed1OnTime = ontime;
-            sysLedCtrl.sysLed1OffTime = offtime;
-            break;
-        case SYS_LED2_CTRL:
-            sysLedCtrl.sysLed2OnTime = ontime;
-            sysLedCtrl.sysLed2OffTime = offtime;
-            break;
-    }
-}
-/**************************************************
-@bref		更新系统灯状态
-@param
-	status	系统状态
-	onoff
-@note
-**************************************************/
 
-void ledStatusUpdate(uint8_t status, uint8_t onoff)
-{
-    if (onoff)
-    {
-        sysLedCtrl.sysStatus |= status;
-    }
-    else
-    {
-        sysLedCtrl.sysStatus &= ~status;
-    }
+    static uint8_t tick = 0;
 
-    if ((sysLedCtrl.sysStatus & SYSTEM_LED_RUN) != 0)
+    if (sysinfo.System_Tick >= 300)
     {
-        ledSetPeriod(SYS_LED1_CTRL, 10, 10);
-        ledSetPeriod(SYS_LED2_CTRL, 10, 10);
-        if ((sysLedCtrl.sysStatus & SYSTEM_LED_LOGIN) != 0)
+        if (sysparam.ledctrl == 0 || sysinfo.GPSRequest == 0)
         {
-            ledSetPeriod(SYS_LED1_CTRL, 1, 0);
-        }
-        if ((sysLedCtrl.sysStatus & SYSTEM_LED_GPS) != 0)
-        {
-            ledSetPeriod(SYS_LED2_CTRL, 1, 0);
+            SERVERLEDOFF;
+            return ;
         }
     }
-    else
+    if (sysledinfo.sys_server_led_on_time == 0)
     {
-        ledSetPeriod(SYS_LED1_CTRL, 0, 10);
-        ledSetPeriod(SYS_LED2_CTRL, 0, 10);
-    }
-
-}
-
-/**************************************************
-@bref		系统灯任务
-@param
-@note
-**************************************************/
-
-static void sysLedRunTask(void)
-{
-
-    if (sysinfo.sysTick >= 300)
-    {
-        if (sysparam.ledctrl == 0 || (sysparam.ledctrl == 1 && sysinfo.gpsRequest == 0))
-        {
-            LED1_OFF;
-            LED2_OFF;
-            return;
-        }
-    }
-
-    sysLed1CtrlTask();
-    sysLed2CtrlTask();
-}
-
-
-/**************************************************
-@bref		更新运动或静止状态
-@param
-	src 		检测来源
-	newState	新状态
-@note
-**************************************************/
-
-void motionStateUpdate(motion_src_e src, motionState_e newState)
-{
-    char type[20];
-
-
-    if (motionInfo.motionState == newState)
-    {
-        return;
-    }
-    motionInfo.motionState = newState;
-    switch (src)
-    {
-        case ACC_SRC:
-            strcpy(type, "acc");
-            break;
-        case VOLTAGE_SRC:
-            strcpy(type, "voltage");
-            break;
-        case GSENSOR_SRC:
-            strcpy(type, "gsensor");
-            break;
-        default:
-            return;
-            break;
-    }
-    LogPrintf(DEBUG_ALL, "Device %s , detected by %s", newState == MOTION_MOVING ? "moving" : "static", type);
-
-    if (newState)
-    {
-        netResetCsqSearch();
-        if (sysparam.gpsuploadgap != 0)
-        {
-            gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-            if (sysparam.gpsuploadgap < GPS_UPLOAD_GAP_MAX)
-            {
-                gpsRequestSet(GPS_REQ_ACC);
-            }
-        }
-        terminalAccon();
-        hiddenServCloseClear();
-        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
-        jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
-        //jt808BatchPushIn(getCurrentGPSInfo());
-    }
-    else
-    {
-        if (sysparam.gpsuploadgap != 0)
-        {
-            gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-            gpsRequestClear(GPS_REQ_ACC);
-        }
-        terminalAccoff();
-        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
-        jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
-        //jt808BatchPushIn(getCurrentGPSInfo());
-    }
-}
-
-
-/**************************************************
-@bref		震动中断
-@param
-@note
-**************************************************/
-
-void motionOccur(void)
-{
-    motionInfo.tapInterrupt++;
-}
-/**************************************************
-@bref		统计每一秒的中断次数
-@param
-@note
-**************************************************/
-
-static void motionCalculate(void)
-{
-    motionInfo.ind = (motionInfo.ind + 1) % sizeof(motionInfo.tapCnt);
-    motionInfo.tapCnt[motionInfo.ind] = motionInfo.tapInterrupt;
-    motionInfo.tapInterrupt = 0;
-}
-/**************************************************
-@bref		获取这最近n秒的震动次数
-@param
-@note
-**************************************************/
-
-static uint16_t motionGetTotalCnt(void)
-{
-    uint16_t cnt;
-    uint8_t i;
-    cnt = 0;
-    for (i = 0; i < sizeof(motionInfo.tapCnt); i++)
-    {
-        cnt += motionInfo.tapCnt[i];
-    }
-    return cnt;
-}
-
-/**************************************************
-@bref		获取运动状态
-@param
-@note
-**************************************************/
-
-motionState_e motionGetStatus(void)
-{
-    return motionInfo.motionState;
-}
-
-
-/**************************************************
-@bref		运动和静止的判断
-@param
-@note
-**************************************************/
-
-static void motionCheckTask(void)
-{
-    static uint16_t gsStaticTick = 0;
-    static uint16_t autoTick = 0;
-    static uint8_t  accOnTick = 0;
-    static uint8_t  accOffTick = 0;
-
-    static uint8_t  volOnTick = 0;
-    static uint8_t  volOffTick = 0;
-    uint16_t totalCnt;
-
-    motionCalculate();
-
-    if (sysparam.MODE == MODE1 || sysparam.MODE == MODE3)
-    {
-        terminalAccoff();
-        if (gpsRequestGet(GPS_REQ_ACC))
-        {
-            gpsRequestClear(GPS_REQ_ACC);
-        }
-        gsStaticTick = 0;
+        SERVERLEDOFF;
         return ;
     }
-
-
-    if (getTerminalAccState() && sysparam.gpsuploadgap >= GPS_UPLOAD_GAP_MAX)
+    else if (sysledinfo.sys_server_led_off_time == 0)
     {
-        if (++autoTick >= sysparam.gpsuploadgap)
-        {
-            autoTick = 0;
-            gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-        }
-    }
-    else
-    {
-        autoTick = 0;
-    }
-
-
-
-
-
-
-    totalCnt = motionGetTotalCnt();
-    if (ACC_READ == ACC_STATE_ON)
-    {
-        //线永远是第一优先级
-        if (++accOnTick >= 10)
-        {
-            accOnTick = 0;
-            motionStateUpdate(ACC_SRC, MOTION_MOVING);
-        }
-        accOffTick = 0;
-        return;
-    }
-    accOnTick = 0;
-    if (sysparam.accdetmode == ACCDETMODE0)
-    {
-        //仅由acc线控制
-        if (++accOffTick >= 10)
-        {
-            accOffTick = 0;
-            motionStateUpdate(ACC_SRC, MOTION_STATIC);
-        }
-        return;
-    }
-
-    if (sysparam.accdetmode == ACCDETMODE1)
-    {
-        //由acc线+电压控制
-        if (sysinfo.outsideVol >= sysparam.accOnVoltage)
-        {
-            if (++volOnTick >= 15)
-            {
-                volOnTick = 0;
-                motionStateUpdate(VOLTAGE_SRC, MOTION_MOVING);
-            }
-        }
-        else
-        {
-            volOnTick = 0;
-        }
-
-        if (sysinfo.outsideVol < sysparam.accOffVoltage)
-        {
-            if (++volOffTick >= 15)
-            {
-                volOffTick = 0;
-                motionStateUpdate(MOTION_MOVING, MOTION_STATIC);
-            }
-        }
-        else
-        {
-            volOffTick = 0;
-        }
-        return;
-    }
-    //剩下的，由acc线+gsensor控制
-
-
-    if (totalCnt >= 7)
-    {
-        motionStateUpdate(GSENSOR_SRC, MOTION_MOVING);
-    }
-    if (totalCnt == 0)
-    {
-        gsStaticTick++;
-        if (gsStaticTick >= 90)
-        {
-            motionStateUpdate(GSENSOR_SRC, MOTION_STATIC);
-        }
-    }
-    else
-    {
-        gsStaticTick = 0;
-    }
-}
-
-/**************************************************
-@bref		重启开启gsensor
-@param
-@note
-**************************************************/
-
-static void gsRepair(void)
-{
-    portGsensorCfg(1);
-}
-
-/**************************************************
-@bref		gsensor检查任务
-@param
-@note
-**************************************************/
-
-static void gsCheckTask(void)
-{
-    static uint8_t tick = 0;
-    static uint8_t errorcount = 0;
-    if (sysinfo.gsensorOnoff == 0)
-    {
-        tick = 0;
-        return;
-    }
-
-    if (sysinfo.gsensorErr)
-    {
-        errorcount = 0;
-        return;
+        SERVERLEDON;
+        return ;
     }
     tick++;
-    if (tick % 60 == 0)
+    //on status
+    if (sysledinfo.sys_server_led_onoff == 1)
     {
-        tick = 0;
-        if (readInterruptConfig() != 0)
+        SERVERLEDON;
+        if (tick >= sysledinfo.sys_server_led_on_time)
         {
-            LogMessage(DEBUG_ALL, "gsensor error");
-            errorcount++;
-            portGsensorCfg(0);
-            if (errorcount >= 3)
+            tick = 0;
+            sysledinfo.sys_server_led_onoff = 0;
+        }
+    }
+    //off status
+    else
+    {
+        SERVERLEDOFF;
+        if (tick >= sysledinfo.sys_server_led_off_time)
+        {
+            tick = 0;
+            sysledinfo.sys_server_led_onoff = 1;
+        }
+    }
+}
+static void ledSetPeriod(uint8_t ledtype, uint8_t on_time, uint8_t off_time)
+{
+    if (ledtype == NETREGLED)
+    {
+        //系统信号灯
+        sysledinfo.sys_led_on_time = on_time;
+        sysledinfo.sys_led_off_time = off_time;
+    }
+    else if (ledtype == GPSLED)
+    {
+        //系统gps灯
+        sysledinfo.sys_gps_led_on_time = on_time;
+        sysledinfo.sys_gps_led_off_time = off_time;
+    }
+
+    else if (ledtype == SERVERLED)
+    {
+        //系统网络灯
+        sysledinfo.sys_server_led_on_time = on_time;
+        sysledinfo.sys_server_led_off_time = off_time;
+    }
+}
+void updateSystemLedStatus(uint8_t status, uint8_t onoff)
+{
+    if (onoff == 1)
+    {
+        sysinfo.systemledstatus |= status;
+    }
+    else
+    {
+        sysinfo.systemledstatus &= ~status;
+    }
+    if ((sysinfo.systemledstatus & SYSTEM_LED_RUN) == SYSTEM_LED_RUN)
+    {
+        //慢闪
+        ledSetPeriod(NETREGLED, 10, 10);
+        ledSetPeriod(GPSLED, 10, 10);
+        //ledSetPeriod(SERVERLED, 10, 10);
+        //已注册在网
+        if ((sysinfo.systemledstatus & SYSTEM_LED_NETREGOK) == SYSTEM_LED_NETREGOK)
+        {
+            ledSetPeriod(NETREGLED, 1, 9);
+            //已连接平台
+            if ((sysinfo.systemledstatus & SYSTEM_LED_SERVEROK) == SYSTEM_LED_SERVEROK)
             {
-                errorcount = 0;
-                sysinfo.gsensorErr = 1;
-            }
-            else
-            {
-                startTimer(20, gsRepair, 0);
+                //常亮
+                //ledSetPeriod(SERVERLED, 1, 0);
+                ledSetPeriod(NETREGLED, 1, 0);
             }
         }
-        else
+        //GPS
+        if ((sysinfo.systemledstatus & SYSTEM_LED_GPSOK) == SYSTEM_LED_GPSOK)
         {
-            errorcount = 0;
-            sysinfo.gsensorErr = 0;
+            //常亮
+            ledSetPeriod(GPSLED, 1, 0);
+
         }
+
+        if ((sysinfo.systemledstatus & SYSTEM_LED_UPDATE) == SYSTEM_LED_UPDATE)
+        {
+            //常亮
+            ledSetPeriod(GPSLED, 1, 1);
+        }
+
+    }
+    else
+    {
+        SIGNALLEDOFF;
+        GPSLEDOFF;
+        SERVERLEDOFF;
+        ledSetPeriod(NETREGLED, 0, 1);
+        ledSetPeriod(GPSLED, 0, 1);
+        ledSetPeriod(SERVERLED, 0, 1);
     }
 }
 
 
+void ledRunTask(void *param)
+{
+    gpsLedTask();
+    signalLedTask();
+    serverLedTask();
+}
+/*-------------------------------------------------------------------------------------*/
+/*报警 事件控制*/
+void alarmRequestSet(uint16_t request)
+{
+    sysinfo.alarmrequest |= request;
+}
+void alarmRequestClear(uint16_t request)
+{
+    sysinfo.alarmrequest &= ~request;
+}
+void alarmUploadRequest(void)
+{
+    uint8_t alarm;
+    if (sysinfo.alarmrequest == 0)
+    {
+        return ;
+    }
+    if (isProtocolReday() == 0)
+    {
+        return ;
+    }
+    //感光报警
+    if (sysinfo.alarmrequest & ALARM_LIGHT_REQUEST)
+    {
+        alarmRequestClear(ALARM_LIGHT_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Light Alarm\n");
+        terminalAlarmSet(TERMINAL_WARNNING_LIGHT);
+        alarm = 0;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
 
+    //低电报警
+    if (sysinfo.alarmrequest & ALARM_LOWV_REQUEST)
+    {
+        alarmRequestClear(ALARM_LOWV_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>LowVoltage Alarm\n");
+        terminalAlarmSet(TERMINAL_WARNNING_LOWV);
+        alarm = 0;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
 
-/**************************************************
-@bref		设置GPS请求
-@param
-@note
-**************************************************/
+    //断电报警
+    if (sysinfo.alarmrequest & ALARM_LOSTV_REQUEST)
+    {
+        alarmRequestClear(ALARM_LOSTV_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>lostVoltage Alarm\n");
+        terminalAlarmSet(TERMINAL_WARNNING_LOSTV);
+        alarm = 0;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
 
+    //急加速报警
+    if (sysinfo.alarmrequest & ALARM_ACCLERATE_REQUEST)
+    {
+        alarmRequestClear(ALARM_ACCLERATE_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid Accleration Alarm\n");
+        alarm = 9;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
+    //急减速报警
+    if (sysinfo.alarmrequest & ALARM_DECELERATE_REQUEST)
+    {
+        alarmRequestClear(ALARM_DECELERATE_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid Deceleration Alarm\n");
+        alarm = 10;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
+
+    //急左转报警
+    if (sysinfo.alarmrequest & ALARM_RAPIDLEFT_REQUEST)
+    {
+        alarmRequestClear(ALARM_RAPIDLEFT_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid LEFT Alarm\n");
+        alarm = 11;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
+
+    //守卫报警
+    if (sysinfo.alarmrequest & ALARM_GUARD_REQUEST)
+    {
+        alarmRequestClear(ALARM_GUARD_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Guard Alarm\n");
+        alarm = 1;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
+
+    //蓝牙报警
+    if (sysinfo.alarmrequest & ALARM_BLE_REQUEST)
+    {
+        alarmRequestClear(ALARM_BLE_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE Alarm\n");
+        alarm = 20;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, &alarm);
+    }
+}
+/*-------------------------------------------------------------------------------------*/
+/*GPS请求*/
 void gpsRequestSet(uint32_t flag)
 {
-    sysinfo.gpsRequest |= flag;
-    LogPrintf(DEBUG_ALL, "gpsRequestSet==>0x%04X", flag);
+    char debug[40];
+    sprintf(debug, "gpsRequestSet==>0x%04lX\n", flag);
+    LogMessage(DEBUG_ALL, debug);
+    sysinfo.GPSRequest |= flag;
 }
-/**************************************************
-@bref		清除GPS请求
-@param
-@note
-**************************************************/
 void gpsRequestClear(uint32_t flag)
 {
-    sysinfo.gpsRequest &= ~flag;
-    LogPrintf(DEBUG_ALL, "gpsRequestClear==>0x%04X", flag);
+    char debug[40];
+    sprintf(debug, "gpsRequestClear==>0x%04lX\n", flag);
+    LogMessage(DEBUG_ALL, debug);
+    sysinfo.GPSRequest &= ~flag;
 }
-/**************************************************
-@bref		读取GPS请求
-@param
-@note
-**************************************************/
-
 uint8_t gpsRequestGet(uint32_t flag)
 {
-    return sysinfo.gpsRequest & flag;
+    return sysinfo.GPSRequest & flag;
+}
+/*-------------------------------------------------------------------------------------*/
+
+static void gpsChangeFsmState(uint8_t state)
+{
+    sysinfo.GPSRequestFsm = state;
+}
+static void modeRequeUpdateRTC(void)
+{
+    if (sysparam.MODE == MODE1 || sysparam.MODE == MODE2 || sysparam.MODE == MODE21 || sysparam.MODE == MODE5)
+    {
+        updateRTCtimeRequest();
+    }
+    else if (sysparam.MODE == MODE23)
+    {
+        if (getTerminalAccState())
+        {
+            updateRTCtimeRequest();
+        }
+    }
 }
 
-static void openGnssGpsBd(void)
+void gpsSetPositionMode(void)
 {
-    portGpsSetPositionMode(NWY_LOC_AUX_GNSS_GPS_BD);
+    int ret;
+    ret = nwy_loc_set_position_mode(3);
+    LogPrintf(DEBUG_ALL, "gpsSetPositionMode==>ret:%d\r\n", ret);
 }
-/**************************************************
-@bref		gps开关控制任务
-@param
-@note
-**************************************************/
-static void gpsRequestTask(void)
+
+void gpsRequestOpen(void)
 {
-    static gpsState_e gpsFsm = GPS_STATE_IDLE;
-    static uint8_t runTick = 0;
-    gpsinfo_s *gpsinfo;
-    uint32_t noNmeaOutputTick;
-    switch (gpsFsm)
+    LogMessage(DEBUG_ALL, "gpsRequestTask==>open GPS\n");
+    GPSRSTHIGH;
+    GPSLNAON;
+    GPSPOWERON;
+    sysinfo.gpsUpdatetick = sysinfo.System_Tick;
+    sysinfo.GPSStatus = 1;
+    gpsChangeFsmState(GPSOPENSTATUS);
+    updateSystemLedStatus(SYSTEM_LED_GPSOK, 0);
+    nwy_loc_close_uart_nmea_data();
+    nwy_loc_start_navigation();
+    startTimer(50, gpsSetPositionMode, 0);
+}
+
+
+void gpsRequestClose(void)
+{
+    LogMessage(DEBUG_ALL, "gpsRequestTask==>close GPS\n");
+    GPSRSTLOW;
+    GPSLNAOFF;
+    GPSPOWEROFF;
+    sysinfo.GPSStatus = 0;
+    gpsChangeFsmState(GPSCLOSESTATUS);
+    updateSystemLedStatus(SYSTEM_LED_GPSOK, 0);
+    gpsClearCurrentGPSInfo();
+    nwy_loc_set_startup_mode(0);
+    nwy_loc_stop_navigation();
+
+}
+
+void gpsGetNmea(void)
+{
+    int ret, size;
+    char nmea[2048];
+    if (sysinfo.gpsOutPut == 0)
     {
-        case GPS_STATE_IDLE:
-            if (sysinfo.gpsRequest != 0)
+        return ;
+    }
+    memset(nmea, 0, 2048);
+    ret = nwy_loc_get_nmea_data(nmea);
+    if (ret)
+    {
+        size = strlen(nmea);
+        //        customerLogPrintf("+CGNSS: %d,", size);
+        //        customerLogOutWl(nmea, size);
+        nmeaParse((uint8_t *)nmea, size);
+        customerGpsOutput();
+
+    }
+}
+
+/*GPS开启控制*/
+void gpsRequestTask(void)
+{
+    static uint8_t waittick = 0;
+    int ret;
+    if (sysinfo.System_Tick < 10)
+        return;
+
+    switch (sysinfo.GPSRequestFsm)
+    {
+        case GPSCLOSESTATUS:
+            if (sysinfo.GPSRequest != 0)
             {
-                sysinfo.updateLocalTimeReq = 1;
-                sysinfo.gpsOnoff = 1;
-                sysinfo.gpsUpdateTick = sysinfo.sysTick;
-                if ((sysinfo.sysTick - sysinfo.gpsLastFixTick >= 7200) || sysinfo.gpsLastFixTick == 0)
+                modeRequeUpdateRTC();
+                if (sysparam.agpsServer[0] != 0 && sysparam.agpsPort != 0 && (sysinfo.gpsLastFixedTick == 0 ||
+                        sysinfo.System_Tick - sysinfo.gpsLastFixedTick >= 7200))
                 {
-                    runTick = 0;
-                    gpsFsm = GPS_STATE_WAIT;
+                    ret = nwy_loc_set_server((char *)sysparam.agpsServer, sysparam.agpsPort, (char *)sysparam.agpsUser,
+                                             (char *) sysparam.agpsPswd);
+                    if (ret)
+                    {
+                        LogMessage(DEBUG_ALL, "set agps server ok\r\n");
+                    }
+                    else
+                    {
+                        LogMessage(DEBUG_ALL, "set agps server fail\r\n");
+                    }
+                    nwy_loc_agps_open(1);
+                    if (ret)
+                    {
+                        LogMessage(DEBUG_ALL, "open agps ok\r\n");
+                    }
+                    else
+                    {
+                        LogMessage(DEBUG_ALL, "open agps fail\r\n");
+                    }
+                    waittick = 0;
+                    gpsChangeFsmState(GPSOPENWAITSTATUS);
                 }
                 else
                 {
-                    gpsFsm = GPS_STATE_RUN;
+                    gpsRequestOpen();
                 }
-
-                portGpsCtrl(1);
-                startTimer(80, openGnssGpsBd, 0);
-                gpsClearCurrentGPSInfo();
             }
-
             break;
-        case GPS_STATE_WAIT:
-            if (++runTick < 2)
+        case GPSOPENWAITSTATUS:
+            if (waittick++ >= 3)
             {
-                break;
+                gpsRequestOpen();
             }
-            gpsFsm = GPS_STATE_RUN;
-            agpsRequestSet();
-            LogMessage(DEBUG_ALL, "start agps");
             break;
-        case GPS_STATE_RUN:
-            portGpsGetNmea(nmeaParser);
-
-            gpsinfo = getCurrentGPSInfo();
-            if (gpsinfo->fixstatus)
+        case GPSOPENSTATUS:
+            gpsGetNmea();
+            if (sysinfo.GPSRequest == 0)
             {
-                //已定位
-                ledStatusUpdate(SYSTEM_LED_GPS, 1);
-                protocolUpdateSatelliteUsed(gpsinfo->gpsviewstart, gpsinfo->beidouviewstart);
+                gpsRequestClose();
             }
-            else
-            {
-                //未定位
-                ledStatusUpdate(SYSTEM_LED_GPS, 0);
-                protocolUpdateSatelliteUsed(gpsinfo->gpsviewstart, gpsinfo->beidouviewstart);
-            }
+            break;
+        default:
+            gpsChangeFsmState(GPSCLOSESTATUS);
+            break;
 
-            noNmeaOutputTick = sysinfo.sysTick - sysinfo.gpsUpdateTick;
-            if (sysinfo.gpsRequest == 0 || noNmeaOutputTick >= 20)
+    }
+}
+
+/*-------------------------------------------------------------------------------------*/
+
+/*gps输出异常检测*/
+static void gpsOutputCheckTask(void)
+{
+    if (sysinfo.GPSStatus == 0)
+        return;
+    if (sysinfo.System_Tick - sysinfo.gpsUpdatetick >= 20)
+    {
+        sysinfo.gpsUpdatetick = sysinfo.System_Tick;
+        LogMessage(DEBUG_ALL, "No nmea output\n");
+        gpsRequestClose();
+    }
+}
+
+/*-------------------------------------------------------------------------------------*/
+/*GPS 上送一个点*/
+void gpsUplodOnePointTask(void)
+{
+    GPSINFO *gpsinfo;
+    static uint16_t runtick = 0;
+    static uint8_t	uploadtick = 0;
+    //判断是否有请求该事件
+    if (gpsRequestGet(GPS_REQUEST_UPLOAD_ONE) == 0)
+    {
+        runtick = 0;
+        uploadtick = 0;
+        return ;
+    }
+    gpsinfo = getCurrentGPSInfo();
+    runtick++;
+    if (runtick >= sysinfo.gpsuploadonepositiontime)
+    {
+        runtick = 0;
+        uploadtick = 0;
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, getCurrentGPSInfo());
+        gpsRequestClear(GPS_REQUEST_UPLOAD_ONE);
+    }
+    else
+    {
+        if (isProtocolReday() && gpsinfo->fixstatus)
+        {
+            if (++uploadtick >= 10)
             {
-                if (noNmeaOutputTick >= 20)
+                uploadtick = 0;
+                if (sysinfo.flag123)
                 {
-                    LogMessage(DEBUG_ALL, "no nmea output , try to reboot gps");
+                    dorequestSend123();
                 }
-                portSetGpsStarupMode(HOT_START);
-                sysinfo.gpsOnoff = 0;
-                portGpsCtrl(0);
-                portSleepCtrl(1);
-                ledStatusUpdate(SYSTEM_LED_GPS, 0);
-                protocolUpdateSatelliteUsed(0, 0);
-                gpsClearCurrentGPSInfo();
-                gpsFsm = GPS_STATE_IDLE;
-                //jt808BatchPushOut();
+                sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, getCurrentGPSInfo());
+                gpsRequestClear(GPS_REQUEST_UPLOAD_ONE);
             }
-            break;
+        }
     }
 
 
 }
 
-
-
-/**************************************************
-@bref		请求基站上报
-@param
-@note
-**************************************************/
-
-void lbsRequestSet(void)
+/*-------------------------------------------------------------------------------------*/
+/*基站上报*/
+void lbsUploadRequestTask(void)
 {
-    sysinfo.lbsRequest = 1;
-}
-
-/**************************************************
-@bref		清除基站上报
-@param
-@note
-**************************************************/
-
-void lbsRequestClear(void)
-{
-    sysinfo.lbsRequest = 0;
-}
-
-/**************************************************
-@bref		基站上报任务
-@param
-@note
-**************************************************/
-
-static void lbsRequestTask(void)
-{
-    lbsInfo_s lbs;
-    if (sysinfo.lbsRequest == 0)
-        return;
-    if (serverIsReady() == 0)
-        return;
-    lbsRequestClear();
-    lbs = portGetLbsInfo();
-    protocolUpdateLbsInfo(lbs.mcc, lbs.mnc, lbs.lac, lbs.cid);
+    int lac, cid;
+    if (sysinfo.lbsrequest == 0)
+    {
+        return ;
+    }
+    if (isProtocolReday() == 0)
+    {
+        return ;
+    }
+    sysinfo.lbsrequest = 0;
+    lac = 0;
+    cid = 0;
+    nwy_sim_get_lacid(&lac, &cid);
+    sysinfo.lac = lac;
+    sysinfo.cid = cid;
+    LogPrintf(DEBUG_ALL, "LAC:0x%X,CID:0x%X\r\n", sysinfo.lac, sysinfo.cid);
     sendProtocolToServer(NORMAL_LINK, PROTOCOL_19, NULL);
 }
 
-
-/**************************************************
-@bref		wifi上送请求
-@param
-@note
-**************************************************/
-
-void wifiRequestSet(void)
-{
-    sysinfo.wifiRequest = 1;
-}
-/**************************************************
-@bref		清除wifi请求
-@param
-@note
-**************************************************/
-
-void wifiRequestClear(void)
-{
-    sysinfo.wifiRequest = 0;
-}
-
-/**************************************************
-@bref		开始wifi扫描
-@param
-@note
-**************************************************/
-
-static void wifiStartScan(void)
+/*-------------------------------------------------------------------------------------*/
+/*WIFI上报*/
+static void startWifiScan(void)
 {
     int i = 0;
-    wifiList_s wifi_info;
+    WIFI_INFO wifi_info;
     nwy_wifi_scan_list_t scan_list;
+    GPSINFO *gpsinfo;
+    gpsinfo = getCurrentGPSInfo();
 
+    if (gpsinfo->fixstatus == 1 || sysinfo.GPSStatus == 0)
+    {
+        LogMessage(DEBUG_ALL, "stop wifi scan\r\n");
+        return ;
+    }
 
     memset(&scan_list, 0, sizeof(scan_list));
-    LogMessage(DEBUG_ALL, "Start wifi scan");
+    LogMessage(DEBUG_ALL, "Start wifi scan\r\n");
     nwy_wifi_scan(&scan_list);
     for (i = 0; i < scan_list.num; i++)
     {
-        LogPrintf(DEBUG_ALL, "AP MAC:%02x:%02x:%02x:%02x:%02x:%02x,rssi %d dB",
+        LogPrintf(DEBUG_ALL, "AP MAC:%02x:%02x:%02x:%02x:%02x:%02x",
                   scan_list.ap_list[i].mac[5], scan_list.ap_list[i].mac[4], scan_list.ap_list[i].mac[3], scan_list.ap_list[i].mac[2],
-                  scan_list.ap_list[i].mac[1], scan_list.ap_list[i].mac[0], scan_list.ap_list[i].rssival);
+                  scan_list.ap_list[i].mac[1], scan_list.ap_list[i].mac[0]);
+        LogPrintf(DEBUG_ALL, ",channel = %d", scan_list.ap_list[i].channel);
+        LogPrintf(DEBUG_ALL, ",rssi = %d\r\n", scan_list.ap_list[i].rssival);
 
         wifi_info.ap[i].ssid[0] = scan_list.ap_list[i].mac[5];
         wifi_info.ap[i].ssid[1] = scan_list.ap_list[i].mac[4];
@@ -713,1078 +635,718 @@ static void wifiStartScan(void)
     wifi_info.apcount = scan_list.num;
     if (i == 0)
     {
-        LogPrintf(DEBUG_ALL, "wifiscan nothing");
+        LogPrintf(DEBUG_ALL, "Wifi scan nothing\r\n");
     }
     else
     {
-        protocolUpdateWifiList(&wifi_info);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_F3, NULL);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_F3, &wifi_info);
     }
-    bleServCloseRequestClear();
 
 }
-
-/**************************************************
-@bref		wifi上报任务
-@param
-@note
-**************************************************/
-
-static void wifiRequestTask(void)
+void wifiUploadRequestTask(void)
 {
-    if (sysinfo.wifiRequest == 0)
-        return;
-    if (serverIsReady() == 0)
-        return;
-    wifiRequestClear();
-    bleServCloseRequestSet();
-    startTimer(30, wifiStartScan, 0);
-}
-
-/**************************************************
-@bref		设置报警上送请求
-@param
-	request	报警类型
-@note
-**************************************************/
-void alarmRequestSet(uint16_t request)
-{
-    sysinfo.alarmrequest |= request;
-    LogPrintf(DEBUG_ALL, "alarmRequestSet==>0x%04X", request);
-    alarmRequestSave(sysinfo.alarmrequest);
-    gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-}
-
-/**************************************************
-@bref		请求报警
-@param
-	request	报警类型
-@note
-**************************************************/
-
-void alarmRequestClear(uint16_t request)
-{
-    sysinfo.alarmrequest &= ~request;
-    LogPrintf(DEBUG_ALL, "alarmRequestClear==>0x%04X", request);
-}
-
-/**************************************************
-@bref		保存特定报警信息值
-@param
-@note
-**************************************************/
-
-void alarmRequestSave(uint16_t request)
-{
-    sysparam.alarmRequest |= request;
-    paramSaveAll();
-}
-
-/**************************************************
-@bref		清除保存的报警值
-@param
-@note
-**************************************************/
-
-void alarmRequestClearSave(void)
-{
-    if (sysparam.alarmRequest != 0)
-    {
-        LogMessage(DEBUG_ALL, "clear saved alarm request");
-        sysparam.alarmRequest = 0;
-        paramSaveAll();
-    }
-}
-
-/**************************************************
-@bref		报警上送任务
-@param
-@note
-**************************************************/
-
-static void alarmRequestTask(void)
-{
-
-    lbsInfo_s lbs;
-    uint8_t alarm;
-    if (sysinfo.alarmrequest == 0)
-    {
+    if (sysinfo.wifirequest == 0)
         return ;
-    }
-    if (serverIsReady() == 0)
-    {
+    if (isProtocolReday() == 0)
         return ;
-    }
-
-    lbs = portGetLbsInfo();
-    protocolUpdateLbsInfo(lbs.mcc, lbs.mnc, lbs.lac, lbs.cid);
-
-    //感光报警
-    if (sysinfo.alarmrequest & ALARM_LIGHT_REQUEST)
-    {
-        alarmRequestClear(ALARM_LIGHT_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Light Alarm");
-        terminalAlarmSet(TERMINAL_WARNNING_LIGHT);
-        alarm = 0;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //低电报警
-    if (sysinfo.alarmrequest & ALARM_LOWV_REQUEST)
-    {
-        alarmRequestClear(ALARM_LOWV_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>LowVoltage Alarm");
-        terminalAlarmSet(TERMINAL_WARNNING_LOWV);
-        alarm = 0;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //断电报警
-    if (sysinfo.alarmrequest & ALARM_LOSTV_REQUEST)
-    {
-        alarmRequestClear(ALARM_LOSTV_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>lostVoltage Alarm");
-        terminalAlarmSet(TERMINAL_WARNNING_LOSTV);
-        alarm = 0;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //急加速报警
-    if (sysinfo.alarmrequest & ALARM_ACCLERATE_REQUEST)
-    {
-        alarmRequestClear(ALARM_ACCLERATE_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid Accleration Alarm");
-        alarm = 0x09;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-    //急减速报警
-    if (sysinfo.alarmrequest & ALARM_DECELERATE_REQUEST)
-    {
-        alarmRequestClear(ALARM_DECELERATE_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid Deceleration Alarm");
-        alarm = 0x0A;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //急左转报警
-    if (sysinfo.alarmrequest & ALARM_RAPIDLEFT_REQUEST)
-    {
-        alarmRequestClear(ALARM_RAPIDLEFT_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid LEFT Alarm");
-        alarm = 0x0B;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //守卫报警
-    if (sysinfo.alarmrequest & ALARM_GUARD_REQUEST)
-    {
-        alarmRequestClear(ALARM_GUARD_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Guard Alarm");
-        alarm = 0x01;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //蓝牙断连报警
-    if (sysinfo.alarmrequest & ALARM_BLE_LOST_REQUEST)
-    {
-        alarmRequestClear(ALARM_BLE_LOST_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE disconnect Alarm");
-        alarm = 0x14;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //蓝牙断连恢复报警
-    if (sysinfo.alarmrequest & ALARM_BLE_RESTORE_REQUEST)
-    {
-        alarmRequestClear(ALARM_BLE_RESTORE_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE restore Alarm");
-        alarm = 0x1A;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //油电恢复报警
-    if (sysinfo.alarmrequest & ALARM_OIL_RESTORE_REQUEST)
-    {
-        alarmRequestClear(ALARM_OIL_RESTORE_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>oil restore Alarm");
-        alarm = 0x19;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-    //信号屏蔽报警
-    if (sysinfo.alarmrequest & ALARM_SHIELD_REQUEST)
-    {
-        alarmRequestClear(ALARM_SHIELD_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE shield Alarm");
-        alarm = 0x17;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //蓝牙预警报警
-    if (sysinfo.alarmrequest & ALARM_PREWARN_REQUEST)
-    {
-        alarmRequestClear(ALARM_PREWARN_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE warnning Alarm");
-        alarm = 0x1D;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-    //蓝牙锁定报警
-    if (sysinfo.alarmrequest & ALARM_OIL_CUTDOWN_REQUEST)
-    {
-        alarmRequestClear(ALARM_OIL_CUTDOWN_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE locked Alarm");
-        alarm = 0x1E;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
+    sysinfo.wifirequest = 0;
+    startTimer(15, startWifiScan, 0);
 }
 
-/**************************************************
-@bref		录音请求
-@param
-@note
-**************************************************/
+/*-------------------------------------------------------------------------------------*/
+//运行模式控制
 
-uint8_t recordRequestSet(uint8_t recordTime)
+
+
+void resetModeStartTime(void)
 {
-    if (portIsRecordNow())
-    {
-        return 0;
-    }
-    if (isRecUploadRun())
-    {
-        return 0;
-    }
-    sysinfo.recordTime = recordTime;
-    return 1;
+    sysinfo.runStartTick = sysinfo.System_Tick;
 }
 
-/**************************************************
-@bref		录音结束
-@param
-@note
-**************************************************/
-
-void recordRequestClear(void)
+/*-------------------------------------------------------------------------------------*/
+//LED
+void ledRunTaskConfig(void)
 {
-    sysinfo.recordTime = 0;
+    static nwy_osiTimer_t  *ledRunTimer = NULL;
+    ledConfig();
+    if (ledRunTimer == NULL)
+    {
+        ledRunTimer = nwy_timer_init(myAppEventThread, ledRunTask, NULL);
+    }
+    nwy_start_timer_periodic(ledRunTimer, 100);
 }
 
-/**************************************************
-@bref		录音任务
-@param
-@note
-**************************************************/
+/*-------------------------------------------------------------------------------------*/
 
-static void recordTask(void)
+static BLE_INFO bleinfo;
+
+static void changeBleFsm(BLE_FSM fsm)
 {
-    static uint8_t openRecordFlag = 0;
+    bleinfo.bleFsm = fsm;
+}
+static void appBleRecv(void)
+{
+    char *length = NULL;
+    char *precv = NULL;
+    char recvlen[5];
+    uint8_t realen;
+    length = nwy_ble_receive_data(0);
+    precv = nwy_ble_receive_data(1);
+    if ((NULL != precv) & (NULL != length))
+    {
+        sprintf(recvlen, "%d", length);
+        realen = atoi(recvlen);
+        //nwy_ble_send_data(strlen(precv), precv);
+        LogPrintf(DEBUG_ALL, "Ble receive %d bytes done\r\n", realen);
+        //appBleRecvParser((uint8_t *)precv, realen);
+        customerLogPrintf("+BLERXGET: %d\r\n", realen);
+        pushRxData(&bleDataInfo, (uint8_t *)precv, realen);
+    }
+    else
+    {
+        LogMessage(DEBUG_ALL, "Ble Recv Null");
+    }
+    nwy_ble_receive_data(2);
+}
+static void appBleConnStatus(void)
+{
+    int conn_status = 0;
+    conn_status = nwy_ble_get_conn_status();
+    if (conn_status != 0)
+    {
+        LogPrintf(DEBUG_ALL, "Ble Connect:%d\r\n", conn_status);
+        appBleSetConnectState(1);
+        customerLogOut("+BLECON: 1\r\n");
+    }
+    else
+    {
+        LogMessage(DEBUG_ALL, "Ble Disconnect\r\n");
+        appBleSetConnectState(0);
+        customerLogOut("+BLECON: 0\r\n");
+    }
+
+    return;
+
+}
+
+static void configBleName(void)
+{
     int ret;
-    if (sysinfo.recordTime == 0)
-    {
-        if (openRecordFlag)
-        {
-            openRecordFlag = 0;
-            portRecStop();
-            portRecUpload();
-        }
-        return ;
-    }
-    if (openRecordFlag == 0)
-    {
-        ret = portRecStart();
-        if (ret == 1)
-        {
-            openRecordFlag = 1;
-        }
-        else
-        {
-            LogPrintf(DEBUG_ALL, "open recorder fail , ret=%d", ret);
-            sysinfo.recordTime = 0;
-        }
-    }
-    LogPrintf(DEBUG_ALL, "stop recording count down %ds", sysinfo.recordTime);
-    sysinfo.recordTime--;
-}
-/**************************************************
-@bref		查询系统状态是否为运行状态
-@param
-@return
-	1		是
-	0		否
-@note
-**************************************************/
-
-uint8_t sysIsInRun(void)
-{
-    if (sysinfo.runFsm == SYS_RUN)
-    {
-        return 1;
-    }
-    return 0;
+    ret = nwy_ble_set_device_name((char *)sysparam.blename);
+    LogPrintf(DEBUG_ALL, "SetBleName ret:%d\r\n", ret);
 }
 
-void sysResetStartRun(void)
+//static void bleUUidConfig(void)
+//{
+//	int ret;
+//	uint8_t uuid[2];
+//	uuid[0]=0xE5;
+//	uuid[1]=0xFF;
+//	ret=nwy_ble_set_service(uuid);
+//	LogPrintf(DEBUG_ALL,"Add uuid ret=%d\r\n",ret);
+//	uuid[0]=0xE9;
+//	uuid[1]=0xFF;
+//	ret=nwy_ble_set_character(0,uuid,1);
+//	LogPrintf(DEBUG_ALL,"Add uuid ret=%d\r\n",ret);
+//}
+
+
+void appBleRestart(void)
 {
-    sysinfo.sysStartTick = sysinfo.sysTick;
+    changeBleFsm(BLE_CLOSE);
 }
 
-/**************************************************
-@bref		系统状态切换
-@param
-	newState	见runState_e
-@note
-**************************************************/
-
-static void sysChaneState(runState_e newState)
+void appBleAddService()
 {
-    sysinfo.runFsm = newState;
+    uint8_t uuid0[16] = {0xfb, 0x34, 0x9b, 0x5f, 0x80, 0x00, 0x00, 0x80, 0x00, 0x10, 0x00, 0x00, 0x00, 0x89, 0x00, 0x00};
+
+    nwy_ble_service_info ser_info_0;
+
+    ser_info_0.ser_index = 1;
+
+
+    memcpy(ser_info_0.ser_uuid, uuid0, 16);
+
+    ser_info_0.char_num = 2;
+
+    ser_info_0.p = 1;
+
+    if (!nwy_ble_add_service(&ser_info_0))
+        LogMessage(DEBUG_ALL, "add ble service 1 error\r\n");
+    if (!nwy_ble_start_service(1))
+        LogMessage(DEBUG_ALL, "start ble service 1 error\r\n");
+
 }
 
-/**************************************************
-@bref		start状态
-@param
-@note
-**************************************************/
 
-static void sysStart(void)
+void appBleTask(void)
 {
-    LogPrintf(DEBUG_ALL, "sysStart==>MODE %d", sysparam.MODE);
-    switch (sysparam.MODE)
+    int ret;
+    switch (bleinfo.bleFsm)
     {
-        case MODE1:
-        case MODE3:
-            sysparam.startUpCnt++;
-            lbsRequestSet();
-            wifiRequestSet();
-            portGsensorCfg(0);
-            paramSaveAll();
-            break;
-        case MODE2:
-        case MODE21:
-        case MODE23:
-            if (sysparam.MODE == MODE2)
+        //查询蓝牙开启状态
+        case BLE_CHECK_STATE:
+
+            if (sysinfo.bleOnoff == 0)
+                return ;
+            ret = nwy_read_ble_status();
+            LogPrintf(DEBUG_ALL, "Ble state:%s\r\n", ret ? "Open" : "Close");
+            if (ret)
             {
-                bleServRequestOn5Minutes();
-                if (sysparam.accctlgnss == 0)
-                {
-                    gpsRequestSet(GPS_REQ_KEEPON);
-                }
-            }
-            portGsensorCfg(1);
-            break;
-        default:
-
-            break;
-    }
-    sysResetStartRun();
-    gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-    networkConnectCtl(1);
-    sysChaneState(SYS_RUN);
-    ledStatusUpdate(SYSTEM_LED_RUN, 1);
-}
-
-/**************************************************
-@bref		快速进入stop模式
-@param
-@note
-**************************************************/
-
-static void sysEnterStopQuickly(void)
-{
-    static uint8_t delaytick = 0;
-    if (sysinfo.gpsRequest == 0 && sysinfo.wifiRequest == 0 && sysinfo.lbsRequest == 0 && getTerminalAccState() == 0)
-    {
-        delaytick++;
-        if (delaytick >= 30)
-        {
-            LogMessage(DEBUG_ALL, "sysEnterStopQuickly");
-            delaytick = 0;
-            sysChaneState(SYS_STOP); //执行完毕，关机
-        }
-    }
-    else
-    {
-        delaytick = 0;
-    }
-}
-
-/**************************************************
-@bref		记录运行时长
-@param
-@note
-**************************************************/
-
-static void sysRunTimeCnt(void)
-{
-    static uint8_t runTick = 0;
-    if (++runTick >= 180)
-    {
-        runTick = 0;
-        sysparam.runTime++;
-        paramSaveAll();
-    }
-}
-
-/**************************************************
-@bref		run状态
-@param
-@note
-**************************************************/
-
-static void sysRun(void)
-{
-    switch (sysparam.MODE)
-    {
-        case MODE1:
-        case MODE3:
-            if (sysinfo.sysTick - sysinfo.sysStartTick >= 210)
-            {
-                gpsRequestClear(GPS_REQ_ALL);
-                lbsRequestClear();
-                wifiRequestClear();
-                sysChaneState(SYS_STOP);
-            }
-            sysEnterStopQuickly();
-            break;
-        case MODE2:
-            gpsUploadPointToServer();
-            sysRunTimeCnt();
-            break;
-        case MODE21:
-        case MODE23:
-            gpsUploadPointToServer();
-            sysEnterStopQuickly();
-            sysRunTimeCnt();
-            break;
-        default:
-            break;
-    }
-
-
-}
-
-/**************************************************
-@bref		stop状态
-@param
-@note
-**************************************************/
-
-static void sysStop(void)
-{
-    if (sysparam.MODE == MODE1 || sysparam.MODE == MODE3)
-    {
-        portGsensorCfg(0);
-    }
-    networkConnectCtl(0);
-    sysChaneState(SYS_WAIT);
-    ledStatusUpdate(SYSTEM_LED_RUN, 0);
-}
-
-/**************************************************
-@bref		wait状态
-@param
-@note
-**************************************************/
-
-static void sysWait(void)
-{
-    if (sysparam.MODE == MODE2 || sysinfo.gpsRequest != 0 || sysinfo.alarmrequest != 0 || sysinfo.lbsRequest != 0 ||
-            sysinfo.wifiRequest != 0 || getTerminalAccState())
-    {
-        sysChaneState(SYS_START);
-    }
-}
-
-/**************************************************
-@bref		系统自动唤醒
-@param
-@note
-**************************************************/
-
-static void sysAutoReq(void)
-{
-    uint16_t year, curMinutes, i;
-    uint8_t  month, date, hour, minute, second, ret;
-    ret = 0;
-    if (sysparam.MODE == MODE1 || sysparam.MODE == MODE21)
-    {
-        if (sysinfo.runFsm != SYS_WAIT)
-        {
-            return;
-        }
-        portGetRtcDateTime(&year, &month, &date, &hour, &minute, &second);
-        curMinutes = hour * 60 + minute;
-        for (i = 0; i < 5; i++)
-        {
-            if (sysparam.AlarmTime[i] != 0xFFFF)
-            {
-                if (sysparam.AlarmTime[i] == curMinutes)
-                {
-                    ret = 1;
-                }
-            }
-        }
-    }
-    else if (sysparam.gapMinutes != 0)
-    {
-        if (sysinfo.sysTick % (sysparam.gapMinutes * 60) == 0)
-        {
-            ret = 1;
-        }
-    }
-    if (ret)
-    {
-        LogMessage(DEBUG_ALL, "sysAutoReq");
-        gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-    }
-}
-
-
-
-/**************************************************
-@bref		系统任务
-@param
-@note
-**************************************************/
-
-
-static void sysRunTask(void)
-{
-    sysAutoReq();
-    switch (sysinfo.runFsm)
-    {
-        case SYS_START:
-            sysStart();
-            break;
-        case SYS_RUN:
-            sysRun();
-            break;
-        case SYS_STOP:
-            sysStop();
-            break;
-        case SYS_WAIT:
-            sysWait();
-            break;
-        default:
-            LogPrintf(DEBUG_ALL, "Debug:unknow:%d", sysinfo.runFsm);
-            break;
-    }
-}
-/**************************************************
-@bref		硬件喂狗任务
-@param
-@note
-**************************************************/
-static void feedWdtTask(void)
-{
-    static uint8 flag = 0;
-    sysinfo.softWdtTick = 0;
-
-    if (sysinfo.wdtTest)
-    {
-        return;
-    }
-    flag ^= 1;
-    if (flag)
-    {
-        WDT_FEED_H;
-    }
-    else
-    {
-        WDT_FEED_L;
-    }
-}
-
-
-/**************************************************
-@bref		电压检测任务
-@param
-@note
-**************************************************/
-
-static void voltageCheckTask(void)
-{
-    static uint16_t lowpowertick = 0;
-    static uint8_t  lowwflag = 0;
-    static uint32_t  LostVoltageTick = 0;
-    static uint8_t  LostVoltageFlag = 0;
-
-    sysinfo.outsideVol = portGetOutSideVolAdcVol() * sysparam.adccal;
-    sysinfo.batteryVol = portGetBatteryAdcVol();
-
-    //低电报警
-    if (sysinfo.outsideVol < sysparam.lowvoltage)
-    {
-        lowpowertick++;
-        if (lowpowertick >= 30)
-        {
-            if (lowwflag == 0)
-            {
-                lowwflag = 1;
-                LogPrintf(DEBUG_ALL, "power supply too low %.2fV", sysinfo.outsideVol);
-                //低电报警
-                jt808UpdateAlarm(JT808_LOWVOLTAE_ALARM, 1);
-                alarmRequestSet(ALARM_LOWV_REQUEST);
-                lbsRequestSet();
-                wifiRequestSet();
-                gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-            }
-
-        }
-    }
-    else
-    {
-        lowpowertick = 0;
-    }
-
-
-    if (sysinfo.outsideVol >= sysparam.lowvoltage + 0.5)
-    {
-        lowwflag = 0;
-        jt808UpdateAlarm(JT808_LOWVOLTAE_ALARM, 0);
-    }
-
-    if (sysinfo.outsideVol < 5.0)
-    {
-        if (LostVoltageFlag == 0)
-        {
-            LostVoltageFlag = 1;
-            LostVoltageTick = sysinfo.sysTick;
-            terminalunCharge();
-            jt808UpdateAlarm(JT808_LOSTVOLTAGE_ALARM, 1);
-            LogMessage(DEBUG_ALL, "Lost power supply");
-            alarmRequestSet(ALARM_LOSTV_REQUEST);
-            lbsRequestSet();
-            wifiRequestSet();
-            gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-            sysparam.relayCtl = 1;
-            paramSaveAll();
-            if (sysparam.relayFun == 0)
-            {
-                relayAutoClear();
-                RELAY_ON;
-                bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-                bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
-                LogMessage(DEBUG_ALL, "relay on immediately");
+                bleinfo.bleState = 1;
+                changeBleFsm(BLE_CONFIG);
             }
             else
             {
-                relayAutoRequest();
+                configBleName();
+                bleinfo.bleState = 0;
+                changeBleFsm(BLE_OPEN);
             }
-        }
-
-    }
-    else if (sysinfo.outsideVol > 6.0)
-    {
-        terminalCharge();
-        if (LostVoltageFlag == 1)
-        {
-            LostVoltageFlag = 0;
-            jt808UpdateAlarm(JT808_LOSTVOLTAGE_ALARM, 0);
-            if (sysinfo.sysTick - LostVoltageTick >= 10)
+            break;
+        case BLE_OPEN:
+            nwy_ble_enable();
+            LogMessage(DEBUG_ALL, "Open BLE\r\n");
+            changeBleFsm(BLE_CHECK_STATE);
+            break;
+        case BLE_CLOSE:
+            nwy_ble_disable();
+            changeBleFsm(BLE_CHECK_STATE);
+            LogMessage(DEBUG_ALL, "Close BLE\r\n");
+            break;
+        case BLE_CONFIG:
+            LogMessage(DEBUG_ALL, "Ble config\r\n");
+            nwy_ble_register_callback(appBleRecv);
+            nwy_ble_conn_status_cb(appBleConnStatus);
+            changeBleFsm(BLE_NORMAL);
+            break;
+        case BLE_NORMAL:
+            if (sysinfo.bleOnoff == 0)
             {
-                LogMessage(DEBUG_ALL, "power supply resume");
-                portSystemReset();
+                changeBleFsm(BLE_CLOSE);
             }
-        }
-    }
-
-}
-
-/**************************************************
-@bref		感光检测任务
-@param
-@note
-**************************************************/
-
-static void lightDetectionTask(void)
-{
-    static uint32_t darknessTick = 0;
-    uint8_t curLdrState;
-    curLdrState = LDR_READ;
-
-    if (curLdrState == 0)
-    {
-        //亮
-        if (darknessTick >= 60)
-        {
-            if (sysparam.lightAlarm != 0)
-            {
-                LogMessage(DEBUG_ALL, "Light alarm");
-                alarmRequestSet(ALARM_LIGHT_REQUEST);
-            }
-        }
-        darknessTick = 0;
-    }
-    else
-    {
-        //暗
-        darknessTick++;
+            break;
     }
 }
 
-/**************************************************
-@bref		上送1个gps位置点
-@param
-@note
-**************************************************/
 
-static void gpsRequestUploadOnePoiTask(void)
+
+/*-------------------------------------------------------------------------------------*/
+
+uint8_t systemIsIdle(void)
 {
-    gpsinfo_s *gpsinfo;
-    static uint8_t runtick = 0;
-    static uint8_t uploadtick = 0;
-    //判断是否有请求该事件
-    if (gpsRequestGet(GPS_REQ_UPLOAD_ONE_POI) == 0)
+    sysinfo.dtrState = DTR_READ ? 1 : 0;
+    if (sysinfo.bleRing > 0)
     {
-        runtick = 0;
-        uploadtick = 0;
-        return ;
+        sysinfo.bleRing--;
     }
-    gpsinfo = getCurrentGPSInfo();
-    runtick++;
-    if (runtick >= 180)
-    {
-        runtick = 0;
-        uploadtick = 0;
-        doPositionRespon();
-        gpsRequestClear(GPS_REQ_UPLOAD_ONE_POI);
-    }
-    else
-    {
-        if (gpsinfo->fixstatus)
-        {
-            if (++uploadtick >= 10)
-            {
-                uploadtick = 0;
-                doPositionRespon();
-                sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, getCurrentGPSInfo());
-                jt808SendToServer(TERMINAL_POSITION, getCurrentGPSInfo());
-                //jt808BatchPushIn(getCurrentGPSInfo());
-                gpsRequestClear(GPS_REQ_UPLOAD_ONE_POI);
-            }
-        }
-        else
-        {
-            uploadtick = 0;
-        }
-    }
+
+    if (sysinfo.GPSRequest != 0)
+        return 1;
+    if (sysinfo.updateStatus)
+        return 2;
+    if (sysinfo.dtrState != 0)
+        return 3;
+    if (bleDataIsSend() != 0)
+        return 4;
+    if (sysinfo.bleRing != 0)
+        return 5;
+    return 0;
 }
 
-/**************************************************
-@bref		软件看门狗
-@param
-@note
-**************************************************/
-
-static void softWdtRun(void)
+void uartCtl(uint8_t onoff)
 {
-    if (sysinfo.softWdtTick++ >= 250)
-    {
-        sysinfo.softWdtTick = 0;
-        portSystemReset();
-    }
-}
-
-/**************************************************
-@bref		每天重启
-@param
-@note
-**************************************************/
-
-static void rebootOneDay(void)
-{
-    sysinfo.sysTick++;
-
-    if (sysinfo.sysTick < 86400)
-        return ;
-    if (sysinfo.gpsRequest != 0)
-        return ;
-    portSystemReset();
-}
-
-/**************************************************
-@bref		继电器状态初始化
-@param
-@note
-**************************************************/
-
-static void relayInit(void)
-{
-    if (sysparam.relayCtl)
-    {
-        RELAY_ON;
-    }
-    else
-    {
-        RELAY_OFF;
-    }
-}
-
-/**************************************************
-@bref		系统关机任务
-@param
-@note		检测到关机引脚为高电平时关机
-**************************************************/
-
-static void autoShutDownTask(void)
-{
-    if (ONOFF_READ == ON_STATE)
-    {
-        return;
-    }
-    portSystemShutDown();
-}
-
-
-/**************************************************
-@bref		串口自动控制任务
-@param
-@note
-**************************************************/
-
-static void autoUartTask(void)
-{
-
-    if (sysinfo.gpsRequest || sysinfo.logLevel != DEBUG_NONE)
+    if (onoff)
     {
         if (usart2_ctl.init == 0)
         {
-            portUartCfg(APPUSART2, 1, 115200, atCmdRecvParser);
+            appUartConfig(APPUSART2, 1, 115200, cusBleRecvParser);//BLE
+        }
+
+        if (usart1_ctl.init == 0)
+        {
+            appUartConfig(APPUSART1, 1, 115200, atCmdParserFunction);//MCU
+        }
+
+    }
+    else
+    {
+        if (usart2_ctl.init == 1)
+        {
+            appUartConfig(APPUSART2, 0, 115200, cusBleRecvParser);//DEBUG
+        }
+        if (usart1_ctl.init == 1)
+        {
+            appUartConfig(APPUSART1, 0, 115200, atCmdParserFunction);//DEBUG
+        }
+    }
+}
+void autosleepTask(void)
+{
+    uint8_t ret;
+    ret = systemIsIdle();
+    if (ret)//唤醒高电平
+    {
+        uartCtl(1);
+    }
+    else
+    {
+        uartCtl(0);
+    }
+
+}
+
+/*-------------------------------------------------------------------------------------*/
+static REC_UPLOAD_INFO recinfo;
+
+void setUploadFile(uint8_t *filename, uint32_t filesize, uint8_t *recContent)
+{
+    memset(&recinfo, 0, sizeof(REC_UPLOAD_INFO));
+    strcpy((char *)recinfo.recUploadFileName, (char *) filename);
+    recinfo.recUploadFileSize = filesize;
+    recinfo.recUploadContent = recContent;
+    LogPrintf(DEBUG_ALL, "RecUpload==>%s:%d\r\n", filename, filesize);
+    recinfo.recordUpload = 1;
+}
+
+static void recordUpload(void)
+{
+    char dest[4120];
+    recinfo.needRead = recinfo.recUploadFileSize - recinfo.hadRead;
+    if (recinfo.needRead > REC_UPLOAD_ONE_PACK_SIZE)
+        recinfo.needRead = REC_UPLOAD_ONE_PACK_SIZE;
+    LogPrintf(DEBUG_ALL, "File:%s , Total:%d , Offset:%d , Size:%d\r\n", recinfo.recUploadFileName,
+              recinfo.recUploadFileSize, recinfo.hadRead, recinfo.needRead);
+    createProtocol62(dest, (char *)recinfo.recUploadFileName, recinfo.hadRead / REC_UPLOAD_ONE_PACK_SIZE,
+                     recinfo.recUploadContent + recinfo.hadRead, recinfo.needRead);
+
+}
+
+static void recordUploadInThread(void)
+{
+    recinfo.hadRead += recinfo.needRead;
+    if (recinfo.hadRead >= recinfo.recUploadFileSize)
+    {
+        LogMessage(DEBUG_ALL, "Upload all complete\r\n");
+        recinfo.recordUpload = 0;
+        recinfo.recfsm = 0;
+        return ;
+    }
+    recordUpload();
+}
+
+
+static void changeRecFsm(uint8_t fsm)
+{
+    recinfo.recfsm = fsm;
+    recinfo.ticktime = 0;
+}
+void recordUploadRespon(void)
+{
+    changeRecFsm(3);
+}
+void recordFileUploadTask(void)
+{
+    char dest[50];
+    if (recinfo.recordUpload == 0)
+    {
+        recinfo.ticktime = 0;
+        return ;
+    }
+    recinfo.ticktime++;
+    switch (recinfo.recfsm)
+    {
+        //上传文件名
+        case 0:
+            LogPrintf(DEBUG_ALL, "File:%s , Total:%d\r\n", recinfo.recUploadFileName, recinfo.recUploadFileSize);
+            createProtocol61(dest, (char *)recinfo.recUploadFileName, recinfo.recUploadFileSize, 0, REC_UPLOAD_ONE_PACK_SIZE);
+            changeRecFsm(1);
+            break;
+        //等待61返回
+        case 1:
+            if (recinfo.ticktime > 30)
+            {
+                recinfo.counttype1++;
+                changeRecFsm(0);
+                if (recinfo.counttype1 >= 3)
+                {
+                    recinfo.recordUpload = 0;
+                }
+            }
+            break;
+        //重发
+        case 2:
+            recordUpload();
+            changeRecFsm(3);
+            break;
+        //等待62返回
+        case 3:
+            if (recinfo.ticktime > 30)
+            {
+                recinfo.counttype2++;
+                changeRecFsm(2);
+                if (recinfo.counttype2 >= 3)
+                {
+                    recinfo.recordUpload = 0;
+                }
+            }
+            break;
+    }
+}
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+void gsensorTapTask(void)
+{
+    static uint8_t index = 0;
+    static uint16_t aftick = 0;
+    GPSINFO *gpsinfo;
+    uint8_t i;
+    uint16_t total = 0;
+    if (sysparam.accdetmode != ACCDETMODE2)
+    {
+        return ;
+    }
+    if (sysparam.MODE != MODE2 && sysparam.MODE != MODE21 && sysparam.MODE != MODE23)
+    {
+        terminalAccoff();
+        if (gpsRequestGet(GPS_REQUEST_ACC_CTL))
+        {
+            gpsRequestClear(GPS_REQUEST_ACC_CTL);
+        }
+        aftick = 0;
+        return ;
+    }
+    gpsinfo = getCurrentGPSInfo();
+    sysinfo.onetaprecord[index++] = sysinfo.gsensortapcount;
+    sysinfo.gsensortapcount = 0;
+    if (index >= 15)
+        index = 0;
+    for (i = 0; i < 15; i++)
+    {
+        total += sysinfo.onetaprecord[i];
+    }
+    if (total >= 7	|| (sysinfo.gsensorerror == 1 && gpsinfo->fixstatus == 1 && gpsinfo->speed >= 15))
+    {
+        if (getTerminalAccState() == 0)
+        {
+            sysinfo.csqSearchTime = 60;
+            terminalAccon();
+            LogMessage(DEBUG_ALL, "Acc on detected by gsensor\n");
+            if (isProtocolReday())
+            {
+                sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
+                if (sysparam.protocol == USE_JT808_PROTOCOL)
+                {
+                    jt808UpdateStatus(JT808_STATUS_ACC, 1);
+                    jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
+                }
+            }
+            gpsRequestSet(GPS_REQUEST_ACC_CTL);
+            gpsRequestSet(GPS_REQUEST_UPLOAD_ONE);
+            memset(sysinfo.onetaprecord, 0, 15);
+            aftick = 0;
+        }
+    }
+    aftick++;
+    if (total == 0)
+    {
+        //速度判断ACC
+        if (gpsinfo->fixstatus == 1 && gpsinfo->speed >= 7)
+        {
+            aftick = 0;
+        }
+        if (aftick >= 90)
+        {
+            if (getTerminalAccState())
+            {
+                terminalAccoff();
+                LogMessage(DEBUG_ALL, "Acc off detected by gsensor\n");
+                if (isProtocolReday())
+                {
+                    sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
+                    if (sysparam.protocol == USE_JT808_PROTOCOL)
+                    {
+                        jt808UpdateStatus(JT808_STATUS_ACC, 0);
+                        jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
+                    }
+                }
+                gpsRequestClear(GPS_REQUEST_ACC_CTL);
+            }
         }
     }
     else
     {
-        if (usart2_ctl.init)
-        {
-            portUartCfg(APPUSART2, 0, 0, NULL);
-        }
+        aftick = 0;
     }
 }
 
-/**************************************************
-@bref		relayAutoRequest
-@param
-@note
-**************************************************/
 
-void relayAutoRequest(void)
+
+/*-------------------------------------------------------------------------------------*/
+//感光检测
+void ldrCheckTask(void)
 {
-    sysinfo.doRelayFlag = 1;
+    //    static uint32_t darknessTick = 0;
+    //    uint8_t curLdrState;
+    //    curLdrState = LDR_DET;
+    //
+    //    if (curLdrState == 0)
+    //    {
+    //        //亮
+    //        if (sysparam.lightAlarm && darknessTick >= 60)
+    //        {
+    //            LogMessage(DEBUG_ALL, "Light alarm\r\n");
+    //            alarmRequestSet(ALARM_LIGHT_REQUEST);
+    //        }
+    //        darknessTick = 0;
+    //    }
+    //    else
+    //    {
+    //        //暗
+    //        darknessTick++;
+    //    }
 }
 
-/**************************************************
-@bref		relayAutoClear
-@param
-@note
-**************************************************/
-
-void relayAutoClear(void)
+/*-------------------------------------------------------------------------------------*/
+static int usbReceiveData(void *data, size_t size)
 {
-    sysinfo.doRelayFlag = 0;
+    atCmdParserFunction((char *)data, size);
+    return size;
+}
+static void usbInit(void)
+{
+    nwy_usb_serial_reg_recv_cb(usbReceiveData);
+}
+/*-------------------------------------------------------------------------------------*/
+
+
+
+
+static void myAppConfig(void)
+{
+    memset(&sysinfo, 0, sizeof(SYSTEM_INFO));
+    appUartConfig(APPUSART2, 1, 115200, cusBleRecvParser);//DEBUG
+    appUartConfig(APPUSART1, 1, 115200, atCmdParserFunction);//mcu
+    usbInit();
+    paramInit();
+    pmuConfig();
+    gpioConfig();
+    socketInfoInit();
+    jt808InfoInit();
+    smsListInit();
+    cusDataInit();
+    cusBleSendDataInit();
+    //ledRunTaskConfig(); 取消LED
+    portBleGpioCfg();
+    nwy_pm_state_set(1);
+    nwy_audio_set_handset_vol(sysparam.vol);
+    sysinfo.logmessage = DEBUG_ALL;
+    customerLogOut("+RDY\r\n");
+    sysinfo.logmessage = DEBUG_NONE;
+
+    socketListInit();
+    networkInit();
+    networkConnectCtl(1);
+    updateSystemLedStatus(SYSTEM_LED_RUN, 1);
+    if (sysparam.cUpdate == CUPDATE_FLAT)
+    {
+        customerLogOut("+UPDATE: SUCCESS\r\n");
+        sysparam.cUpdate = 0;
+        paramSaveAll();
+    }
 }
 
-/**************************************************
-@bref		继电器自动控制
-@param
-@note
-**************************************************/
-static void doRelayOn(void)
+/*-------------------------------------------------------------------------------------*/
+
+static void taskRunInOneSecond(void)
 {
-    relayAutoClear();
-    RELAY_ON;
-    bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
-    LogMessage(DEBUG_ALL, "do relay on");
+    sysinfo.System_Tick++;
+    gpsRequestTask();
+    gpsOutputCheckTask();
+    if (sysinfo.taskSuspend == 1)
+        return;
+    networkConnect();
+    updateFirmware();
+    customtts();
+    cusDataSendD();
+    autosleepTask();
 
 }
-void relayAutoCtrl(void)
-{
-    static uint8_t runTick = 0;
-    gpsinfo_s *gpsinfo;
-    if (sysinfo.doRelayFlag == 0)
-    {
-        runTick = 0;
-        return	;
-    }
-    if (getTerminalAccState() == 0)
-    {
-        //设备静止了，立即断油电，本机relay控制线断，如果有蓝牙，也一块断
-        doRelayOn();
-        return;
-    }
-    if (sysparam.relaySpeed == 0)
-    {
-        //没有配置速度规则，那就等acc off才断
-        return;
-    }
-    if (sysinfo.gpsOnoff == 0)
-    {
-        return;
-    }
-    gpsinfo = getCurrentGPSInfo();
-    if (gpsinfo->fixstatus == 0)
-    {
-        return;
-    }
-    if (gpsinfo->speed > sysparam.relaySpeed)
-    {
-        runTick = 0;
-        return;
-    }
-    if (++runTick >= 5)
-    {
-        runTick = 0;
-        doRelayOn();
-    }
-}
-/**************************************************
-@bref		主线程
-@param
-@note
-**************************************************/
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+/*线程一：任务运行*/
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
 
 void myAppRun(void *param)
 {
-    memset(&motionInfo, 0, sizeof(motionInfo_s));
-    memset(&sysinfo, 0, sizeof(systemInfo_s));
-    sysinfo.logLevel = DEBUG_NONE;
-    portUSBCfg((nwy_sio_recv_cb_t)atCmdRecvParser);
-    portUartCfg(APPUSART2, 1, 115200, atCmdRecvParser);
-    LogMessage(DEBUG_NONE, "Application Run");
-    portPmuCfg();
-    portGpioCfg();
-
-    paramInit();
-    socketListInit();
-    networkInfoInit();
-    kernalTimerInit();
-    protocolInit();
-    portRecInit();
-    relayInit();
-    jt808InfoInit();
-    jt808BatchInit();
-    bleClientInfoInit();
-    bleScheduleInit();
-
-    portSleepCtrl(1);
+    myAppConfig();
     while (1)
     {
+        taskRunInOneSecond();
         nwy_sleep(1000);
-        rebootOneDay();
-        feedWdtTask();
-        networkConnectTask();
-        serverConnTask();
-        agpsConnRunTask();
-        upgradeRunTask();
-        motionCheckTask();
-        gsCheckTask();
-        voltageCheckTask();
-        gpsRequestTask();
-        gpsRequestUploadOnePoiTask();
-        lbsRequestTask();
-        wifiRequestTask();
-        alarmRequestTask();
-        lightDetectionTask();
-        recordUploadTask();
-        recordTask();
-        sysRunTask();
-        bleServRunTask();
-        bleScheduleTask();
-        autoShutDownTask();
-        autoUartTask();
-        relayAutoCtrl();
-
     }
 }
 
-/**************************************************
-@bref		100ms线程
-@param
-@note
-**************************************************/
-
-void myApp100MSRun(void *param)
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+//+CLIP: "18814125495",129,,,,0
+static void receiveCLIP(void)
 {
-    while (1)
+    char buf[128];
+    nwy_get_voice_callerid(buf);
+    if (my_strpach(buf, "+CLIP"))
     {
-        kernalRun();
-        softWdtRun();
-        sysLedRunTask();
-        portOutputTTS();
-        nwy_sleep(100);
+        LogPrintf(DEBUG_ALL, "Phone ring:%s\r\n", buf);
+
+        if (sysparam.sosnumber1[0] != 0)
+        {
+            if (strstr((char *)buf, (char *)sysparam.sosnumber1) != NULL)
+            {
+                LogPrintf(DEBUG_ALL, "SOS number %s,anaswer phone\n", sysparam.sosnumber1);
+                nwy_voice_call_autoanswver();
+                return ;
+            }
+        }
+        if (sysparam.sosnumber2[0] != 0)
+        {
+            if (strstr((char *)buf, (char *)sysparam.sosnumber2) != NULL)
+            {
+                LogPrintf(DEBUG_ALL, "SOS number %s,anaswer phone\n", sysparam.sosnumber2);
+                nwy_voice_call_autoanswver();
+                return ;
+            }
+        }
+        if (sysparam.sosnumber3[0] != 0)
+        {
+            if (strstr((char *)buf, (char *)sysparam.sosnumber3) != NULL)
+            {
+                LogPrintf(DEBUG_ALL, "SOS number %s,anaswer phone\n", sysparam.sosnumber3);
+                nwy_voice_call_autoanswver();
+                return ;
+            }
+        }
+        LogMessage(DEBUG_ALL, "Unknow phone number\n");
     }
 }
 
+static void receiveCMT(void)
+{
+    nwy_sms_recv_info_type_t sms_data;
+    char date[20];
+    memset(&sms_data, 0, sizeof(sms_data));
+    nwy_sms_recv_message(&sms_data);
+    LogPrintf(DEBUG_ALL, "Tel[%d]:%s,Data[%d]:%s,Mt:%d,ShortId:%d,DCS:%d,Index:%d\r\n", sms_data.oa_size, sms_data.oa,
+              sms_data.nDataLen, sms_data.pData, sms_data.cnmi_mt, sms_data.nStorageId, sms_data.dcs, sms_data.nIndex);
+    sms_data.pData[sms_data.nDataLen + 1] = '#';
+    sms_data.nDataLen += 1;
+    //customerLogPrintf("+CMT: \"%s\",%d,%s\r\n", sms_data.oa, sms_data.nDataLen, sms_data.pData);
 
-/**************************************************
-@bref		处理事件线程
-@param
-@note
-**************************************************/
+    sprintf(date, "%02d%02d%02d%02d%02d%02d", sms_data.scts.uYear % 100, sms_data.scts.uMonth, sms_data.scts.uDay,
+            sms_data.scts.uHour, sms_data.scts.uMinute, sms_data.scts.uSecond);
+    addSms((uint8_t *)sms_data.oa, (uint8_t *)date, (uint8_t *)sms_data.pData, sms_data.nDataLen);
+    //instructionParser((uint8_t *)sms_data.pData, sms_data.nDataLen, SHORTMESSAGE_MODE, sms_data.oa, NULL);
+}
+
+static void sdkATCmdInit(void)
+{
+    nwy_init_sms_option();
+    nwy_sdk_at_parameter_init();
+    nwy_sdk_at_unsolicited_cb_reg("+CLIP:", receiveCLIP);
+    nwy_sdk_at_unsolicited_cb_reg("+CMT:", receiveCMT);
+    nwy_set_report_option(2, 2, 0, 0, 0);
+    setCLIP();
+    setAPN();
+    setXGAUTH();
+    getBleMac();
+
+}
+
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+/*线程二：接收事件*/
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+
+char musicMp3[4][15] =
+{
+    {"alarm1.mp3"},
+    {"alarm2.mp3"},
+    {"alarm3.mp3"},
+    {"alarm4.mp3"},
+};
 
 void myAppEvent(void *param)
 {
     nwy_osiEvent_t event;
-    portAtCmdInit();
+    sdkATCmdInit();
     while (1)
     {
         nwy_wait_thead_event(myAppEventThread, &event, 0);
-        switch (event.id)
+        if (event.id == RECORD_UPLOAD_EVENT)
         {
-            case THREAD_EVENT_PLAY_AUDIO:
-                portPlayAudio(AUDIOFILE);
-                break;
-            case THREAD_EVENT_PLAY_REC:
-                portPlayAudio(RECFILE);
-                break;
-            case THREAD_EVENT_REC:
-                if (event.param1 == THREAD_PARAM_REC_START)
+            recordUploadInThread();
+        }
+        else if (event.id == GET_FIRMWARE_EVENT)
+        {
+            getFirmwareInThreadEvent();
+        }
+        else if (event.id == PLAY_MUSIC_EVENT)
+        {
+            if (sysinfo.ttsPlayNow == 0)
+            {
+                sysinfo.playMusicNow = 1;
+                if (event.param1 == THREAD_PARAM_NONE)
                 {
-                    portRecStart();
+                    LogPrintf(DEBUG_ALL, "Alarm Music:%s\r\n", musicMp3[sysparam.alarmMusicIndex]);
+                    nwy_audio_file_play(musicMp3[sysparam.alarmMusicIndex]);
                 }
-                else if (event.param1 == THREAD_PARAM_REC_STOP)
+                else if (event.param1 == THREAD_PARAM_AUDIO)
                 {
-                    portRecStop();
+                    appPlayAudio();
                 }
-                break;
-            case THREAD_EVENT_SOCKET_CLOSE:
-                socketClose(event.param1);
-                break;
-            case THREAD_EVENT_BLE_CLIENT:
-                bleClientDoEventProcess(event.param1);
-                break;
+                else if (event.param1 == THREAD_PARAM_SIREN)
+                {
+                    LogMessage(DEBUG_ALL, "Siren Music\r\n");
+                    nwy_audio_file_play(musicMp3[sysparam.alarmMusicIndex]);
+                }
+                sysinfo.playMusicNow = 0;
+            }
+        }
+        else if (event.id == CFUN_EVENT)
+        {
+            if (event.param1 == 1)
+            {
+                networkConnectCtl(1);
+                sendModuleCmd(CFUN_CMD, "1");
+            }
+            else
+            {
+                networkConnectCtl(0);
+                sendModuleCmd(CFUN_CMD, "4");
+            }
         }
     }
 }
-
-/**************************************************
-@bref		触发线程事件
-@param
-	threadEvent	事件类型
-	param1		事件参数
-@note
-**************************************************/
-
-void appSendThreadEvent(uint16 threadEvent, uint32_t param1)
+/*-------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------*/
+void myAppRunIn100Ms(void *param)
 {
-    nwy_osiEvent_t event;
-    memset(&event, 0, sizeof(event));
-    event.id = threadEvent;
-    event.param1 = param1;
-    nwy_send_thead_event(myAppEventThread, &event, 0);
+    while (1)
+    {
+        nwy_sleep(100);
+        appMcuUpgradeTask();
+        kernalRun();
+        outPutNodeCmd();
+    }
 }
 
+void myAppCusPost(void *param)
+{
+    while (1)
+    {
+        nwy_sleep(200);
+        postCusData();
+    }
+}
 

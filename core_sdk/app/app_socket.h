@@ -4,10 +4,7 @@
 #include "nwy_osi_api.h"
 #include "nwy_socket.h"
 
-
 #define SOCKET_LIST_MAX	6
-
-
 
 typedef enum
 {
@@ -16,18 +13,7 @@ typedef enum
     CHECK_REGISTER,
     CHECK_DATACALL,
     CHECK_SOCKET,
-} socketFsm_e;
-
-
-typedef enum
-{
-    DATA_CALL_GET_SOURSE,
-    DATA_CALL_START,
-    DATA_CALL_STOP,
-    DATA_CALL_RELEALSE,
-} dataCall_e;
-
-
+} NETWORK_FSM;
 
 
 typedef struct SOCK_INFO
@@ -35,53 +21,48 @@ typedef struct SOCK_INFO
     unsigned char domainIP		: 1;
     unsigned char socketOpen	: 1;
     unsigned char socketConnect	: 1;
-    unsigned char useFlag		: 1;
-    struct sockaddr_in socketInfo;
-    unsigned char dnscount;
-    unsigned char socketConnectTick;
+	struct sockaddr_in socketInfo;
+	unsigned char dnscount;
+	unsigned char socketConnectTick;
 
-    unsigned char index;
+	unsigned char index;
+    char useFlag;
     char domain[50];
     int socketId;
     unsigned int port;
-    void (*rxFun)(struct SOCK_INFO *socketinfo, char *rxbuf, uint16_t len);
-} socketInfo_s;
+    void (*rxFun)(struct SOCK_INFO * socketinfo,char *rxbuf, uint16_t len);
+} SOCKET_INFO;
 
 
 typedef struct
 {
-    unsigned char networkonoff;
-    unsigned char netFsm;	
-	unsigned char netRegCnt;
+	unsigned char networkonoff;
+    unsigned char netFsm;
     unsigned char dataCallFsm;
-    unsigned char dataCallState;
-    unsigned char dataCallCount;
-    unsigned int  csqSearchTime;
-
     unsigned int  netTick;
-    int dataServerHandle;
-} networkInfo_s;
-
+    char dataServerHandle;
+    char dataCallState;
+    unsigned char dataCallCount;
+} NETWORK_INFO;
 
 
 void socketListInit(void);
-void networkInfoInit(void);
+void networkInit(void);
 void networkConnectCtl(unsigned char onoff);
 
-int socketAdd(unsigned char sockId, char *domain, unsigned int port, void (*rxFun)(struct SOCK_INFO *socketinfo,
-              char *rxbuf, uint16_t len));
+int socketAdd(unsigned char index, char *domain, unsigned int port, void (*rxFun)(SOCKET_INFO * socketinfo,char *rxbuf, uint16_t len));
 void socketDeleteAll(void);
-int socketClose(uint8_t sockId);
-
-
-void netStopDataCall(void);
-void netResetCsqSearch(void);
+int socketDel(SOCKET_INFO *socketinfo);
 
 int socketSendData(unsigned char link, unsigned char *data, unsigned int len);
-void networkConnectTask(void);
-uint8_t isNetworkNormal(void);
-uint8_t socketGetUsedFlag(uint8_t sockeId);
-uint8_t socketGetConnectStatus(uint8_t sockeId);
+int socketClose(uint8_t i);
+
+void netStopDataCall(void);
+
+
+void networkConnect(void);
+
+void updateFirmware(void);
 
 
 #endif

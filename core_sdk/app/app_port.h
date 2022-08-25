@@ -2,204 +2,119 @@
 #define APP_PORT
 
 #include "nwy_osi_api.h"
-#include "nwy_usb_serial.h"
 #include "nwy_gpio_open.h"
-#include "nwy_loc.h"
-#define LED1_PORT		26
-#define LED2_PORT		25
 
-#define LED1_ON			nwy_gpio_set_value(LED1_PORT,1)
-#define LED1_OFF    	nwy_gpio_set_value(LED1_PORT,0)
-
-#define LED2_ON			nwy_gpio_set_value(LED2_PORT,1)
-#define LED2_OFF    	nwy_gpio_set_value(LED2_PORT,0)
-
-
-#define GSINT_PORT		2
-#define GSPWR_ON		nwy_set_pmu_power_level(NWY_POWER_CAMD, 1800);
-#define GSPWR_OFF		nwy_set_pmu_power_level(NWY_POWER_CAMD, 0);
+#define DEBUG_NONE			0
+#define DEBUG_LOW			1
+#define DEBUG_NET			2
+#define DEBUG_GPS			3
+#define DEBUG_FACTORY		4
+#define DEBUG_ALL			9
+#define DEBUG_BLE			10
 
 
-#define LDR_PORT		3
-#define LDR_READ		nwy_gpio_get_value(LDR_PORT)
+#define GPSLNA_PORT
 
-#define RELAY_PORT		28
-#define RELAY_ON		nwy_gpio_set_value(RELAY_PORT,1)
-#define RELAY_OFF		nwy_gpio_set_value(RELAY_PORT,0)
+#define GPSLNAON	nwy_set_pmu_power_level(NWY_POWER_CAMA, 2800)
+#define GPSLNAOFF	nwy_set_pmu_power_level(NWY_POWER_CAMA, 0)
 
-#define ACC_PORT		0
-#define ACC_READ		nwy_gpio_get_value(ACC_PORT)
-#define ACC_STATE_ON	0
-#define ACC_STATE_OFF	1
+#define GPSPOWERON
+#define GPSPOWEROFF
 
-#define WDT_PORT		24
-#define WDT_FEED_H		nwy_gpio_set_value(WDT_PORT,1)
-#define WDT_FEED_L		nwy_gpio_set_value(WDT_PORT,0)
+#define GPSRSTHIGH
+#define GPSRSTLOW
 
-#define ONOFF_PORT		27
-#define ONOFF_READ		nwy_gpio_get_value(ONOFF_PORT)
-#define ON_STATE		1
-#define OFF_STATE		0
 
+#define LED1_PORT
+#define LED2_PORT
+#define LED3_PORT
+
+
+#define LED1_ON		//nwy_gpio_set_value(LED1_PORT,1)
+#define LED1_OFF    //nwy_gpio_set_value(LED1_PORT,0)
+
+#define LED2_ON		//nwy_gpio_set_value(LED2_PORT,1)
+#define LED2_OFF    //nwy_gpio_set_value(LED2_PORT,0)
+
+#define LED3_ON
+#define LED3_OFF
+
+
+#define GSPWR_GPIO
+#define GSINT_PORT
+
+//感光检测
+#define LDR_PORT
+#define LDR_DET		//nwy_gpio_get_value(LDR_PORT)
+
+#define DTR_PORT	10
+#define DTR_READ	nwy_gpio_get_value(DTR_PORT)
+
+#define RING_PORT	12
+#define RING_OUT_HIGH	nwy_gpio_set_value(RING_PORT,1)
+#define RING_OUT_LOW	nwy_gpio_set_value(RING_PORT,0)
+
+
+#define BLE_RING_PORT	26
+#define BLE_RING_READ	nwy_gpio_get_value(BLE_RING_PORT)
+
+#define BLE_DTR_PORT	25
+#define BLE_DTR_HIGH	nwy_gpio_set_value(BLE_DTR_PORT,1)
+#define BLE_DTR_LOW		nwy_gpio_set_value(BLE_DTR_PORT,0)
+
+#define BLE_PWR_PORT	24
+#define BLE_PWR_ON		nwy_gpio_set_value(BLE_PWR_PORT,1)
+#define BLE_PWR_OFF		nwy_gpio_set_value(BLE_PWR_PORT,0)
 #define AUDIOFILE   "myMusic.mp3"
-#define RECFILE		"rec.amr"
-#define RECORD_BUFF_SIZE		(120*1024)
 
 typedef enum
 {
     APPUSART1,
     APPUSART2,
     APPUSART3,
-} uarttype_e;
+} UARTTYPE;
 
 typedef struct
 {
-    uint8_t init;
     int uart_handle;
-} usartCtrl_s;
+    uint8_t init;
+} UART_RXTX_CTL;
 
-typedef struct
-{
-    uint8_t mnc;
-    uint16_t mcc;
-    uint16_t lac;
-    uint32_t cid;
-} lbsInfo_s;
+extern UART_RXTX_CTL usart1_ctl;
+extern UART_RXTX_CTL usart2_ctl;
+extern UART_RXTX_CTL usart3_ctl;
 
-typedef struct
-{
-    uint8_t recDoing;
-    char recFileName[25];
-    uint8_t recBuff[RECORD_BUFF_SIZE];
-    uint32_t recSize;
-} record_s;
+//UART
+void appUartConfig(UARTTYPE type, uint8_t onoff, uint32_t baudrate, void (*rxhandlefun)(char *, uint32_t));
+void appUartSend(UART_RXTX_CTL *uart_ctl, uint8_t *buf, uint16_t len);
+//RTC
+void getRtcDateTime(uint16_t *year, uint8_t *month, uint8_t *date, uint8_t *hour, uint8_t *minute, uint8_t *second);
+void updateRTCdatetime(uint8_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second);
+void setNextAlarmTime(void);
+void setNextWakeUpTime(void);
+//GSENSOR
+void gsintPreConfig(void);
+void gsensorConfig(uint8_t onoff);
+//ADC
+void getBatVoltage(void);
+//LED
+void ledConfig(void);
+//PMU
+void pmuConfig(void);
+//GPS
+void gpsConfig(void);
+void gpioConfig(void);
+//RESET
+void appSystemReset(void);
+void appSendThreadEvent(uint16 sig, uint32_t param1);
+void appTTSPlay(char *ttsbuf);
+void appTTSStop(void);
 
-/*定义AT指令集*/
-typedef enum
-{
-    AT_CMD = 1,
-    NWBTBLEMAC_CMD,
-    CLIP_CMD,
-    CFUN_CMD,
-    CGDCONT_CMD,
-    XGAUTH_CMD,
-    NWBTBLEMAC,
-    MAX_NUM,
-} atCmdType_e;
-/*指令集对应结构体*/
-typedef struct
-{
-    atCmdType_e cmd_type;
-    char *cmd;
-} moduleAtCmd_s;
+void appSaveAudio(uint8_t *audio, uint16_t len);
+void appDeleteAudio(void);
+void appPlayAudio(void);
 
-typedef struct ttsList{
-	uint8_t ttsBuf[144];
-	uint8_t ttsBufLen;
-	struct ttsList * next;
-}tts_info_s;
-
-typedef enum
-{
-	HOT_START = 0,
-    WORM_START = 1,
-    COLD_START = 2,
-    FACTORY_START = 3,
-} gps_startUpmode_e;
-
-typedef enum
-{
-    PDP_IP = 1,
-    PDP_IPV6,
-    PDP_IPV4V6,
-} pdp_type_e;
-typedef enum
-{
-    AUTH_NONE,
-    AUTH_PAP,
-    AUTH_CHAP,
-} auth_type_e;
-
-
-extern usartCtrl_s usart1_ctl;
-extern usartCtrl_s usart2_ctl;
-extern usartCtrl_s usart3_ctl;
-
-
-void portUSBCfg(nwy_sio_recv_cb_t usbRecvCallback);
-void portUsbSend(char *data, uint16_t len);
-
-void portUartCfg(uarttype_e type, uint8_t onoff, uint32_t baudrate, void (*rxhandlefun)(char *, uint32_t));
-void portUartSend(usartCtrl_s *uart_ctl, uint8_t *buf, uint16_t len);
-
-void portGetRtcDateTime(uint16_t *year, uint8_t *month, uint8_t *date, uint8_t *hour, uint8_t *minute, uint8_t *second);
-void portSetRtcDateTime(uint8_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second,
-                        int8_t utc);
-void setNextAlarmTime(uint8_t gapDay, uint16_t *AlarmTime);
-void setNextWakeUpTime(uint16_t gapMinutes);
-
-
-
-void portSleepCtrl(uint8_t mode);
-
-void portGpioCfg(void);
-void portPmuCfg(void);
-void portOutsideGpsPwr(uint8_t onoff);
-
-
-void portGsensorCfg(uint8_t onoff);
-
-void portGpsCtrl(uint8_t onoff);
-void portGpsSetPositionMode(nwy_loc_position_mode_t pos_mode);
-void portGpsGetNmea(void (*gpsRecv)(uint8_t *, uint16_t));
-
-float portGetOutSideVolAdcVol(void);
-float portGetBatteryAdcVol(void);
-
-uint8_t portGetModuleRssi(void);
-void portGetModuleICCID(char *iccid);
-void portGetModuleIMSI(char *imsi);
-void portGetModuleIMEI(char *imei);
-lbsInfo_s portGetLbsInfo(void);
-
-int portStartAgps(char *agpsServer, int agpsPort, char *agpsUser, char *agpsPswd);
-int portSendAgpsData(char *data, uint16_t len);
-int portSetGpsStarupMode(gps_startUpmode_e mode);
-
-
-void portSystemReset(void);
-void portSystemShutDown(void);
-
-
-void portSaveAudio(char * filePath,uint8_t *audio, uint16_t len);
-void portDeleteAudio(char * filePath);
-void portPlayAudio(char * filePath);
-
-uint8_t portUpgradeWirte(unsigned int offset, unsigned int length, unsigned char *data);
-uint8_t portUpgradeStart(void);
-
-void portRecInit(void);
-int portRecStart(void);
-void portRecStop(void);
-void portRecUpload(void);
-uint8_t portIsRecordNow(void);
-
-void portSetRadio(uint8_t onoff);
-
-uint8_t  portSendCmd(uint8_t cmd, char *param);
-
-void setAPN(void);
-void setXGAUTH(void);
-void portAtCmdInit(void);
-
-void portSendSms(char *tel, char *content, uint16_t len);
-void portSetVol(uint8_t vol);
-uint8_t portCapacityCalculate(float vol);
-
-void portOutputTTS(void);
-void portPushTTS(char *ttsbuf);
-
-void portSetApn(char *apn, char *userName, char *password);
+void portBleGpioCfg(void);
 
 #endif
 

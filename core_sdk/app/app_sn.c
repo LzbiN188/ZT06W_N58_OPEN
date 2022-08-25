@@ -1,6 +1,5 @@
 #include "app_sn.h"
 #include "app_sys.h"
-#include "app_protocol.h"
 #define		ENCRYPT		0
 #define		DESCRYPT	1
 #define     PINLEN      9
@@ -467,7 +466,7 @@ int decryptSN(unsigned char *Sn_Data, char *imei)
         imei[i*2+1] = (SN[i]  & 0x0f) + '0';
     }
     imei[15] = 0;
-    return 1;
+    return 0;
 }
 
 

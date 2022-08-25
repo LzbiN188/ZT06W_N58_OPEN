@@ -1,120 +1,103 @@
 #ifndef APP_NET
 #define APP_NET
-
 #include "nwy_osi_api.h"
 
-#define NORMAL_LINK		0
-#define JT808_LINK		1
-#define HIDE_LINK		2
-#define AGPS_LINK		3
-#define BLE_LINK		4
-#define UPGRADE_LINK	5
+/*定义AT指令集*/
+typedef enum
+{
+    AT_CMD = 1,
+    NWBTBLEMAC_CMD,
+    CLIP_CMD,
+    CFUN_CMD,
+    CGDCONT_CMD,
+    XGAUTH_CMD,
+    NWBTBLEMAC,
+    MAX_NUM,
+} CMD_TYPE;
+/*指令集对应结构体*/
+typedef struct
+{
+    CMD_TYPE cmd_type;
+    char cmd[30];
+} CMD_STRUCT;
 
-
-#define REC_UPLOAD_ONE_PACK_SIZE 4096
 
 
 typedef enum
 {
-    SERV_LOGIN,
-    SERV_LOGIN_WAIT,
-    SERV_READY,
-    SERV_END
-} serverfsm_e;
+    NET_CHECK_SIM,
+    NET_GET_SIM_INFO,
+    NET_CHECK_SIGNAL,
+    NET_CHECK_REGISTER,
+    NET_CHECK_DATACALL,
+    NET_CHECK_SOCKET,
+    NET_CHECK_NORMAL,
+} NET_FSM_STATE;
 
 typedef struct
 {
-    serverfsm_e connectFsm;
-    uint8_t 	loginCnt;
-    uint16_t	runTick;
-} serverConnect_s;
+    uint8_t domainIP		: 1;
+    uint8_t socketOpen		: 1;
+    uint8_t socketConnect	: 1;
+    uint8_t network			: 1;
+    uint8_t fsmState;
+    uint8_t dataCallFsm;
+
+    uint8_t networkRegisterCount;
+    uint8_t dataCallCount;
+    uint8_t socketConnectCount;
+
+    int8_t dataServerHandle;//数据拨号句柄
+    int8_t dataCallState;
+    int8_t socketState;
+    uint16_t tickTime;
+    int socketId;
+    char ICCID[21];
+    char IMSI[16];
+    char IMEI[16];
+	char MAC[17];
+} NET_INFO;
+typedef struct
+{
+    uint8_t domainIP	: 1;
+    uint8_t socketOpen	: 1;
+    uint8_t socketConnect: 1;
+    int socketId;
+} AGPS_INFO;
+
 typedef enum
 {
-    REC_REQ_SEND,
-    REC_REQ_WAIT,
-    REC_DATA_SEND,
-    REC_DATA_WAIT,
-} recordUploadFsm_e;
+    DATA_CALL_GET_SOURSE,
+    DATA_CALL_START,
+    DATA_CALL_STOP,
+    DATA_CALL_RELEALSE,
+} DATA_CALL_FSM;
 
-typedef enum
-{
-    JT808_REGISTER,
-    JT808_AUTHENTICATION,
-    JT808_NORMAL,
-} jt808_connfsm_s;
+uint8_t  sendModuleCmd(uint8_t cmd, char *param);
+void setAPN(void);
+void setXGAUTH(void);
+void setCLIP(void);
+uint8_t isNetProcessNormal(void);
 
+uint8_t getRegisterState(void);
 
-
-typedef struct
-{
-    jt808_connfsm_s connectFsm;
-    uint8_t runTick;
-    uint8_t regCnt;
-    uint8_t authCnt;
-    uint16_t hbtTick;
-} jt808_Connect_s;
+void networkCtl(uint8_t onoff);
 
 
-typedef struct
-{
-    uint8_t recfsm;
-    uint8_t recordUpload;
-    uint8_t ticktime;
-    uint8_t counttype1;
-    uint8_t counttype2;
-    uint8_t recUploadFileName[20];
-    uint8_t *recUploadContent;
+void reConnectServer(void);
 
-    uint32_t recUploadFileSize;
-    uint32_t hadRead;
-    uint32_t needRead;
+char getModuleRssi(void);
+char *getModuleIMSI(void);
+char *getModuleICCID(void);
+char *getModuleIMEI(void);
+char *getModuleMAC(void);
+void sendDataToServer(uint8_t link, uint8_t *data, uint16_t len);
+uint8_t sendShortMessage(char *tel, char *content, uint16_t len);
 
-} recordUpload_s;
-
-typedef struct bleDev
-{
-    char imei[16];
-    uint8_t batLevel;
-    uint16_t startCnt;
-    float   vol;
-    struct bleDev *next;
-} bleInfo_s;
-
-
-void serverLoginRespon(void);
-uint8_t serverIsReady(void);
-void serverReconnect(void);
-
-void hiddenServCloseRequest(void);
-void hiddenServCloseClear(void);
-
-void hiddenServLoginRespon(void);
-void hiddenServReconnect(void);
-uint8_t hiddenServIsReady(void);
-
-void bleServerAddInfo(bleInfo_s dev);
-void showBleList(void);
-
-void bleServerLoginReady(void);
-
-void upgradeRunTask(void);
-
-void agpsRequestSet(void);
-void agpsRequestClear(void);
-void agpsConnRunTask(void);
-
-
-uint8_t isRecUploadRun(void);
-void recSetUploadFile(uint8_t *filename, uint32_t filesize, uint8_t *recContent);
-
-void recUploadRsp(void);
-void recordUploadTask(void);
-
-
-void jt808serverReconnect(void);
-void jt808AuthOk(void);
-
-void serverConnTask(void);
-
+uint32_t netIpChange(char *ip);
+void getBleMac(void);
+uint8_t getSimInfo(void);
+char *readModuleIMEI(void);
 
 #endif
+

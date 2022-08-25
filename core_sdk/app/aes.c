@@ -3,9 +3,6 @@
 #include <string.h>
 #include "aes.h"
 #include "app_sys.h"
-
-extern uint16_t GetCrc16(const char *pData, int nLength);
-
 /**
  * SºÐ
  */
@@ -690,7 +687,7 @@ char dencryptData(char *dencrypt, unsigned char *dencryptlen, char *data, unsign
     ret = deAes(data, len, AESKEY);
     if (ret == 0)
     {
-        LogMessage(DEBUG_ALL, "Decrypt Error");
+        LogMessage(DEBUG_ALL, "Decrypt Error\n");
         return 0;
     }
     crc1 = data[0] << 8 | data[1];
@@ -699,14 +696,14 @@ char dencryptData(char *dencrypt, unsigned char *dencryptlen, char *data, unsign
     {
         *dencryptlen = data[2];
         strncpy(dencrypt, data + 3, data[2]);
-        LogMessage(DEBUG_ALL, "Decrypt OK");
+        LogMessage(DEBUG_ALL, "Decrypt OK\n");
         return 1;
     }
     else
     {
         *dencryptlen = 0;
         dencrypt[0] = 0;
-        LogMessage(DEBUG_ALL, "Decrypt Fail");
+        LogMessage(DEBUG_ALL, "Decrypt Fail\n");
         return 0;
     }
 

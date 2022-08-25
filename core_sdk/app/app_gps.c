@@ -1,55 +1,83 @@
 #include "app_gps.h"
-#include "app_sys.h"
-#include "math.h"
-#include "stdlib.h"
-#include "stdio.h"
-#include "app_protocol.h"
-#include "app_param.h"
-#include "app_net.h"
-#include "app_task.h"
 #include "app_port.h"
-#include "app_jt808.h"
-
+#include "app_sys.h"
+#include "app_task.h"
+#include "app_protocol.h"
+#include "app_protocol_808.h"
+#include "app_param.h"
+#include "math.h"
+#include "app_customercmd.h"
 #define PIA 3.1415926
 
-static gpsinfo_s gpsinfonow;
-static gpsfifo_s gpsfifo;
-static lastUploadPosition_s lastuploadgpsinfo;
+static GPSINFO gpsinfonow;
+static GPSFIFO gpsfifo;
+static LASTUPLOADGPSINFO lastuploadgpsinfo;
 
-/**************************************************
-@bref		打印gps信息
-@param
-@return
-@note
-**************************************************/
+
+static void addGpsInfo(GPSINFO *gpsinfo);
+
+/*计算NMEA 的CRC校验*/
+static unsigned char nemaCalcuateCrc(char *str, int len)
+{
+    int i, index, size;
+    unsigned char crc;
+    crc = str[1];
+    index = getCharIndex((uint8_t *)str, len, '*');
+    size = len - index;
+    for (i = 2; i < len - size; i++)
+    {
+        crc ^= str[i];
+    }
+    return crc;
+}
+static unsigned char chartohexcharvalue(char value)
+{
+    if (value >= '0' && value <= '9')
+        return value - '0';
+    if (value >= 'a' && value <= 'z')
+        return value - 'a' + 10;
+    if (value >= 'A' && value <= 'Z')
+        return value - 'A' + 10;
+    return 0;
+}
+
+/*将字符串的16进制转换为数值*/
+unsigned int charstrToHexValue(char *value)
+{
+    unsigned int calvalue = 0;
+    unsigned char i, j, len = strlen(value);
+    j = 0;
+    j = len;
+    for (i = 0; i < len; i++)
+    {
+        value[i] = chartohexcharvalue(value[i]);
+        calvalue += value[i] * pow(16, j - 1);
+        j--;
+    }
+    return calvalue;
+}
 
 void showgpsinfo(void)
 {
     char debug[300];
     uint8_t i, total;
-    uint32_t laValue, loValue;
-    gpsinfo_s *gpsinfo;
+    GPSINFO *gpsinfo;
     gpsinfo = &gpsinfonow;
-    sprintf(debug, "NMEA:%02u/%02u/%02u %02u:%02u:%02u;", gpsinfo->datetime.year, gpsinfo->datetime.month,
-            gpsinfo->datetime.day, gpsinfo->datetime.hour, gpsinfo->datetime.minute, gpsinfo->datetime.second);
-    laValue = gpsinfo->latitude * 1000000;
-    loValue = gpsinfo->longtitude * 1000000;
-	
-    sprintf(debug + strlen(debug), "%c %lu.%lu %c %lu.%lu\r\n", gpsinfo->EW, laValue / 1000000, laValue % 1000000, gpsinfo->NS,
-            loValue / 1000000, loValue % 1000000);
+    sprintf(debug, "NMEA:%d/%d/%d  %02d:%02d:%02d;", gpsinfo->datetime.year, gpsinfo->datetime.month, gpsinfo->datetime.day,
+            gpsinfo->datetime.hour, gpsinfo->datetime.minute, gpsinfo->datetime.second);
+    sprintf(debug + strlen(debug), "%c %f %c %f;\n", gpsinfo->NS, gpsinfo->latitude, gpsinfo->EW, gpsinfo->longtitude);
+    sprintf(debug + strlen(debug), "Speed=%.2fKm/h;", gpsinfo->speed);
     sprintf(debug + strlen(debug), "%s;", gpsinfo->fixstatus ? "FIXED" : "Invalid");
-    loValue = gpsinfo->pdop * 100;
-    sprintf(debug + strlen(debug), "PDOP=%lu.%lu;", loValue / 100, loValue % 100);
-    sprintf(debug + strlen(debug), "fixmode=%u;", gpsinfo->fixmode);
-    sprintf(debug + strlen(debug), "GPS View=%u;Beidou View=%u;", gpsinfo->gpsviewstart, gpsinfo->beidouviewstart);
-    sprintf(debug + strlen(debug), "Use Star=%u;", gpsinfo->used_star);
+    sprintf(debug + strlen(debug), "PDOP=%.2f;fixmode=%d;", gpsinfo->pdop, gpsinfo->fixmode);
+    sprintf(debug + strlen(debug), "GPS View=%d;Beidou View=%d;", gpsinfo->gpsviewstart, gpsinfo->beidouviewstart);
+    sprintf(debug + strlen(debug), "Use Star=%d;", gpsinfo->used_star);
     sprintf(debug + strlen(debug), "GPS CN:");
     total = sizeof(gpsinfo->gpsCn);
     for (i = 0; i < total; i++)
     {
         if (gpsinfo->gpsCn[i] != 0)
         {
-            sprintf(debug + strlen(debug), "%u;", gpsinfo->gpsCn[i]);
+            sprintf(debug + strlen(debug), "%d;", gpsinfo->gpsCn[i]);
         }
     }
     sprintf(debug + strlen(debug), "BeiDou CN:");
@@ -58,192 +86,11 @@ void showgpsinfo(void)
     {
         if (gpsinfo->beidouCn[i] != 0)
         {
-            sprintf(debug + strlen(debug), "%u;", gpsinfo->beidouCn[i]);
+            sprintf(debug + strlen(debug), "%d;", gpsinfo->beidouCn[i]);
         }
     }
+    sprintf(debug + strlen(debug), "\n");
     LogMessage(DEBUG_ALL, debug);
-}
-
-/**************************************************
-@bref		gps过滤
-@param
-@return
-@note
-**************************************************/
-
-static uint8_t  gpsFilter(gpsinfo_s *gpsinfo)
-{
-    if (gpsinfo->fixstatus == 0)
-    {
-        return 0;
-    }
-    if (gpsinfo->fixmode != 3)
-    {
-        return 0 ;
-    }
-    if (gpsinfo->pdop > sysparam.pdop)
-    {
-        return 0;
-    }
-    if (gpsinfo->datetime.day == 0)
-    {
-        return 0;
-    }
-    return 1;
-}
-/**************************************************
-@bref		添加新gps信息到队列中
-@param
-@return
-@note
-**************************************************/
-static void addGpsInfo(gpsinfo_s *gpsinfo)
-{
-
-    if (gpsinfo->fixstatus)
-    {
-        sysinfo.gpsLastFixTick = sysinfo.sysTick;
-        if (sysinfo.updateLocalTimeReq)
-        {
-            sysinfo.updateLocalTimeReq = 0;
-            portUpdateLocalTime(gpsinfo->datetime.year, gpsinfo->datetime.month,
-                                gpsinfo->datetime.day, gpsinfo->datetime.hour,
-                                gpsinfo->datetime.minute, gpsinfo->datetime.second,
-                                sysparam.utc);
-        }
-
-    }
-
-
-    if (gpsFilter(gpsinfo) == 0)
-    {
-        gpsinfo->fixstatus = 0;
-    }
-    else
-    {
-        memcpy(&gpsfifo.lastfixgpsinfo, gpsinfo, sizeof(gpsinfo_s));
-    }
-
-    sysinfo.gpsUpdateTick = sysinfo.sysTick;
-
-    gpsfifo.currentindex = (gpsfifo.currentindex + 1) % GPSFIFOSIZE;
-    //往队列中添加数据
-    memcpy(&gpsfifo.gpsinfohistory[gpsfifo.currentindex], gpsinfo, sizeof(gpsinfo_s));
-    //showgpsinfo();
-}
-/**************************************************
-@bref		清除当前gps
-@param
-@return
-@note
-**************************************************/
-
-void gpsClearCurrentGPSInfo(void)
-{
-    memset(&gpsfifo.gpsinfohistory[gpsfifo.currentindex], 0, sizeof(gpsinfo_s));
-}
-/**************************************************
-@bref		获取最新gps信息
-@param
-@return
-@note
-**************************************************/
-
-gpsinfo_s *getCurrentGPSInfo(void)
-{
-    return &gpsfifo.gpsinfohistory[gpsfifo.currentindex];
-}
-/**************************************************
-@bref		获取最后定位
-@param
-@return
-@note
-**************************************************/
-
-gpsinfo_s *getLastFixedGPSInfo(void)
-{
-    return &gpsfifo.lastfixgpsinfo;
-}
-/**************************************************
-@bref		获取gps信息队列
-@param
-@return
-@note
-**************************************************/
-
-gpsfifo_s *getGSPfifo(void)
-{
-    return &gpsfifo;
-}
-
-
-
-/**************************************************
-@bref		维度转换
-@param
-	latitude		原始维度
-	Direction		方向，E/W
-@return
-	新维度
-@note
-**************************************************/
-
-static double latitude_to_double(double latitude, char Direction)
-{
-    double f_lat;
-    unsigned long degree, fen, tmpval;
-    if (latitude == 0 || (Direction != 'N' && Direction != 'S'))
-    {
-        return 0.0;
-    }
-    //扩大10万倍,忽略最后一个小数点,变成整型
-    tmpval = (unsigned long)(latitude * 100000.0);
-    //获取到维度--度
-    degree = tmpval / (100 * 100000);
-    //获取到维度--秒
-    fen = tmpval % (100 * 100000);
-    if (Direction == 'S')
-    {
-        f_lat = ((double)degree + ((double)fen) / 100000.0 / 60.0) * (-1);
-    }
-    else
-    {
-        f_lat = (double)degree + ((double)fen) / 100000.0 / 60.0;
-    }
-    return f_lat;
-}
-
-/**************************************************
-@bref		经度转换
-@param
-	longitude		原始经度
-	Direction		方向，E/W
-@return
-	新经度
-@note
-**************************************************/
-
-static double longitude_to_double(double longitude, char Direction)
-{
-    double  f_lon;
-    unsigned long degree, fen, tmpval;
-    if (longitude == 0 || (Direction != 'E' && Direction != 'W'))
-    {
-        return 0.0;
-    }
-    tmpval = (unsigned long)(longitude * 100000.0);
-    degree = tmpval / (100 * 100000);
-    fen = tmpval % (100 * 100000);
-    if (Direction == 'W')
-    {
-        f_lon = ((double)degree + ((double)fen) / 100000.0 / 60.0) * (-1);
-    }
-    else
-    {
-        f_lon = (double)degree + ((double)fen) / 100000.0 / 60.0;
-    }
-    return f_lon;
-
 }
 
 /*
@@ -261,9 +108,9 @@ $GPRMC,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>*hh<CR><LF>
 <11> 磁偏角方向，E（东）或W（西）
 <12> 模式指示（仅NMEA0183 3.00版本输出，A=自主定位，D=差分，E=估算，N=数据无效）
 */
-static void parse_RMC(gpsitem_s *item)
+void parse_RMC(GPSITEM *item)
 {
-    gpsinfo_s *gpsinfo;
+    GPSINFO *gpsinfo;
     gpsinfo = &gpsinfonow;
     if (item->item_data[1][0] != 0)
     {
@@ -315,9 +162,12 @@ static void parse_RMC(gpsitem_s *item)
         gpsinfo->datetime.year = (item->item_data[9][4] - '0') * 10 + (item->item_data[9][5] - '0');
 
     }
+    gpsinfo->gpsticksec = gpsinfo->datetime.hour * 3600 + gpsinfo->datetime.minute * 60 + gpsinfo->datetime.second;
+    //sysinfo.gpsUpdatetick = sysinfo.System_Tick;
     addGpsInfo(gpsinfo);
-    memset(gpsinfo, 0, sizeof(gpsinfo_s));
+    memset(gpsinfo, 0, sizeof(GPSINFO));
 }
+
 /*
 $GPGSA
 例：$GPGSA,A,3,01,20,19,13,,,,,,,,,40.4,24.4,32.2*0A
@@ -341,9 +191,9 @@ $GPGSA
 字段17：VDOP垂直精度因子（0.5 - 99.9）
 字段18：校验值
 */
-static void parse_GSA(gpsitem_s *item)
+void parse_GSA(GPSITEM *item)
 {
-    gpsinfo_s *gpsinfo;
+    GPSINFO *gpsinfo;
     gpsinfo = &gpsinfonow;
 
     if (item->item_data[2][0] != 0)
@@ -376,26 +226,36 @@ $GPGSV
 字段15：信噪比（00－99）dbHz
 字段16：校验值
 */
-static void parse_GSV(gpsitem_s *item)
+void parse_GSV(GPSITEM *item)
 {
-    gpsinfo_s *gpsinfo;
-    uint8_t gpskind = 99, currentpage;
+    GPSINFO *gpsinfo;
+    uint8_t gpskind = 0, currentpage;
     static uint8_t count = 0;
     gpsinfo = &gpsinfonow;
+
+    jt808UpdateStatus(JT808_STATUS_USE_GPS, 0);
+    jt808UpdateStatus(JT808_STATUS_USE_BEIDOU, 0);
+    jt808UpdateStatus(JT808_STATUS_USE_GLONASS, 0);
+    jt808UpdateStatus(JT808_STATUS_USE_GALILEO, 0);
+
     if (my_strpach(item->item_data[0], (const char *)"$GP"))
     {
+        jt808UpdateStatus(JT808_STATUS_USE_GPS, 1);
         gpskind = 0;
     }
     else if (my_strpach(item->item_data[0], (const char *)"$GB"))
     {
+        jt808UpdateStatus(JT808_STATUS_USE_BEIDOU, 1);
         gpskind = 1;
     }
     else if (my_strpach(item->item_data[0], (const char *)"$BD"))
     {
+        jt808UpdateStatus(JT808_STATUS_USE_BEIDOU, 1);
         gpskind = 1;
     }
     else if (my_strpach(item->item_data[0], (const char *)"$GL"))
     {
+        jt808UpdateStatus(JT808_STATUS_USE_GLONASS, 1);
         gpskind = 2;
     }
 
@@ -477,26 +337,16 @@ $GPGGA
 字段12：差分站ID号0000 - 1023（前导位数不足则补0，如果不是差分定位将为空）
 字段13：校验值
 */
-static void parse_GGA(gpsitem_s *item)
+void parse_GGA(GPSITEM *item)
 {
-    gpsinfo_s *gpsinfo;
+    GPSINFO *gpsinfo;
     gpsinfo = &gpsinfonow;
     if (item->item_data[7][0] != 0)
     {
         gpsinfo->used_star = atoi(item->item_data[7]);
     }
 }
-
-/**************************************************
-@bref		解析nmea类型
-@param
-	str
-@return
-	新经度
-@note
-**************************************************/
-
-static nmeatype_e parseGetNmeaType(char *str)
+static unsigned char parseGetNmeaType(char *str)
 {
     if (my_strstr(str, "RMC", 6))
     {
@@ -520,101 +370,15 @@ static nmeatype_e parseGetNmeaType(char *str)
 
     return 0;
 }
-/**************************************************
-@bref		计算校验
-@param
-	str
-	len
-@return
 
-@note
-**************************************************/
-
-static uint8_t nemaCalcuateCrc(char *str, int len)
+/*将单独一条数据分解成一个个ITEM项*/
+void parseGPS(uint8_t *str, uint16_t len)
 {
-    int i, index, size;
-    unsigned char crc;
-    crc = str[1];
-    index = getCharIndex((uint8_t *)str, len, '*');
-    if (index < 0)
-    {
-        return crc;
-    }
-    size = len - index;
-    for (i = 2; i < len - size; i++)
-    {
-        crc ^= str[i];
-    }
-    return crc;
-}
-/**************************************************
-@bref		char转换成数值
-@param
-	char
-@return
-
-@note
-**************************************************/
-
-static uint8_t chartohexcharvalue(char value)
-{
-    if (value >= '0' && value <= '9')
-        return value - '0';
-    if (value >= 'a' && value <= 'z')
-        return value - 'a' + 10;
-    if (value >= 'A' && value <= 'Z')
-        return value - 'A' + 10;
-    return 0;
-}
-/**************************************************
-@bref		char字符串转换为数值
-@param
-	value
-@return
-
-@note
-**************************************************/
-
-static uint32_t charstrToHexValue(char *value)
-{
-    unsigned int calvalue = 0;
-    unsigned char i, j, len, hexVal;
-    len = strlen(value);
-    j = 0;
-    j = len;
-    if (len == 0)
-    {
-        return 0;
-    }
-    for (i = 0; i < len; i++)
-    {
-        hexVal = chartohexcharvalue(value[i]);
-        calvalue += hexVal * pow(16, j - 1);
-        j--;
-    }
-    return calvalue;
-}
-/**************************************************
-@bref		解析一条nmea数据
-@param
-	str
-	len
-@return
-
-@note
-$GPGGA,092204.999,4250.5589,S,14718.5084,E,1,04,24.4,19.7,M,,,,0000*1F
-**************************************************/
-
-static void parseGPS(uint8_t *str, uint16_t len)
-{
-    gpsitem_s item;
-    uint8_t nmeatype, nmeacrc;
-    int i = 0, data_len = 0;
-    memset(&item, 0, sizeof(gpsitem_s));
-    if (len == 0)
-    {
-        return;
-    }
+    GPSITEM item;
+    char saveBuf[128];
+    unsigned char nmeacrc, nmeatype;
+    int i = 0, data_len = 0, index;
+    memset(&item, 0, sizeof(GPSITEM));
     for (i = 0; i < len; i++)
     {
         if (str[i] == ',' || str[i] == '*')
@@ -631,25 +395,26 @@ static void parseGPS(uint8_t *str, uint16_t len)
         {
             item.item_data[item.item_cnt][data_len] = str[i];
             data_len++;
-            if (i + 1 == len)
-            {
-                item.item_cnt++;
-            }
             if (data_len >= GPSITEMSIZEMAX)
             {
                 return ;
             }
         }
     }
-
-    if (item.item_cnt == 0)
-    {
-        return;
-    }
+    index = getCharIndex((uint8_t *)str, len, '*');
+    memcpy(item.item_data[item.item_cnt], str + index + 1, len - index - 1);
     nmeacrc = nemaCalcuateCrc((char *)str, len);
-    if (nmeacrc == charstrToHexValue(item.item_data[item.item_cnt - 1]))
+    if (nmeacrc == charstrToHexValue(item.item_data[item.item_cnt]))
     {
         nmeatype = parseGetNmeaType(item.item_data[0]);
+        memcpy(saveBuf, str, len);
+        saveBuf[len] = 0;
+        strcat(saveBuf, "\r\n");
+
+        if (nmeatype == NMEA_RMC || nmeatype == NMEA_GSA || nmeatype == NMEA_GGA || sysinfo.nmeaoutputonoff)
+        {
+            customGpsInPut(saveBuf, strlen(saveBuf));
+        }
         switch (nmeatype)
         {
             case NMEA_RMC:
@@ -669,32 +434,37 @@ static void parseGPS(uint8_t *str, uint16_t len)
     }
     else
     {
-        LogMessage(DEBUG_ALL, "parseGPS==>Check CRC Error");
+        LogMessage(DEBUG_ALL, "parseGPS==>Check CRC Error\n");
     }
 }
-/**************************************************
-@bref		解析多条nmea数据
-@param
-	str
-	len
-@return
-
-@note
-**************************************************/
-
-void nmeaParser(uint8_t *buf, uint16_t len)
+/*
+$GNRMC,091602.00,A,2303.49865,N,11322.83066,E,0.026,,201219,,,A,V*19
+$GNVTG,,T,,M,0.026,N,0.048,K,A*35
+$GNGGA,091602.00,2303.49865,N,11322.83066,E,1,12,0.94,3.7,M,-5.2,M,,*52
+$GNGSA,M,3,22,14,03,32,16,27,29,,,,,,1.70,0.94,1.41,1*0C
+$GNGSA,M,3,05,24,25,09,,,,,,,,,1.70,0.94,1.41,3*0D
+$GNGSA,M,3,16,06,07,10,01,02,21,24,29,03,,,1.70,0.94,1.41,4*0E
+$GPGSV,3,1,11,03,26,287,34,04,16,321,,14,63,117,43,16,65,257,41,0*68
+$GPGSV,3,2,11,22,29,263,41,23,11,320,19,26,70,344,,27,24,181,19,0*66
+$GPGSV,3,3,11,29,16,048,18,31,44,039,,32,34,135,40,0*51
+$GAGSV,3,1,10,02,07,247,,03,26,319,,05,76,276,38,09,43,157,40,0*7A
+$GAGSV,3,2,10,11,09,148,,12,10,098,,18,44,111,44,24,50,013,14,0*7F
+$GAGSV,3,3,10,25,49,281,40,31,09,048,,0*77
+$GBGSV,4,1,16,01,50,128,36,02,47,234,35,03,62,187,39,04,32,111,33,0*7A
+$GBGSV,4,2,16,06,75,120,37,07,74,329,16,08,00,171,,09,74,343,,0*7F
+$GBGSV,4,3,16,10,58,260,33,14,33,301,,16,79,114,34,21,41,191,40,0*79
+*/
+void nmeaParse(uint8_t *buf, uint16_t len)
 {
     uint16_t i;
     char onenmeadata[100];
     uint8_t foundnmeahead, restoreindex;
     foundnmeahead = 0;
     restoreindex = 0;
-
-    if (sysinfo.nmeaOutput)
+    if (sysinfo.nmeaoutputonoff)
     {
-        LogMessageWL(DEBUG_FACTORY, (char *) buf, len);
+        //LogMessageWL(DEBUG_FACTORY, (char *) buf, len);
     }
-
     for (i = 0; i < len; i++)
     {
         if (buf[i] == '$')
@@ -723,20 +493,75 @@ void nmeaParser(uint8_t *buf, uint16_t len)
     }
 
 }
-
-/**************************************************
-@bref		将输入的时间按时区进行转换得到新时间
-@param
-	utctime			时间
-	localtimezone	时区
-@return
-	转换后的时间
-@note
-**************************************************/
-
-datetime_s changeUTCTimeToLocalTime(datetime_s utctime, int8_t localtimezone)
+/*
+维度转化
+*/
+double latitude_to_double(double latitude, char Direction)
 {
-    datetime_s localtime;
+    double f_lat;
+    unsigned long degree, fen, tmpval;
+
+    if (latitude == 0 || (Direction != 'N' && Direction != 'S'))
+    {
+        return 0.0;
+    }
+    //扩大10万倍,忽略最后一个小数点,变成整型
+    tmpval = (unsigned long)(latitude * 100000.0);
+    //获取到维度--度
+    degree = tmpval / (100 * 100000);
+    //获取到维度--秒
+    fen = tmpval % (100 * 100000);
+
+    if (Direction == 'S')
+    {
+        f_lat = ((double)degree + ((double)fen) / 100000.0 / 60.0) * (-1);
+    }
+    else
+    {
+        f_lat = (double)degree + ((double)fen) / 100000.0 / 60.0;
+    }
+
+    return f_lat;
+}
+
+/*
+经度转化
+*/
+double longitude_to_double(double longitude, char Direction)
+{
+    double  f_lon;
+    unsigned long degree, fen, tmpval;
+
+
+    if (longitude == 0 || (Direction != 'E' && Direction != 'W'))
+    {
+        return 0.0;
+    }
+
+    tmpval = (unsigned long)(longitude * 100000.0);
+    degree = tmpval / (100 * 100000);
+    fen = tmpval % (100 * 100000);
+
+    if (Direction == 'W')
+    {
+        f_lon = ((double)degree + ((double)fen) / 100000.0 / 60.0) * (-1);
+    }
+    else
+    {
+        f_lon = (double)degree + ((double)fen) / 100000.0 / 60.0;
+    }
+
+    return f_lon;
+
+}
+
+
+/*------------------------------------------------------*/
+
+//时区转换
+DATETIME changeUTCTimeToLocalTime(DATETIME utctime, int8_t localtimezone)
+{
+    DATETIME localtime;
     if (utctime.year == 0 || utctime.month == 0 || utctime.day == 0)
     {
         return utctime;
@@ -844,16 +669,103 @@ datetime_s changeUTCTimeToLocalTime(datetime_s utctime, int8_t localtimezone)
     return localtime;
 
 }
+void updateLocalRTCTime(DATETIME *datetime)
+{
+    DATETIME localtime;
+    localtime = changeUTCTimeToLocalTime(*datetime, sysparam.utc);
+    updateRTCdatetime(localtime.year, localtime.month, localtime.day, localtime.hour, localtime.minute, localtime.second);
+
+    if (sysparam.MODE == MODE1 || sysparam.MODE == MODE21)
+    {
+        setNextAlarmTime();
+    }
+    else if (sysparam.MODE == MODE3 || sysparam.MODE == MODE23)
+    {
+        setNextWakeUpTime();
+    }
+};
+
+/*------------------------------------------------------*/
+/*------------------------------------------------------*/
+//返回0则过滤
+static uint8_t  gpsFilter(GPSINFO *gpsinfo)
+{
+    if (gpsinfo->fixstatus == 0)
+        return 0;
+    return 1;
+}
+static void addGpsInfo(GPSINFO *gpsinfo)
+{
+
+    if (gpsinfo->fixstatus)
+    {
+
+        sysinfo.gpsLastFixedTick = sysinfo.System_Tick;
+        updateSystemLedStatus(SYSTEM_LED_GPSOK, 1);
+        if (sysinfo.localrtchadupdate == 0)
+        {
+            if (gpsinfo->datetime.year != 0 && gpsinfo->datetime.month != 0 && gpsinfo->datetime.day != 0)
+            {
+                sysinfo.localrtchadupdate = 1;
+                updateLocalRTCTime(&gpsinfo->datetime);
+            }
+        }
+    }
+    else
+    {
+        updateSystemLedStatus(SYSTEM_LED_GPSOK, 0);
+    }
 
 
-/**************************************************
-@bref		计算2个点的长度
-@param
-@return
-@note
-**************************************************/
+    //将添加进来的数据复制到队列中
+    if (gpsFilter(gpsinfo) == 0)
+    {
+        gpsinfo->fixstatus = 0;
+    }
+    else
+    {
+        memcpy(&gpsfifo.lastfixgpsinfo, gpsinfo, sizeof(GPSINFO));
+    }
 
-static double lengthOfPoints(double lat1, double lng1, double lat2, double lng2)
+    //    if (gpsinfo->gpsticksec == gpsfifo.gpsinfohistory[gpsfifo.currentindex].gpsticksec)
+    //    {
+    //        //当前GPS数据与队列中最新的数据时间一样时，将新的经纬度替换为最新的数据，队列不新增
+    //        //往队列中添加数据
+    //        memcpy(&gpsfifo.gpsinfohistory[gpsfifo.currentindex], gpsinfo, sizeof(GPSINFO));
+    //        LogMessage(DEBUG_ALL, "replace the last gps data\n");
+    //    }
+    //    else
+    //时间不同，队列新增
+    gpsfifo.currentindex = (gpsfifo.currentindex + 1) % GPSFIFOSIZE;
+    //往队列中添加数据
+    memcpy(&gpsfifo.gpsinfohistory[gpsfifo.currentindex], gpsinfo, sizeof(GPSINFO));
+    showgpsinfo();
+    sysinfo.gpsUpdatetick = sysinfo.System_Tick;
+}
+
+void gpsClearCurrentGPSInfo(void)
+{
+    memset(&gpsfifo.gpsinfohistory[gpsfifo.currentindex],0,sizeof(GPSINFO));
+    updateSystemLedStatus(SYSTEM_LED_GPSOK, 0);
+}
+GPSINFO *getCurrentGPSInfo(void)
+{
+    return &gpsfifo.gpsinfohistory[gpsfifo.currentindex];
+}
+
+GPSINFO *getLastFixedGPSInfo(void)
+{
+    return &gpsfifo.lastfixgpsinfo;
+}
+
+GPSFIFO *getGSPfifo(void)
+{
+    return &gpsfifo;
+}
+/*------------------------------------------------------*/
+/*------------------------------------------------------*/
+/*------------------------------------------------------*/
+double calculateTheDistanceBetweenTwoPonits(double lat1, double lng1, double lat2, double lng2)
 {
     double radLng1, radLng2;
     double a, b, s;
@@ -864,32 +776,43 @@ static double lengthOfPoints(double lat1, double lng1, double lat2, double lng2)
     s = 2 * asin(sqrt(sin(a / 2) * sin(a / 2) + cos(radLng1) * cos(radLng2) * sin(b / 2) * sin(b / 2))) * 6378.137 * 1000;
     return s;
 }
-/**************************************************
-@bref		初始化最后点
-@param
-@return
-@note
-**************************************************/
 
-static void initLastPoint(gpsinfo_s *gpsinfo)
+static void initLastPoint(GPSINFO *gpsinfo)
 {
     lastuploadgpsinfo.datetime = gpsinfo->datetime;
     lastuploadgpsinfo.latitude = gpsinfo->latitude;
     lastuploadgpsinfo.longtitude = gpsinfo->longtitude;
+    lastuploadgpsinfo.gpsticksec = gpsinfo->gpsticksec;
     lastuploadgpsinfo.init = 1;
-    LogMessage(DEBUG_ALL, "Update last position");
+    LogMessage(DEBUG_ALL, "Update last position\n");
 }
 
-/**************************************************
-@bref		自动围栏计算
-@param
-@return
-@note		以最后上传的一个点作为围栏中心，超过围栏中心则上报位置
-**************************************************/
+//static uint8_t isStepHasUpdate(void)
+//{
+//    static uint16_t clastStep = 0;
+//    if (sysparam.step == 0)
+//    {
+//        return 0;
+//    }
+//    if (sysinfo.stepCount == 0)
+//    {
+//        clastStep = 0;
+//    }
+//    if (sysinfo.stepCount != clastStep)
+//    {
+//        if (sysinfo.stepCount > (clastStep + sysparam.step))
+//        {
+//            clastStep = sysinfo.stepCount;
+//			LogMessage(DEBUG_ALL,"isStepHasUpdate==>Step update\n");
+//			return 1;
+//        }
+//    }
+//    return 0;
+//}
 
-static int8_t autoFenceCalculate(void)
+static int8_t calculateDistanceOfPoint(void)
 {
-    gpsinfo_s *gpsinfo;
+    GPSINFO *gpsinfo;
     double distance;
     char debug[100];
     gpsinfo = getCurrentGPSInfo();
@@ -903,32 +826,31 @@ static int8_t autoFenceCalculate(void)
         return -2;
     }
 
-    distance = lengthOfPoints(gpsinfo->latitude, gpsinfo->longtitude, lastuploadgpsinfo.latitude,
-                              lastuploadgpsinfo.longtitude);
-    sprintf(debug, "distance of point =%.2fm", distance);
+    distance = calculateTheDistanceBetweenTwoPonits(gpsinfo->latitude, gpsinfo->longtitude, lastuploadgpsinfo.latitude,
+               lastuploadgpsinfo.longtitude);
+    sprintf(debug, "distance of point =%.2fm\n", distance);
     LogMessage(DEBUG_ALL, debug);
-    if (distance >= sysparam.fence)
+    if (distance > sysparam.fence)
     {
         return 1;
     }
     return 0;
 }
 
-/**************************************************
-@bref		拐弯计算
-@param
-@return
-@note
-**************************************************/
-
-int8_t calculateTheGPSCornerPoint(void)
+static int8_t calculateTheGPSCornerPoint(void)
 {
-    gpsfifo_s *gpsfifo;
+    GPSFIFO *gpsfifo;
+    GPSINFO *gpscurrent;
+    char debug[30];
     uint16_t course[5];
     uint8_t positionidnex[5];
     uint16_t coursechange;
     uint8_t cur_index, i;
 
+    //    if (sysparam.turnalg == 0)
+    //    {
+    //        return 0;
+    //    }
 
     gpsfifo = getGSPfifo();
     //获取当前最新的gps索引
@@ -956,14 +878,12 @@ int8_t calculateTheGPSCornerPoint(void)
     {
         coursechange = 360 - coursechange;
     }
-    LogPrintf(DEBUG_ALL, "Total course=%d", coursechange);
+    sprintf(debug, "Total course=%d\n", coursechange);
+    LogMessage(DEBUG_ALL, debug);
     if (coursechange >= 15 && coursechange <= 45)
     {
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[1]]);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[3]]);
-
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[1]]);
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[3]]);
     }
     else if (coursechange > 45)
     {
@@ -973,75 +893,33 @@ int8_t calculateTheGPSCornerPoint(void)
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[3]]);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, &gpsfifo->gpsinfohistory[positionidnex[4]]);
 
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[0]]);
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[1]]);
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[2]]);
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[3]]);
-        jt808SendToServer(TERMINAL_POSITION, &gpsfifo->gpsinfohistory[positionidnex[4]]);
-
+        gpscurrent = getCurrentGPSInfo();
+        if (gpsfifo->gpsinfohistory[positionidnex[0]].gpsticksec == gpscurrent->gpsticksec)
+        {
+            gpscurrent->hadupload = 1;
+        }
     }
     return 1;
 }
 
-/**************************************************
-@bref		轨迹上送
-@param
-@return
-@note
-**************************************************/
-
 void gpsUploadPointToServer(void)
 {
     static uint64_t tick = 0;
-
-    if (sysinfo.gpsOnoff == 0 ||  sysparam.gpsuploadgap == 0 || sysparam.gpsuploadgap >= GPS_UPLOAD_GAP_MAX)
+    if (sysinfo.GPSStatus == 0)
     {
-        tick = 0;
-        return;
+        return ;
     }
-
     tick++;
     calculateTheGPSCornerPoint();
     if (tick >= sysparam.gpsuploadgap)
     {
-        if (autoFenceCalculate() == 1)
+        if (calculateDistanceOfPoint() == 1)
         {
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_12, getCurrentGPSInfo());
-            //jt808BatchPushIn(getCurrentGPSInfo());
-            jt808SendToServer(TERMINAL_POSITION, getCurrentGPSInfo());
             initLastPoint(getCurrentGPSInfo());
             tick = 0;
         }
     }
 }
 
-
-/**************************************************
-@bref		通过0时区时间，更新本地时间
-@param
-	y		年
-	m		月
-	d		日
-	hh		时
-	mm		分
-	ss		秒
-	utc		本地时区
-@return
-@note
-**************************************************/
-
-void portUpdateLocalTime(uint8_t y, uint8_t m, uint8_t d, uint8_t hh, uint8_t mm, uint8_t ss, int8_t utc)
-{
-    datetime_s datetime, nd;
-    y = y % 100;
-    datetime.year = y;
-    datetime.month = m;
-    datetime.day = d;
-    datetime.hour = hh;
-    datetime.minute = mm;
-    datetime.second = ss;
-    nd = changeUTCTimeToLocalTime(datetime, utc);
-    LogPrintf(DEBUG_ALL, "UTC 0==>%02d/%02d/%02d %02d:%02d:%02d", y + 2000, m, d, hh, mm, ss);
-    portSetRtcDateTime(nd.year, nd.month, nd.day, nd.hour, nd.minute, nd.second, utc);
-}
 

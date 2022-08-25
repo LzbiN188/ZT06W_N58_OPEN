@@ -1,80 +1,75 @@
-#ifndef APP_INSTRUCTIONCMD
-#define APP_INSTRUCTIONCMD
+#ifndef APP_INSTRUCTION_H
+#define APP_INSTRUCTION_H
+
 
 #include "nwy_osi_api.h"
+#include "app_sys.h"
 
-typedef enum
-{
-    PARAM_INS,
-    STATUS_INS,
-    VERSION_INS,
-    SN_INS,
-    SERVER_INS,
-    MODE_INS,
-    HBT_INS,
-    TTS_INS,
-    JT_INS,
-    POSITION_INS,
-    APN_INS,
-    UPS_INS,
-    LOWW_INS,
-    LED_INS,
-    POITYPE_INS,
-    RESET_INS,
-    UTC_INS,
-    ALARMMODE_INS,
-    DEBUG_INS,
-    ACCCTLGNSS_INS,
-    PDOP_INS,
-    BF_INS,
-    CF_INS,
-    FENCE_INS,
-    FACTORY_INS,
-    RELAY_INS,
-    VOL_INS,
-    ACCDETMODE_INS,
-    SETAGPS_INS,
-    BLEEN_INS,
-    SOS_INS,
-    FCG_INS,
-    FACTORYTEST_INS,
-    JT808SN_INS,
-    JT808PARAM_INS,
-    HIDESERVER_INS,
-    SETBLEMAC_INS,
-    READPARAM_INS,
-    SETBLEPARAM_INS,
-    SETBLEWARNPARAM_INS,
-    RELAYFUN_INS,
-    RELAYSPEED_INS,
-    BLESERVER_INS,
-} cmd_e;
+typedef enum{
+	PARAM_INS,
+	STATUS_INS,
+	VERSION_INS,
+	SN_INS,
+	SERVER_INS,
+	MODE_INS,
+	HBT_INS,
+	TTS_INS,
+	JT_INS,
+	POSITION_INS,
+	APN_INS,
+	UPS_INS,
+	LOWW_INS,
+	LED_INS,
+	POITYPE_INS,
+	RESET_INS,
+	UTC_INS,
+	ALARMMODE_INS,
+	DEBUG_INS,
+	ACCCTLGNSS_INS,
+	PDOP_INS,
+	SETBLEMAC_INS,
+	BF_INS,
+	CF_INS,
+	FACTORYTEST_INS,
+	FENCE_INS,
+	FACTORY_INS,
+	BLEUNBIND_INS,
+	BLEEN_INS,
+	PROTECTVOL_INS,
+	ACCURACY_INS,
+	SOS_INS,
+	PROTOCOL_INS,
+	JT808SN_INS,
+	RELAY_INS,
+	ECFG_INS,
+	VOL_INS,
+	ALARMMUSIC_INS,
+	FACTORYMODE_INS,
+	ACCDETMODE_INS,
+	BATVOLTABLE_INS,
+	SIRENON_INS,
+	SETAGPS_INS,
+	MAX_INS
+}INSTRUCTIONID;
 
+	
 
+typedef enum{
+	AT_SMS_MODE,
+	SHORTMESSAGE_MODE,
+	NETWORK_MODE,
+	BLE_MODE,
+	BLE_DIRECT_MODE,
+}DOINSTRUCTIONMODE;
 
 typedef struct
 {
-    cmd_e cmdid;
-    char *cmdstr;
-} instruction_s;
+	uint16_t cmdid;
+	int8_t   cmdstr[20];
+}INSTABLE;
 
-typedef enum
-{
-    SERIAL_MODE,
-    MESSAGE_MODE,
-    NETWORK_MODE,
-    JT808_MODE,
-    BLE_MODE,
-} instructionMode_e;
-
-
-typedef struct{
-	uint8_t link;
-	char * telNum;
-	instructionMode_e	mode;
-}instructionParam_s;
-
-void instructionParser(uint8_t *str, uint16_t len, instructionParam_s *param);
-void doPositionRespon(void);
+void dorequestSend123(void);
+void doSendBleResponToNet(uint8_t * respon,uint16_t len);
+void instructionParser(uint8_t *str, uint16_t len, DOINSTRUCTIONMODE mode, char *telnum, void *param);
 
 #endif

@@ -21,29 +21,29 @@ s8_m mir3da_register_read(u8_m addr, u8_m *data_m, u8_m len)
     bus = nwy_i2c_init(NAME_I2C_BUS_2, NWY_I2C_BPS_100K);
     if (NWY_SUCESS > bus)
     {
-        LogPrintf(DEBUG_ALL, "I2c Error : bus init fail");
+        LogPrintf(DEBUG_ALL, "I2c Error : bus init fail\r\n");
         return 0;
     }
     ret = nwy_i2c_raw_put_byte(bus, i2c_DEV_ADDR & 0xFE, 1, 0);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "no Write Respon");
+        LogPrintf(DEBUG_ALL, "no Write Respon\r\n");
     }
     ret = nwy_i2c_raw_put_byte(bus, addr, 0, 1);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "Write Reg addr fail");
+        LogPrintf(DEBUG_ALL, "Write Reg addr fail\r\n");
     }
     ret = nwy_i2c_raw_put_byte(bus, i2c_DEV_ADDR | 0x01, 1, 0);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "no Read Respon");
+        LogPrintf(DEBUG_ALL, "no Read Respon\r\n");
     }
     read = 0;
     ret = nwy_i2c_raw_get_byte(bus, &read, 0, 1);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "Read Reg fail");
+        LogPrintf(DEBUG_ALL, "Read Reg fail\r\n");
     }
     *data_m = read;
     nwy_i2c_deinit(bus);
@@ -58,23 +58,23 @@ s8_m mir3da_register_write(u8_m addr, u8_m data_m)
     bus = nwy_i2c_init(NAME_I2C_BUS_2, NWY_I2C_BPS_100K);
     if (NWY_SUCESS > bus)
     {
-        LogPrintf(DEBUG_ALL, "I2c Error : bus init fail");
+        LogPrintf(DEBUG_ALL, "I2c Error : bus init fail\r\n");
         return 0;
     }
     ret = nwy_i2c_raw_put_byte(bus, i2c_DEV_ADDR & 0xFE, 1, 0);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "no Write Respon");
+        LogPrintf(DEBUG_ALL, "no Write Respon\r\n");
     }
     ret = nwy_i2c_raw_put_byte(bus, addr, 0, 0);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "Write Reg addr fail 0x%02X", addr);
+        LogPrintf(DEBUG_ALL, "Write Reg addr fail 0x%02X\r\n", addr);
     }
     ret = nwy_i2c_raw_put_byte(bus, data_m, 0, 1);
     if (ret != 0)
     {
-        LogPrintf(DEBUG_ALL, "Write data fail 0x%02X", data_m);
+        LogPrintf(DEBUG_ALL, "Write data fail 0x%02X\r\n", data_m);
     }
     nwy_i2c_deinit(bus);
     return 0;
@@ -96,13 +96,13 @@ s8_m mir3da_init(void)
             res = mir3da_register_read(NSA_REG_WHO_AM_I, &data_m, 1);
             if (data_m != 0x13)
             {
-                LogPrintf(DEBUG_ALL, "mir3da_init==>Read chip error=%X", data_m);
+                LogPrintf(DEBUG_ALL, "mir3da_init==>Read chip error=%X\r\n\r\n", data_m);
                 return -1;
             }
         }
     }
 
-    LogPrintf(DEBUG_ALL, "mir3da_init==>Read chip id=%X", data_m);
+    LogPrintf(DEBUG_ALL, "mir3da_init==>Read chip id=%X\r\n", data_m);
 
     res |= mir3da_register_write(NSA_REG_SPI_I2C, 0x24);
     nwy_sleep(20);
@@ -194,12 +194,12 @@ s8_m read_gsensor_id(void)
             res = mir3da_register_read(NSA_REG_WHO_AM_I, &data_m, 1);
             if (data_m != 0x13)
             {
-                LogPrintf(DEBUG_FACTORY, "Read gsensor chip id error =%x", data_m);
+                LogPrintf(DEBUG_FACTORY, "Read gsensor chip id error =%x\r\n", data_m);
                 return -1;
             }
         }
     }
-    LogPrintf(DEBUG_FACTORY, "GSENSOR Chk. ID=0x%X\r\nGSENSOR CHK OK", data_m);
+    LogPrintf(DEBUG_FACTORY, "GSENSOR Chk. ID=0x%X\r\nGSENSOR CHK OK\r\n", data_m);
     return res;
 }
 
@@ -212,11 +212,11 @@ s8_m readInterruptConfig(void)
         mir3da_register_read(NSA_REG_INTERRUPT_SETTINGS1, &data_m, 1);
         if (data_m != 0x87)
         {
-            LogPrintf(DEBUG_ALL, "Gsensor fail %x", data_m);
+            LogPrintf(DEBUG_ALL, "Gsensor fail %x\n", data_m);
             return -1;
         }
     }
-    LogPrintf(DEBUG_ALL, "Gsensor OK");
+    LogPrintf(DEBUG_ALL, "Gsensor OK\r\n");
     return 0;
 }
 

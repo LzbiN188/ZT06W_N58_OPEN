@@ -1,45 +1,33 @@
 #ifndef APP_PROTOCOL
 #define APP_PROTOCOL
-
 #include "nwy_osi_api.h"
+#include "app_gps.h"
 
-#define PROTOCOL_BUFSZIE	6144  //6k
-
+#define NORMAL_LINK 5
+#define DOUBLE_LINK 4
 #define GPS_RESTORE_FILE_NAME	"gps.save"
 
+#define UPDATE_MODULE_OBJECT		0
+#define UPDATE_MCU_OBJECT			1
+
+
 
 typedef enum
 {
-    PROTOCOL_01,	//登录
-    PROTOCOL_12,	//定位
-    PROTOCOL_13,	//心跳
-
-    PROTOCOL_16,
-    PROTOCOL_19,
-    PROTOCOL_51,
-    PROTOCOL_52,
-    PROTOCOL_53,
-    PROTOCOL_61,
-    PROTOCOL_62,
-    PROTOCOL_8A,	//时间
-    PROTOCOL_F1,	//信息
-    PROTOCOL_F3,
-    PROTOCOL_21,
+    PROTOCOL_01,//登录
+    PROTOCOL_12,//定位
+    PROTOCOL_13,//心跳
+    PROTOCOL_16,//定位
+    PROTOCOL_19,//多基站
+    PROTOCOL_21,//蓝牙
+    PROTOCOL_8A,//TIME
+    PROTOCOL_F1,//ICCID
+    PROTOCOL_F3,//WIFI
     PROTOCOL_UP,
-} protocol_type_e;
-
-typedef enum
-{
-    TERMINAL_WARNNING_NORMAL = 0, /*0 		*/
-    TERMINAL_WARNNING_SHUTTLE,    /*1：震动报警      */
-    TERMINAL_WARNNING_LOSTV,      /*2：断电报警      */
-    TERMINAL_WARNNING_LOWV,       /*3：低电报警      */
-    TERMINAL_WARNNING_SOS,        /*4：SOS求救   */
-    TERMINAL_WARNNING_CARDOOR,    /*5：车门求救     */
-    TERMINAL_WARNNING_SWITCH,     /*6：开关   */
-    TERMINAL_WARNNING_LIGHT,      /*7：感光报警     */
-} terminal_warnning_type_e;
-
+    PROTOCOL_51,
+    //PROTOCOL_52,
+    //PROTOCOL_53,
+} PROTOCOLTYPE;
 
 typedef enum
 {
@@ -50,59 +38,39 @@ typedef enum
 
     NETWORK_DOWNLOAD_DOING,
     NETWORK_DOWNLOAD_WAIT,
+
+    NETWORK_MCU_START_UPGRADE,
+    NETWORK_MCU_EARSE,
+    NETWORK_FIRMWARE_WRITE_DOING,
+
     NETWORK_DOWNLOAD_DONE,
     NETWORK_UPGRAD_NOW,
     NETWORK_DOWNLOAD_ERROR,
     NETWORK_WAIT_JUMP,
-    NETWORK_DOWNLOAD_END
-} upgrade_fsm_e;
-
-
+    NETWORK_DOWNLOAD_END,
+    NETWORK_UPGRADE_CANCEL,
+} NetWorkFsmState;
+typedef struct
+{
+    NetWorkFsmState fsmstate;
+    unsigned int heartbeattick;
+    unsigned short serial;
+    uint8_t logintick;
+    uint8_t loginCount;
+    uint8_t getVerCount;
+} NetWorkConnectStruct;
 
 typedef struct
 {
     uint8_t ssid[6];
     int8_t signal;
-} wifiInfo_s;
+} WIFI_ONE;
+
 typedef struct
 {
-    wifiInfo_s ap[16];
+    WIFI_ONE ap[16];
     uint8_t apcount;
-} wifiList_s;
-
-
-typedef struct
-{
-    char sn[20];
-    char iccid[21];
-    char imsi[21];
-    char bleMac[17];
-    uint8_t terminalStatus;
-    uint8_t gpsSatelliteUsed;
-    uint8_t beidouSatelliteUsed;
-    uint8_t rssi;
-    uint8_t batteryLevel;
-    uint8_t instructionId[4];
-    uint8_t instructionIdSave[4];
-    uint8_t instructionIdBle[4];
-    uint8_t mnc;
-    uint8_t event;
-
-    uint16_t Serial;
-    uint16_t mcc;
-    uint16_t lac;
-
-	uint16_t startUpCnt;
-	uint16_t runTime;
-
-    uint32_t cid;
-    float	outsideVol;
-    float   batteryVol;
-
-    wifiList_s wifiList;
-
-    int (*tcpSend)(uint8_t, uint8_t *, uint16_t);
-} protocol_s;
+} WIFI_INFO;
 
 typedef struct
 {
@@ -117,17 +85,7 @@ typedef struct
     uint8_t speed;
     uint8_t coordinate[2];
     uint8_t temp[3];
-} gpsRestore_s;
-
-
-typedef struct
-{
-    uint8_t audioType;
-    uint16_t audioCnt;
-    uint16_t audioCurPack;
-    uint32_t audioSize;
-    uint32_t audioId;
-} audioDownload_s;
+} GPSRestoreStruct;
 
 typedef struct
 {
@@ -135,80 +93,56 @@ typedef struct
     char newCODEVERSION[50];
     char rxsn[50];
     char rxcurCODEVERSION[50];
-
-
     uint8_t updateOK;
-    uint8_t upgradeFsm;
-    uint8_t runTick;
-    uint8_t loginCnt;
-    uint8_t getVerCnt;
-    uint8_t waitTimeOutCnt;
-    uint8_t validFailCnt;
-    uint8_t dlErrCnt;
-
+    uint8_t updateObject;
     uint32_t file_id;
     uint32_t file_offset;
     uint32_t file_len;
     uint32_t file_totalsize;
+
     uint32_t rxfileOffset;//已接收文件长度
-} upgradeInfo_s;
+} UndateInfoStruct;
+
 
 typedef struct
 {
-    char *dest;
-    char *dateTime;
-    uint8_t fileType;
-    uint8_t *recData;
-    uint16_t packNum;
-    uint16_t recLen;
-    uint32_t totalSize;
-    uint16_t packSize;
-} recordUploadInfo_s;
+    uint8_t audioType;
+    uint16_t audioCnt;
+    uint32_t audioSize;
+    uint32_t audioId;
+} AudioFileStruct;
 
-void terminalDefense(void);
-void terminalDisarm(void);
-uint8_t getTerminalAccState(void);
-void terminalAccon(void);
-void terminalAccoff(void);
-void terminalCharge(void);
-void terminalunCharge(void);
-uint8_t getTerminalChargeState(void);
-void terminalGPSFixed(void);
-void terminalGPSUnFixed(void);
-void terminalAlarmSet(terminal_warnning_type_e alarm);
+void netConnectReset(void);
+void protocolRunFsm(void);
+void protocolReceivePush(uint8_t line, char *protocol, int size);
+void sendProtocolToServer(uint8_t link, PROTOCOLTYPE protocol, void *param);
+uint8_t isProtocolReday(void);
 
-void saveInstructionId(void);
-void recoverInstructionId(void);
-uint8_t *getProtoclInstructionid(void);
+void save123InstructionId(void);
+void reCover123InstructionId(void);
+uint8_t *getInstructionId(void);
 
+void updateMcuVersion(char *version);
+void updateUISInit(uint8_t object);
+void UpdateProtocolRunFsm(void);
 
-uint16_t GetCrc16(const char *pData, int nLength);
+uint8_t getBatteryLevel(void);
+void gpsRestoreWriteData(GPSRestoreStruct *gpsres);
 
-
-void sendProtocolToServer(uint8_t link, int type, void *param);
-void socketRecvPush(uint8_t link, char *protocol, int size);
-
-void protocolInit(void);
-
-void protoclUpdateSn(char *sn);
-void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev,uint16_t startCnt,uint16_t runTime);
-void protocolUpdateRssi(uint8_t rssi);
-void protocolUpdateSatelliteUsed(uint8_t gps, uint8_t bd);
-void protocolUpdateLbsInfo(uint16_t mcc, uint8_t mnc, uint16_t lac, uint32_t cid);
-void protocolUpdateBleMac(char *mac);
-void protocolUpdateWifiList(wifiList_s *wifilist);
-void protocolUpdateEvent(uint8_t event);
-
-void protocolRegisterTcpSend(int (*tcpSend)(uint8_t, uint8_t *, uint16_t));
-
-void upgradeStartInit(void);
-void upgradeFromServer(void);
-
-void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num);
 uint8_t gpsRestoreReadData(void);
 
-void getInsid(void);
-void setInsId(void);
+void createProtocol61(char *dest, char *datetime, uint32_t totalsize, uint8_t filetye, uint16_t packsize);
+void createProtocol62(char *dest, char *datetime, uint16_t packnum, uint8_t *recdata, uint16_t reclen);
 
+void getFirmwareInThreadEvent(void);
+void UpdateStop(void);
+
+
+void protocolReceivePush(uint8_t line, char *protocol, int size);
+void upgradeResultProcess(uint8_t upgradeResult, uint32_t offset, uint32_t size);
 
 #endif
+
+
+
+
