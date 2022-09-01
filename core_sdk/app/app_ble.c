@@ -251,7 +251,7 @@ static void bleServRecvParser(uint8_t *buf, uint8_t len)
 
     if (dec[0] == 'B' && dec[1] == 'L' && dec[2] == ':')
     {
-    	//有问题这里，待解决
+        //有问题这里，待解决
         memset(&insParam, 0, sizeof(instructionParam_s));
         insParam.mode = BLE_MODE;
         instructionParser((uint8_t *)dec + 3, declen - 3, &insParam);
@@ -271,8 +271,8 @@ static void bleServRecvParser(uint8_t *buf, uint8_t len)
     }
     else if (dec[0] == 'R' && dec[1] == 'E' && dec[2] == ':')
     {
-    	setInsId();
-		sendProtocolToServer(BLE_LINK, PROTOCOL_21, (void *)dec);
+        setInsId();
+        sendProtocolToServer(BLE_LINK, PROTOCOL_21, (void *)dec);
     }
 }
 
@@ -1202,7 +1202,7 @@ static void bleConnectTry(void)
             {
                 if (bleSchedule.connTick >= 6)
                 {
-                    LogMessage(DEBUG_ALL, "connect timeout");
+                    LogMessage(DEBUG_ALL, "bleConnectTry==>connect timeout");
                     //client connect fail
                     if (++bleSchedule.bleConnFailCnt >= 3)
                     {
@@ -1210,7 +1210,7 @@ static void bleConnectTry(void)
                     }
                     else
                     {
-                        LogMessage(DEBUG_ALL, "try again");
+                        LogMessage(DEBUG_ALL, "bleConnectTry==>try again");
                         bleConnTryChangeFsm(BLE_CONN_IDLE);
                     }
                 }
@@ -1227,13 +1227,21 @@ static void bleConnectTry(void)
             break;
         case BLE_CONN_CHANGE:
             LogMessage(DEBUG_ALL, "bleConnectTry==>connect another");
-            bleSchedule.bleConnFailCnt = 0;
             bleSchedule.bleCurConnInd = (bleSchedule.bleCurConnInd + 1) % BLE_CONNECT_LIST_SIZE;
             if (bleSchedule.bleQuickRun != 0)
             {
                 bleSchedule.bleQuickRun--;
             }
-            bleClientSendEvent(BLE_CLIENT_DISCONNECT);
+            if (bleSchedule.bleConnFailCnt >= 3)
+            {
+                bleScheduleChangeFsm(BLE_SCH_CLOSE);
+            }
+            else
+            {
+                bleClientSendEvent(BLE_CLIENT_DISCONNECT);
+            }
+
+            bleSchedule.bleConnFailCnt = 0;
             bleConnTryChangeFsm(BLE_CONN_IDLE);
             break;
     }
@@ -1295,6 +1303,12 @@ void bleScheduleTask(void)
             }
         case BLE_SCH_CLOSE:
             bleSchedule.bleTryOpen = 0;
+            bleSchedule.bleRebootCnt++;
+            if (bleSchedule.bleRebootCnt >= 100)
+            {
+				bleSchedule.bleRebootCnt=0;
+				alarmRequestSet(ALARM_BLE_ERR_REQUEST);
+            }
             bleClientSendEvent(BLE_CLIENT_CLOSE);
             bleScheduleChangeFsm(BLE_SCH_OPEN);
             break;

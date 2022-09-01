@@ -145,6 +145,7 @@ typedef struct
     uint16_t runTick;
     uint16_t connTick;
     uint16_t sendTick;
+	uint16_t bleRebootCnt;
     bleConnectList_s	bleList[BLE_CONNECT_LIST_SIZE];
 } bleConnectShchedule_s;
 

@@ -948,6 +948,16 @@ static void alarmRequestTask(void)
         protocolUpdateEvent(alarm);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
     }
+    //À¶ÑÀÒì³£±¨¾¯
+    if (sysinfo.alarmrequest & ALARM_BLE_ERR_REQUEST)
+    {
+        alarmRequestClear(ALARM_BLE_ERR_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE err Alarm");
+        alarm = 0x18;
+        protocolUpdateEvent(alarm);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
+	
 }
 
 /**************************************************
