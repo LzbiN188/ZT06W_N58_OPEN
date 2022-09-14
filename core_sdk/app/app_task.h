@@ -5,6 +5,7 @@
 #define SYSTEM_LED_RUN				0x01
 #define SYSTEM_LED_LOGIN			0x02
 #define SYSTEM_LED_GPS				0x04
+#define SYSTEM_LED_WDT				0x08
 
 #define SYS_LED1_CTRL				1
 #define SYS_LED2_CTRL				2

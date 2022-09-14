@@ -162,6 +162,12 @@ void ledStatusUpdate(uint8_t status, uint8_t onoff)
         ledSetPeriod(SYS_LED1_CTRL, 0, 10);
         ledSetPeriod(SYS_LED2_CTRL, 0, 10);
     }
+    if ((sysLedCtrl.sysStatus & SYSTEM_LED_WDT) != 0)
+    {
+
+        ledSetPeriod(SYS_LED1_CTRL, 1, 1);
+        ledSetPeriod(SYS_LED2_CTRL, 1, 1);
+    }
 
 }
 
@@ -174,7 +180,7 @@ void ledStatusUpdate(uint8_t status, uint8_t onoff)
 static void sysLedRunTask(void)
 {
 
-    if (sysinfo.sysTick >= 300)
+    if (sysinfo.sysTick >= 300 && sysinfo.wdtTest == 0)
     {
         if (sysparam.ledctrl == 0 || (sysparam.ledctrl == 1 && sysinfo.gpsRequest == 0))
         {
@@ -237,7 +243,8 @@ void motionStateUpdate(motion_src_e src, motionState_e newState)
         }
         terminalAccon();
         hiddenServCloseClear();
-        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
+        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
+                               sysparam.startUpCnt, sysparam.runTime);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
         jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
         //jt808BatchPushIn(getCurrentGPSInfo());
@@ -250,7 +257,8 @@ void motionStateUpdate(motion_src_e src, motionState_e newState)
             gpsRequestClear(GPS_REQ_ACC);
         }
         terminalAccoff();
-        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
+        protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
+                               sysparam.startUpCnt, sysparam.runTime);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
         jt808SendToServer(TERMINAL_POSITION, getLastFixedGPSInfo());
         //jt808BatchPushIn(getCurrentGPSInfo());
@@ -957,7 +965,7 @@ static void alarmRequestTask(void)
         protocolUpdateEvent(alarm);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
     }
-	
+
 }
 
 /**************************************************
@@ -1660,6 +1668,11 @@ void relayAutoCtrl(void)
         doRelayOn();
     }
 }
+
+static void wdtTest(void)
+{
+    portUartSend(SYS_DEBUG_UART, (uint8_t *)"AT^FMPC_WDTSTOP\r\n", 17);
+}
 /**************************************************
 @bref		Ö÷Ïß³Ì
 @param
@@ -1689,6 +1702,7 @@ void myAppRun(void *param)
     bleClientInfoInit();
     bleScheduleInit();
 
+    startTimer(10, wdtTest, 0);
     portSleepCtrl(1);
     while (1)
     {

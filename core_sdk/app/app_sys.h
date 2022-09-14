@@ -14,6 +14,7 @@
 #define ITEMCNTMAX					8
 #define ITEMSIZEMAX					150
 
+#define SYS_DEBUG_UART		&usart2_ctl
 
 typedef struct
 {

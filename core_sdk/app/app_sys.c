@@ -7,7 +7,6 @@
 #define LOGPRINTF_MAX		1024
 
 
-#define SYS_DEBUG_UART		&usart2_ctl
 
 /**************************************************
 @bref		µ÷ÊÔÐÅÏ¢

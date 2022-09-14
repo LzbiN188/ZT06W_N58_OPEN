@@ -144,15 +144,16 @@ static void doAtdebugCmd(char *buf, uint32_t len)
     }
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"BLEINSERT"))
     {
-    	bleInfo_s dev;
-		dev.batLevel=88;
-		strcpy(dev.imei,"862061044075777");
-		dev.next=NULL;
-		dev.startCnt=88;
-		dev.vol=4.7;
+        bleInfo_s dev;
+        dev.batLevel = 88;
+        strcpy(dev.imei, "862061044075777");
+        dev.next = NULL;
+        dev.startCnt = 88;
+        dev.vol = 4.7;
         bleServerAddInfo(dev);
-		LogPrintf(DEBUG_ALL,"Insert %s",dev.imei);
-    }else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SHOW"))
+        LogPrintf(DEBUG_ALL, "Insert %s", dev.imei);
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SHOW"))
     {
         showBleList();
     }
@@ -490,6 +491,7 @@ static void atCmdFmpcWifiParser(void)
 static void atCmdFmpcWdtStopParser(void)
 {
     sysinfo.wdtTest = 1;
+    ledStatusUpdate(SYSTEM_LED_WDT, 1);
     LogMessage(DEBUG_FACTORY, "+FMPC_WDTSTOP: OK");
 }
 
