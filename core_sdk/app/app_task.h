@@ -138,11 +138,13 @@ typedef struct
     uint8_t wdtTest				: 1;
     uint8_t recTest				: 1;
     uint8_t bleOnBySystem		: 1;
+	uint8_t dbFileUpload;
     uint8_t logLevel;
     uint8_t gpsRequest;
     uint8_t runFsm;
     uint8_t recordTime;
     uint8_t softWdtTick;
+	uint8_t debu;
 
     uint16_t alarmrequest;
 

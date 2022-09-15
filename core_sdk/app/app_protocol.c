@@ -12,6 +12,10 @@
 #include "app_jt808.h"
 #include "aes.h"
 #include "app_ble.h"
+#include "app_socket.h"
+#include "app_db.h"
+
+
 static protocol_s 		protocolInfo;
 static gpsRestore_s		gpsres;
 static audioDownload_s 	audiofile;
@@ -1156,7 +1160,7 @@ static void sendTcpDataDebugShow(uint8_t link, char *txdata, int txlen)
 @note
 **************************************************/
 
-static int tcpSendData(uint8_t link, uint8_t *txdata, uint16_t txlen)
+int tcpSendData(uint8_t link, uint8_t *txdata, uint16_t txlen)
 {
     int ret = 0;
     if (protocolInfo.tcpSend == NULL)
@@ -1271,11 +1275,16 @@ void sendProtocolToServer(uint8_t link, int type, void *param)
         case PROTOCOL_12:
             if (link == NORMAL_LINK)
             {
-                if (serverIsReady() == 0 || tcpSendData(link, (uint8_t *)txdata, txlen) == 0)
+                if (serverIsReady() == 0 || socketGetNonAck(link) != 0)
                 {
-                    LogMessage(DEBUG_ALL, "gps send fail,save to file");
-                    gpsRestoreWriteData(&gpsres, 1);
+                    dbPush(&gpsres);
+                    return;
                 }
+                if (tcpSendData(link, (uint8_t *)txdata, txlen) == 0)
+                {
+                    dbPush(&gpsres);
+                }
+
             }
             else
             {
@@ -1888,13 +1897,13 @@ void protoclUpdateSn(char *sn)
 @note
 **************************************************/
 
-void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev,uint16_t startCnt,uint16_t runTime)
+void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev, uint16_t startCnt, uint16_t runTime)
 {
     protocolInfo.outsideVol = outvol;
     protocolInfo.batteryVol = batvol;
     protocolInfo.batteryLevel = batlev;
-	protocolInfo.startUpCnt=startCnt;
-	protocolInfo.runTime=runTime;
+    protocolInfo.startUpCnt = startCnt;
+    protocolInfo.runTime = runTime;
 }
 
 /**************************************************
@@ -2215,7 +2224,7 @@ static void upgradeDoing(void)
 @note
 **************************************************/
 
-static void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len)
+void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len)
 {
     int pdu_len;
     pdu_len = createProtocolHead(dest, 0x12);

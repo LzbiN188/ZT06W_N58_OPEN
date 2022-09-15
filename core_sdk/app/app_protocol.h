@@ -184,6 +184,7 @@ uint8_t *getProtoclInstructionid(void);
 
 uint16_t GetCrc16(const char *pData, int nLength);
 
+int tcpSendData(uint8_t link, uint8_t *txdata, uint16_t txlen);
 
 void sendProtocolToServer(uint8_t link, int type, void *param);
 void socketRecvPush(uint8_t link, char *protocol, int size);
@@ -203,6 +204,8 @@ void protocolRegisterTcpSend(int (*tcpSend)(uint8_t, uint8_t *, uint16_t));
 
 void upgradeStartInit(void);
 void upgradeFromServer(void);
+
+void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len);
 
 void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num);
 uint8_t gpsRestoreReadData(void);

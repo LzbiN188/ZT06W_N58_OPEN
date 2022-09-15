@@ -74,7 +74,6 @@ static int SoketDataSend(uint8_t link, uint8_t *data, uint16_t len)
 
 static void serverConnRunTask(void)
 {
-    static uint8_t ret = 1;
     if (isNetworkNormal() == 0)
     {
         ledStatusUpdate(SYSTEM_LED_LOGIN, 0);
@@ -110,7 +109,7 @@ static void serverConnRunTask(void)
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_F1, NULL);
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_8A, NULL);
             serverChangeFsm(SERV_LOGIN_WAIT);
-            ret = 1;
+            sysinfo.dbFileUpload = 1;
             break;
         case SERV_LOGIN_WAIT:
             if (serverConnect.runTick >= 60)
@@ -135,16 +134,26 @@ static void serverConnRunTask(void)
             {
                 serverConnect.runTick = 0;
                 protocolUpdateRssi(portGetModuleRssi());
-                protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
+                protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
+                                       sysparam.startUpCnt, sysparam.runTime);
                 sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
             }
-            if (serverConnect.runTick % 3 == 0)
+
+            if (socketGetNonAck(NORMAL_LINK) == 0)
             {
-                if (ret == 1)
+                if (dbPost() == 0)
                 {
-                    ret = gpsRestoreReadData();
+                    if (serverConnect.runTick % 3 == 0)
+                    {
+                        if (sysinfo.dbFileUpload == 1)
+                        {
+                            sysinfo.dbFileUpload = gpsRestoreReadData();
+                        }
+                    }
+
                 }
             }
+
             break;
         default:
             serverChangeFsm(SERV_LOGIN);
@@ -419,7 +428,8 @@ static void hiddenServerConnTask(void)
             {
                 hiddenConnect.runTick = 0;
                 protocolUpdateRssi(portGetModuleRssi());
-                protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),sysparam.startUpCnt,sysparam.runTime);
+                protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
+                                       sysparam.startUpCnt, sysparam.runTime);
                 sendProtocolToServer(HIDE_LINK, PROTOCOL_13, NULL);
             }
             break;
@@ -469,7 +479,6 @@ static void jt808SoketDataRecv(struct SOCK_INFO *socketinfo, char *rxbuf, uint16
 
 static void jt808ServerConnRunTask(void)
 {
-    static uint8_t ret = 1;
 
     if (isNetworkNormal() == 0)
     {
@@ -533,7 +542,7 @@ static void jt808ServerConnRunTask(void)
 
             if (jt808ServConn.runTick % 60 == 0)
             {
-                ret = 1;
+                sysinfo.dbFileUpload = 1;
                 if (jt808ServConn.authCnt++ > 3)
                 {
                     jt808ServConn.authCnt = 0;
@@ -558,11 +567,18 @@ static void jt808ServerConnRunTask(void)
                 LogMessage(DEBUG_ALL, "Terminal heartbeat");
                 jt808SendToServer(TERMINAL_HEARTBEAT, NULL);
             }
-            if (jt808ServConn.runTick % 3 == 0)
+			if (socketGetNonAck(JT808_LINK) == 0)
             {
-                if (ret == 1)
+                if (dbPost() == 0)
                 {
-                    ret = gpsRestoreReadData();
+                    if (jt808ServConn.runTick % 3 == 0)
+                    {
+                        if (sysinfo.dbFileUpload == 1)
+                        {
+                            sysinfo.dbFileUpload = gpsRestoreReadData();
+                        }
+                    }
+
                 }
             }
             break;
@@ -785,7 +801,7 @@ static void bleServerConnRunTask(void)
             if (bleServConnect.runTick++ == 0)
             {
                 protocolUpdateRssi(portGetModuleRssi());
-                protocolUpdateSomeInfo(sysinfo.outsideVol, bleHead->vol, bleHead->batLevel,bleHead->startCnt,0);
+                protocolUpdateSomeInfo(sysinfo.outsideVol, bleHead->vol, bleHead->batLevel, bleHead->startCnt, 0);
                 sendProtocolToServer(BLE_LINK, PROTOCOL_13, NULL);
             }
             gpsinfo = getCurrentGPSInfo();

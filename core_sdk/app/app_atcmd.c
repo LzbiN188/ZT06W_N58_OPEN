@@ -142,17 +142,6 @@ static void doAtdebugCmd(char *buf, uint32_t len)
     {
         bleScheduleDelete(atoi(item.item_data[1]));
     }
-    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"BLEINSERT"))
-    {
-        bleInfo_s dev;
-        dev.batLevel = 88;
-        strcpy(dev.imei, "862061044075777");
-        dev.next = NULL;
-        dev.startCnt = 88;
-        dev.vol = 4.7;
-        bleServerAddInfo(dev);
-        LogPrintf(DEBUG_ALL, "Insert %s", dev.imei);
-    }
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SHOW"))
     {
         showBleList();

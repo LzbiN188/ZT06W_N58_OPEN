@@ -83,5 +83,6 @@ uint8_t isNetworkNormal(void);
 uint8_t socketGetUsedFlag(uint8_t sockeId);
 uint8_t socketGetConnectStatus(uint8_t sockeId);
 
+int socketGetNonAck(uint8_t socketId);
 
 #endif

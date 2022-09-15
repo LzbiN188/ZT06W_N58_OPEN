@@ -7,6 +7,7 @@
 #include "app_instructioncmd.h"
 #include "app_socket.h"
 #include "app_task.h"
+#include "app_db.h"
 
 static jt808Info_s jt808_info;
 static jt808Position_s jt808_position;
@@ -782,7 +783,6 @@ static void jt808gpsRestoreSave(gpsinfo_s *gpsinfo)
 
 static void jt808SendPosition(uint8_t *sn, gpsinfo_s *gpsinfo)
 {
-    int ret = 0;
     uint8_t dest[200];
     uint8_t len;
     if (gpsinfo == NULL)
@@ -792,17 +792,32 @@ static void jt808SendPosition(uint8_t *sn, gpsinfo_s *gpsinfo)
 
     len = jt808TerminalPosition(dest, sn, &jt808_position, 1);
 
-    if (serverIsReady())
+
+
+    if (serverIsReady() == 0 || socketGetNonAck(JT808_LINK) != 0)
     {
-        ret = jt808TcpSend(dest, len);
+        if (gpsinfo->fixstatus && gpsinfo->hadupload == 0)
+        {
+            dbPush(&jt808_gpsres);
+        }
+        else
+        {
+            jt808TcpSend((uint8_t *)dest, len);
+        }
+        gpsinfo->hadupload = 1;
+        return;
+    }
+    if (jt808TcpSend((uint8_t *)dest, len) == 0)
+    {
+        if (gpsinfo->fixstatus && gpsinfo->hadupload == 0)
+        {
+            dbPush(&jt808_gpsres);
+        }
     }
 
-    if (ret == 0 && gpsinfo->fixstatus && gpsinfo->hadupload == 0)
-    {
-        LogMessage(DEBUG_ALL, "server not connect");
-        gpsRestoreWriteData(&jt808_gpsres, 1);
-    }
     gpsinfo->hadupload = 1;
+
+
 }
 
 /**************************************************

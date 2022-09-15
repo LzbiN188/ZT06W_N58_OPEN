@@ -245,7 +245,7 @@ static uint8_t netCheckRegister(void)
             LogPrintf(DEBUG_ALL, "Data Register==>Reg:%d,Roam:%d,RadioTech:%d", reg_info.data_regs.regs_state,
                       reg_info.data_regs.roam_state,
                       reg_info.data_regs.radio_tech);
-            portSetApn(sysparam.apn,sysparam.apnuser,sysparam.apnpassword);
+            portSetApn(sysparam.apn, sysparam.apnuser, sysparam.apnpassword);
         }
         //ÓïÒôÓò
         if (reg_info.voice_regs_valid)
@@ -978,5 +978,22 @@ uint8_t socketGetConnectStatus(uint8_t sockeId)
         return 0;
 
     return socketlist[sockeId].socketConnect;
+}
+
+int socketGetNonAck(uint8_t socketId)
+{
+    int sent;
+    int ack;
+    if (socketId >= SOCKET_LIST_MAX)
+    {
+        return -1;
+    }
+    if (socketlist[socketId].socketConnect == 0)
+    {
+        return -2;
+    }
+    sent = nwy_socket_get_sent(socketlist[socketId].socketId);
+    ack = nwy_socket_get_ack(socketlist[socketId].socketId);
+    return sent - ack;
 }
 

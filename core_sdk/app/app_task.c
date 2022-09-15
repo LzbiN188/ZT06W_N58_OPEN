@@ -12,7 +12,7 @@
 #include "app_instructioncmd.h"
 #include "app_ble.h"
 #include "app_jt808.h"
-
+#include "app_db.h"
 
 extern nwy_osiThread_t *myAppEventThread;
 static sysLedCtrl_s sysLedCtrl;
@@ -1701,6 +1701,7 @@ void myAppRun(void *param)
     jt808BatchInit();
     bleClientInfoInit();
     bleScheduleInit();
+	dbSaveInit();
 
     startTimer(10, wdtTest, 0);
     portSleepCtrl(1);
