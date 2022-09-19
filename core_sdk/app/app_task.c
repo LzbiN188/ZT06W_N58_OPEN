@@ -333,7 +333,12 @@ static void motionCheckTask(void)
 
     static uint8_t  volOnTick = 0;
     static uint8_t  volOffTick = 0;
+
+    static uint8_t alarmFlag = 0;
+    static uint8_t detTick = 0;
     uint16_t totalCnt;
+
+    gpsinfo_s *gpsinfo;
 
     motionCalculate();
 
@@ -362,14 +367,10 @@ static void motionCheckTask(void)
         autoTick = 0;
     }
 
-
-
-
-
-
     totalCnt = motionGetTotalCnt();
     if (ACC_READ == ACC_STATE_ON)
     {
+        alarmFlag = 0;
         //线永远是第一优先级
         if (++accOnTick >= 10)
         {
@@ -388,7 +389,59 @@ static void motionCheckTask(void)
             accOffTick = 0;
             motionStateUpdate(ACC_SRC, MOTION_STATIC);
         }
+        //拖车报警检测：运动后，如果没有ACC on，且在off下速度超过30km/h，则认为是拖车报警
+        //运动检测
+        if (totalCnt >= 7)
+        {
+            if (gpsRequestGet(GPS_REQ_MOVE) == 0)
+            {
+                alarmFlag = 0;
+                gpsRequestSet(GPS_REQ_MOVE);
+                LogMessage(DEBUG_ALL, "Device move !!!");
+            }
+        }
+        if (totalCnt == 0)
+        {
+            gsStaticTick++;
+            if (gsStaticTick >= 90)
+            {
+                if (gpsRequestGet(GPS_REQ_MOVE) == GPS_REQ_MOVE)
+                {
+                    alarmFlag = 0;
+                    gpsRequestClear(GPS_REQ_MOVE);
+                    LogMessage(DEBUG_ALL, "Device static !!!");
+                }
+            }
+        }
+        else
+        {
+            gsStaticTick = 0;
+        }
+        //是否拖车报警检测，判断速度
+        if (alarmFlag == 0 && sysinfo.gpsOnoff)
+        {
+            gpsinfo = getCurrentGPSInfo();
+            if (gpsinfo->fixstatus && gpsinfo->speed >= 30)
+            {
+                detTick++;
+                if (detTick >= 5)
+                {
+                    //拖车报警
+                    alarmFlag = 1;
+                    alarmRequestSet(ALARM_TRIAL_REQUEST);
+                }
+            }
+            else
+            {
+                detTick = 0;
+            }
+        }
         return;
+    }
+    //其他模式不需要这个request
+    if (gpsRequestGet(GPS_REQ_MOVE) == GPS_REQ_MOVE)
+    {
+        gpsRequestClear(GPS_REQ_MOVE);
     }
 
     if (sysparam.accdetmode == ACCDETMODE1)
@@ -549,6 +602,7 @@ static void gpsRequestTask(void)
 {
     static gpsState_e gpsFsm = GPS_STATE_IDLE;
     static uint8_t runTick = 0;
+    static uint8_t gpsInvalidTick = 0;
     gpsinfo_s *gpsinfo;
     uint32_t noNmeaOutputTick;
     switch (gpsFsm)
@@ -620,6 +674,27 @@ static void gpsRequestTask(void)
             }
             break;
     }
+
+    if (sysinfo.gpsRequest == 0 || getTerminalAccState() == 0)
+    {
+        gpsInvalidTick = 0;
+        return;
+    }
+    gpsinfo = getCurrentGPSInfo();
+    if (gpsinfo->fixstatus == 0)
+    {
+        if (++gpsInvalidTick >= 900)
+        {
+            gpsInvalidTick = 0;
+            alarmRequestSet(ALARM_GPS_NO_FIX_REQUEST);
+            //行车定位异常报警
+        }
+    }
+    else
+    {
+        gpsInvalidTick = 0;
+    }
+
 
 
 }
@@ -860,35 +935,6 @@ static void alarmRequestTask(void)
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
     }
 
-    //急加速报警
-    if (sysinfo.alarmrequest & ALARM_ACCLERATE_REQUEST)
-    {
-        alarmRequestClear(ALARM_ACCLERATE_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid Accleration Alarm");
-        alarm = 0x09;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-    //急减速报警
-    if (sysinfo.alarmrequest & ALARM_DECELERATE_REQUEST)
-    {
-        alarmRequestClear(ALARM_DECELERATE_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid Deceleration Alarm");
-        alarm = 0x0A;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
-    //急左转报警
-    if (sysinfo.alarmrequest & ALARM_RAPIDLEFT_REQUEST)
-    {
-        alarmRequestClear(ALARM_RAPIDLEFT_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>Rapid LEFT Alarm");
-        alarm = 0x0B;
-        protocolUpdateEvent(alarm);
-        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
-    }
-
     //守卫报警
     if (sysinfo.alarmrequest & ALARM_GUARD_REQUEST)
     {
@@ -962,6 +1008,24 @@ static void alarmRequestTask(void)
         alarmRequestClear(ALARM_BLE_ERR_REQUEST);
         LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE err Alarm");
         alarm = 0x18;
+        protocolUpdateEvent(alarm);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
+    //gps未定位异常报警
+    if (sysinfo.alarmrequest & ALARM_GPS_NO_FIX_REQUEST)
+    {
+        alarmRequestClear(ALARM_GPS_NO_FIX_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>gps err Alarm");
+        alarm = 0x1C;
+        protocolUpdateEvent(alarm);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
+    //拖车报警
+    if (sysinfo.alarmrequest & ALARM_TRIAL_REQUEST)
+    {
+        alarmRequestClear(ALARM_TRIAL_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>拖车报警");
+        alarm = 0x1F;
         protocolUpdateEvent(alarm);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
     }
@@ -1701,7 +1765,7 @@ void myAppRun(void *param)
     jt808BatchInit();
     bleClientInfoInit();
     bleScheduleInit();
-	dbSaveInit();
+    dbSaveInit();
 
     startTimer(10, wdtTest, 0);
     portSleepCtrl(1);
