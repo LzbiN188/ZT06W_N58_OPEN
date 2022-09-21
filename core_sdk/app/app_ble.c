@@ -1250,6 +1250,48 @@ static void bleConnectTry(void)
 }
 
 /**************************************************
+@bref		蓝牙断连侦测
+@param
+@return
+@note
+**************************************************/
+
+static void bleErrAutoRestore(void)
+{
+    uint8_t ind;
+    uint32_t tick;
+
+    if (bleSchedule.bleListCnt == 0)
+    {
+        return;
+    }
+    if (sysparam.bleErrCnt >= 3)
+    {
+        return;
+    }
+    for (ind = 0; ind < BLE_CONNECT_LIST_SIZE; ind++)
+    {
+        if (bleSchedule.bleList[ind].bleUsed != 1)
+        {
+            return;
+        }
+        if (bleSchedule.bleList[ind].bleInfo.bleLost == 1)
+        {
+            return;
+        }
+        tick = sysinfo.sysTick - bleSchedule.bleList[ind].bleInfo.updateTick;
+        if (tick >= 600)
+        {
+            tick = 0;
+            sysparam.bleErrCnt++;
+            paramSaveAll();
+            LogPrintf(DEBUG_ALL, "bleErrAutoRestore==>%d",sysparam.bleErrCnt);
+            portSystemReset();
+        }
+    }
+}
+
+/**************************************************
 @bref		蓝牙调度任务
 @param
 @return
@@ -1261,6 +1303,8 @@ void bleScheduleTask(void)
 
     /*蓝牙断连侦测，产生蓝牙断连报警*/
     bleDiscDetector();
+    /*蓝牙异常侦测，每天重启前三次蓝牙错误，自动重启设备，之后蓝牙错误，需等待每天重启*/
+    bleErrAutoRestore();
 
     switch (bleSchedule.bleSchFsm)
     {
@@ -1306,8 +1350,8 @@ void bleScheduleTask(void)
             bleSchedule.bleRebootCnt++;
             if (bleSchedule.bleRebootCnt >= 100)
             {
-				bleSchedule.bleRebootCnt=0;
-				alarmRequestSet(ALARM_BLE_ERR_REQUEST);
+                bleSchedule.bleRebootCnt = 0;
+                alarmRequestSet(ALARM_BLE_ERR_REQUEST);
             }
             bleClientSendEvent(BLE_CLIENT_CLOSE);
             bleScheduleChangeFsm(BLE_SCH_OPEN);

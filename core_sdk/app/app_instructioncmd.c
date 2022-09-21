@@ -697,6 +697,7 @@ static void doDebugInstrucion(ITEM *item, char *message)
                 sysinfo.gpsUpdateTick % 3600 / 60, sysinfo.gpsUpdateTick % 60);
         sprintf(message + strlen(message), "gpsrequest:0x%04X;", sysinfo.gpsRequest);
         sprintf(message + strlen(message), "hideLogin:%s;", hiddenServIsReady() ? "Yes" : "NO");
+        sprintf(message + strlen(message), "bleErr:%d;", sysparam.bleErrCnt);
     }
     else
     {

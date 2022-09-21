@@ -341,6 +341,7 @@ static void motionCheckTask(void)
     gpsinfo_s *gpsinfo;
 
     motionCalculate();
+    totalCnt = motionGetTotalCnt();
 
     if (sysparam.MODE == MODE1 || sysparam.MODE == MODE3)
     {
@@ -349,11 +350,15 @@ static void motionCheckTask(void)
         {
             gpsRequestClear(GPS_REQ_ACC);
         }
+        if (gpsRequestGet(GPS_REQ_MOVE) == GPS_REQ_MOVE)
+        {
+            gpsRequestClear(GPS_REQ_MOVE);
+        }
         gsStaticTick = 0;
         return ;
     }
 
-
+    //gps间隔上送
     if (getTerminalAccState() && sysparam.gpsuploadgap >= GPS_UPLOAD_GAP_MAX)
     {
         if (++autoTick >= sysparam.gpsuploadgap)
@@ -367,35 +372,17 @@ static void motionCheckTask(void)
         autoTick = 0;
     }
 
-    totalCnt = motionGetTotalCnt();
-    if (ACC_READ == ACC_STATE_ON)
+
+    //拖车报警检测：运动后，如果没有ACC on，且在off下速度超过30km/h，则认为是拖车报警
+    if ((sysparam.accdetmode == ACCDETMODE0 || sysparam.accdetmode == ACCDETMODE1) && getTerminalAccState() == 0)
     {
-        alarmFlag = 0;
-        //线永远是第一优先级
-        if (++accOnTick >= 10)
-        {
-            accOnTick = 0;
-            motionStateUpdate(ACC_SRC, MOTION_MOVING);
-        }
-        accOffTick = 0;
-        return;
-    }
-    accOnTick = 0;
-    if (sysparam.accdetmode == ACCDETMODE0)
-    {
-        //仅由acc线控制
-        if (++accOffTick >= 10)
-        {
-            accOffTick = 0;
-            motionStateUpdate(ACC_SRC, MOTION_STATIC);
-        }
-        //拖车报警检测：运动后，如果没有ACC on，且在off下速度超过30km/h，则认为是拖车报警
         //运动检测
         if (totalCnt >= 7)
         {
             if (gpsRequestGet(GPS_REQ_MOVE) == 0)
             {
                 alarmFlag = 0;
+                detTick = 0;
                 gpsRequestSet(GPS_REQ_MOVE);
                 LogMessage(DEBUG_ALL, "Device move !!!");
             }
@@ -408,6 +395,7 @@ static void motionCheckTask(void)
                 if (gpsRequestGet(GPS_REQ_MOVE) == GPS_REQ_MOVE)
                 {
                     alarmFlag = 0;
+                    detTick = 0;
                     gpsRequestClear(GPS_REQ_MOVE);
                     LogMessage(DEBUG_ALL, "Device static !!!");
                 }
@@ -424,7 +412,7 @@ static void motionCheckTask(void)
             if (gpsinfo->fixstatus && gpsinfo->speed >= 30)
             {
                 detTick++;
-                if (detTick >= 5)
+                if (detTick >= 15)
                 {
                     //拖车报警
                     alarmFlag = 1;
@@ -436,13 +424,50 @@ static void motionCheckTask(void)
                 detTick = 0;
             }
         }
+        else
+        {
+            detTick = 0;
+        }
+
+    }
+    else
+    {
+        alarmFlag = 0;
+        //其他模式不需要这个request
+        if (gpsRequestGet(GPS_REQ_MOVE) == GPS_REQ_MOVE)
+        {
+            gpsRequestClear(GPS_REQ_MOVE);
+        }
+    }
+
+
+
+    if (ACC_READ == ACC_STATE_ON)
+    {
+        //线永远是第一优先级
+        if (++accOnTick >= 10)
+        {
+            accOnTick = 0;
+            motionStateUpdate(ACC_SRC, MOTION_MOVING);
+        }
+        accOffTick = 0;
         return;
     }
-    //其他模式不需要这个request
-    if (gpsRequestGet(GPS_REQ_MOVE) == GPS_REQ_MOVE)
+    accOnTick = 0;
+
+
+    if (sysparam.accdetmode == ACCDETMODE0)
     {
-        gpsRequestClear(GPS_REQ_MOVE);
+        //仅由acc线控制
+        if (++accOffTick >= 10)
+        {
+            accOffTick = 0;
+            motionStateUpdate(ACC_SRC, MOTION_STATIC);
+        }
+
+        return;
     }
+
 
     if (sysparam.accdetmode == ACCDETMODE1)
     {
@@ -465,7 +490,7 @@ static void motionCheckTask(void)
             if (++volOffTick >= 15)
             {
                 volOffTick = 0;
-                motionStateUpdate(MOTION_MOVING, MOTION_STATIC);
+                motionStateUpdate(VOLTAGE_SRC, MOTION_STATIC);
             }
         }
         else
@@ -475,7 +500,6 @@ static void motionCheckTask(void)
         return;
     }
     //剩下的，由acc线+gsensor控制
-
 
     if (totalCnt >= 7)
     {
@@ -1594,6 +1618,8 @@ static void rebootOneDay(void)
         return ;
     if (sysinfo.gpsRequest != 0)
         return ;
+    sysparam.bleErrCnt = 0;
+    paramSaveAll();
     portSystemReset();
 }
 
