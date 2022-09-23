@@ -2535,7 +2535,7 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
                 0x6023005c        0x4 LONG 0x80ed04a0 __data_start
                 0x60230060        0x4 LONG 0x3
                 0x60230064        0x4 LONG 0x0
-                0x60230068        0x4 LONG 0x4b6e8 (__bss_end - __bss_start)
+                0x60230068        0x4 LONG 0x4b6ec (__bss_end - __bss_start)
                 0x6023006c        0x4 LONG 0x80ed0640 __bss_start
                 0x60230070        0x4 LONG 0x0
                 0x60230074        0x4 LONG 0x0
@@ -3962,59 +3962,61 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
                 0x80f035ff        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .bss.gpsFsm.7936
                 0x80f03600        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ *fill*         0x80f03601        0x1 
  .bss.gpsInvalidTick.7938
-                0x80f03601        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.gsStaticTick.7903
                 0x80f03602        0x2 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.lowpowertick.8075
+ .bss.gsStaticTick.7903
                 0x80f03604        0x2 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .bss.lowpowertick.8075
+                0x80f03606        0x2 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .bss.lowwflag.8076
-                0x80f03606        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x80f03608        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .bss.motionInfo
-                0x80f03607        0x8 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x80f03609        0x8 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .bss.openRecordFlag.7999
-                0x80f0360f        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.runTick.7937
-                0x80f03610        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.runTick.8027
                 0x80f03611        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.runTick.8117
+ .bss.runTick.7937
                 0x80f03612        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.runtick.8088
+ .bss.runTick.8027
                 0x80f03613        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .bss.runTick.8117
+                0x80f03614        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .bss.runtick.8088
+                0x80f03615        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ *fill*         0x80f03616        0x2 
  .bss.sysLedCtrl
-                0x80f03614        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x80f03618        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .bss.tick.7853
-                0x80f03620        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.tick.7857
-                0x80f03621        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.tick.7919
-                0x80f03622        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.uploadtick.8089
-                0x80f03623        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.volOffTick.7908
                 0x80f03624        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .bss.volOnTick.7907
+ .bss.tick.7857
                 0x80f03625        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- *fill*         0x80f03626        0x2 
- COMMON         0x80f03628       0x24 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x80f03628                sysinfo
+ .bss.tick.7919
+                0x80f03626        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .bss.uploadtick.8089
+                0x80f03627        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .bss.volOffTick.7908
+                0x80f03628        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .bss.volOnTick.7907
+                0x80f03629        0x1 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ *fill*         0x80f0362a        0x2 
+ COMMON         0x80f0362c       0x24 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x80f0362c                sysinfo
  .bss.g_tts_status
-                0x80f0364c        0x1 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
-                0x80f0364c                g_tts_status
- *fill*         0x80f0364d        0x3 
- .bss.tts_init  0x80f03650        0x4 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
- COMMON         0x80f03654       0x10 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
-                0x80f03654                g_TtsData
+                0x80f03650        0x1 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+                0x80f03650                g_tts_status
+ *fill*         0x80f03651        0x3 
+ .bss.tts_init  0x80f03654        0x4 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+ COMMON         0x80f03658       0x10 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+                0x80f03658                g_TtsData
  .bss.g_neo_UserData
-                0x80f03664       0x1c ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x80f03668       0x1c ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .bss.g_nwy_tts_task_info
-                0x80f03680        0x8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
- COMMON         0x80f03688    0x186a0 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x80f03688                neo_pHeap
-                0x80f1bd28                __bss_end = .
+                0x80f03684        0x8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+ COMMON         0x80f0368c    0x186a0 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x80f0368c                neo_pHeap
+                0x80f1bd2c                __bss_end = .
                 0x80f1bd40                . = ALIGN (0x20)
- *fill*         0x80f1bd28       0x18 
+ *fill*         0x80f1bd2c       0x14 
                 0x6023dff8                . = ((LOADADDR (.corestub) + SIZEOF (.corestub)) + SIZEOF (.data))
 
 .text           0x6023e000   0x167fc0
@@ -5171,562 +5173,561 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
                 0x6024c680       0x78 CMakeFiles/hello_flash.dir/app/app_task.c.obj
                 0x6024c680                relayAutoCtrl
  .text.myAppRun
-                0x6024c6f8      0xcbc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024c6f8      0xcd8 CMakeFiles/hello_flash.dir/app/app_task.c.obj
                 0x6024c6f8                myAppRun
  .text.myApp100MSRun
-                0x6024d3b4      0x10c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6024d3b4                myApp100MSRun
+                0x6024d3d0      0x10c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d3d0                myApp100MSRun
  .text.myAppEvent
-                0x6024d4c0       0x6c CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6024d4c0                myAppEvent
+                0x6024d4dc       0x6c CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d4dc                myAppEvent
  .text.appSendThreadEvent
-                0x6024d52c       0x20 CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                0x6024d52c                appSendThreadEvent
+                0x6024d548       0x20 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d548                appSendThreadEvent
  .rodata.alarmRequestClear.str1.1
-                0x6024d54c       0x1b CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d568       0x1b CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.alarmRequestClearSave.str1.1
-                0x6024d567       0x1a CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d583       0x1a CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.alarmRequestSet.str1.1
-                0x6024d581       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d59d       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.doRelayOn.str1.1
-                0x6024d59a        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d5b6        0xc CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.gpsRequestClear.str1.1
-                0x6024d5a6       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d5c2       0x19 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.gpsRequestSet.str1.1
-                0x6024d5bf       0x17 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d5db       0x17 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.motionStateUpdate.str1.1
-                0x6024d5d6       0x2e CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d5f2       0x2e CMakeFiles/hello_flash.dir/app/app_task.c.obj
                                  0x3d (size before relaxing)
  .rodata.myAppEvent.str1.1
-                0x6024d604       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d620       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.myAppRun.str1.1
-                0x6024d604      0x317 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d620      0x317 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.sysEnterStopQuickly.str1.1
-                0x6024d91b       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d937       0x14 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.wdtTest.str1.1
-                0x6024d92f       0x12 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                0x6024d94b       0x12 CMakeFiles/hello_flash.dir/app/app_task.c.obj
  .rodata.wifiStartScan.str1.1
-                0x6024d941       0x51 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- *fill*         0x6024d992        0x2 
+                0x6024d95d       0x51 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ *fill*         0x6024d9ae        0x2 
  .text.tts_play_callback
-                0x6024d994       0x14 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+                0x6024d9b0       0x14 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
  .text.nwy_hexchar
-                0x6024d9a8       0x28 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+                0x6024d9c4       0x28 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
  .text.nwy_tts_playbuf
-                0x6024d9d0       0xf0 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
-                0x6024d9d0                nwy_tts_playbuf
+                0x6024d9ec       0xf0 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+                0x6024d9ec                nwy_tts_playbuf
  .text.ParamChangeCB
-                0x6024dac0        0x4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x6024dac0                ParamChangeCB
+                0x6024dadc        0x4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024dadc                ParamChangeCB
  .text.ReadResCB
-                0x6024dac4       0x18 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024dae0       0x18 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .text.OutputCB
-                0x6024dadc       0x38 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024daf8       0x38 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .text.ProgressCB
-                0x6024db14        0x4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x6024db14                ProgressCB
+                0x6024db30        0x4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024db30                ProgressCB
  .text.nwy_tts_task
-                0x6024db18      0x40c ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024db34      0x40c ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .text.nwy_tts_init
-                0x6024df24       0x54 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x6024df24                nwy_tts_init
+                0x6024df40       0x54 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024df40                nwy_tts_init
  .text.nwy_tts_stop
-                0x6024df78       0xa4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x6024df78                nwy_tts_stop
+                0x6024df94       0xa4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024df94                nwy_tts_stop
  .text.nwy_tts_set_param
-                0x6024e01c       0x88 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x6024e01c                nwy_tts_set_param
+                0x6024e038       0x88 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024e038                nwy_tts_set_param
  .text.nwy_tts_play
-                0x6024e0a4       0xe8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
-                0x6024e0a4                nwy_tts_play
+                0x6024e0c0       0xe8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024e0c0                nwy_tts_play
  .rodata.g_ResData
-                0x6024e18c   0x12b1e8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x6024e1a8   0x12b1e8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .rodata.nwy_tts_init.str1.1
-                0x60379374       0x2e ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x60379390       0x2e ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .rodata.nwy_tts_play.str1.1
-                0x603793a2       0x66 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x603793be       0x66 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .rodata.nwy_tts_stop.str1.1
-                0x60379408       0x5b ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+                0x60379424       0x5b ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
  .rodata.nwy_tts_task.str1.1
-                0x60379463      0x1dd ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
- .text          0x60379640      0xf9c ../../components/lib/libAiSound5.a(ivTTS_Ctrl.o)
-                0x60379640                ivTTS_SetParam
-                0x60379d70                SYMD4FB359DE1954864F2B8BB2411A2559A
-                0x6037a31c                ivTTS_GetParam
- .text          0x6037a5dc       0x48 ../../components/lib/libAiSound5.a(ivTTS_Input0.o)
- .text          0x6037a624      0x14c ../../components/lib/libAiSound5.a(ivTTS_Input1.o)
- .text          0x6037a770      0x7ac ../../components/lib/libAiSound5.a(ivTTS_Inst.o)
-                0x6037a770                ivTTS_Create
-                0x6037ad54                ivTTS_Destroy
- .text          0x6037af1c      0x2c8 ../../components/lib/libAiSound5.a(ivTTS_Main.o)
-                0x6037af1c                ivTTS_Run
-                0x6037b020                ivTTS_Exit
-                0x6037b06c                ivTTS_SynthText
-                0x6037b110                ivTTS_SynthStart
-                0x6037b130                ivTTS_GetData
- .text          0x6037b1e4      0x3c4 ../../components/lib/libAiSound5.a(ivTTS_Output.o)
- .text          0x6037b5a8       0xf8 ../../components/lib/libAiSound5.a(ivTTS_Progress.o)
- .text          0x6037b6a0      0x404 ../../components/lib/libAiSound5.a(ivTTS_Resample.o)
-                0x6037b6a0                SYM0A0713095F2B424A2FB60E7BCEAD1989
-                0x6037b7f4                SYMFB1039AD30314667409982C244D9856C
-                0x6037b81c                SYME3BCF4F036FE482330BBDE5609034DB4
-                0x6037b83c                SYM7B9118E5760240FB3A94C6BAF3863613
-                0x6037ba08                SYMD1B69DAE5A6C423224A81DEEE87F7020
-                0x6037ba18                SYM5291E43175DE4B3DCC85543BC6A8B1B6
-                0x6037ba24                SYMC70A9830DA80430CE8BA52525A1F3360
-                0x6037ba2c                SYM06CE5334B0E44C9EB6A594B756E8C6B1
-                0x6037ba38                SYMF755309C5936451A3C998F1CD34C4D22
-                0x6037ba40                SYM2D5C4852AE2E44624396A58C43B62237
- .text          0x6037baa4       0x38 ../../components/lib/libAiSound5.a(ivTTS_Version.o)
-                0x6037baa4                ivTTS_GetVersion
- .text          0x6037badc      0x1c4 ../../components/lib/libAiSound5.a(ivTTS_Watch.o)
- .text          0x6037bca0      0x1ac ../../components/lib/libAiSound5.a(IsCodePageASCII.o)
-                0x6037bca0                SYM08C3453BA1614A0703B8A6A2B0F1FE3E
- .text          0x6037be4c      0x36c ../../components/lib/libAiSound5.a(IsCodePageBig5.o)
-                0x6037be4c                SYM08F11E8E182C4810C1A004B7D9566ED0
- .text          0x6037c1b8      0x47c ../../components/lib/libAiSound5.a(IsCodePageGB.o)
-                0x6037c1b8                SYM1995FAACEAAC448CDEAB6E4AF9C722A6
- .text          0x6037c634      0x158 ../../components/lib/libAiSound5.a(IsCodePagePhoneticPlain.o)
-                0x6037c634                SYM2292D4AA5A174C5554AEB7A8698C1B75
- .text          0x6037c78c      0x248 ../../components/lib/libAiSound5.a(IsCodePageUnicode.o)
-                0x6037c78c                SYMAED793FE8D3A451C9AB2A8DCFCAB7410
- .text          0x6037c9d4      0x268 ../../components/lib/libAiSound5.a(IsCodePageUTF8.o)
-                0x6037c9d4                SYMD4D0157F3B334284738F6255283F5515
- .text          0x6037cc3c      0x11c ../../components/lib/libAiSound5.a(IsMixTextParser.o)
-                0x6037cc3c                SYM2874B78C04D842FC31A8CC81BC6EF82E
- .text          0x6037cd58      0x634 ../../components/lib/libAiSound5.a(IsUnicodeTable.o)
-                0x6037ced0                SYM448171DD9F534536F898172A09C9D224
-                0x6037d028                SYM3ECBED98595A4C0542BAFA5A0250A75B
-                0x6037d08c                SYM96BD36B3858140B7E2A053EA1ABED7DC
- .text          0x6037d38c      0x13c ../../components/lib/libAiSound5.a(IsOutputDirect.o)
-                0x6037d3ac                SYM5D73FC95DEFF456B3DBEF43CED699BB1
- .text          0x6037d4c8      0xe14 ../../components/lib/libAiSound5.a(IsMixedSynther.o)
-                0x6037d7b4                SYM032D71FD5D73447EBCBCAA0825A991C1
-                0x6037d880                SYM6B00B8FEB3BA4C4CA1823677FB66086A
- .text          0x6037e2dc      0x7ac ../../components/lib/libAiSound5.a(IsTTSEngineControl.o)
-                0x6037e2dc                SYM567741F07E2D41070389CE6F71830146
-                0x6037e324                SYM567741F07E2D41070389CE6F71830147
- .text          0x6037ea88      0x27c ../../components/lib/libAiSound5.a(IsTTSEngineSymbol.o)
-                0x6037ea88                SYMADE70427C1A949A7D49B13C8C5F9C840
- .text          0x6037ed04       0x58 ../../components/lib/libAiSound5.a(ivGlobal.o)
-                0x6037ed04                SYM9D99173BA22C4660FDB6585EE74CB745
-                0x6037ed38                SYM59DCB514FB9F425A909E9FBFED9F60E5
- .text          0x6037ed5c       0x64 ../../components/lib/libAiSound5.a(ivGUID.o)
-                0x6037ed5c                SYMDF5D41E15E4E4F082BB77E33BB8FE2C8
- .text          0x6037edc0      0x164 ../../components/lib/libAiSound5.a(ivHeap.o)
-                0x6037edc0                SYM46938F8899804F42588FE9EB49BDD4A5
-                0x6037ede8                SYM45700C138AFD43AAF5892070B872AC88
-                0x6037edec                SYME4FEE4E2E8844206ABA9566B4C9EDFB6
-                0x6037edf8                SYM73762E898774481F0DB54A36AB7EF168
-                0x6037ee1c                SYMFF1BAC90F2B2431654A5479586142A3C
-                0x6037ee34                SYMF202CB66A79F4D019FA75149766F2987
-                0x6037ee88                SYM8DE34B8A75164D68DE83634631D11369
-                0x6037eeac                SYM619FDCB63C644FB56291923EC4CB7FA8
-                0x6037eed8                SYM7E5A8BC755074A09ACA6D8F675E04832
-                0x6037eee4                SYMDE7C23B4A14E4170FBB830C43A9A5294
-                0x6037eef4                SYM1AF36715DD564A7F3EBF8A26531645B8
-                0x6037ef04                SYMB4789CFDC1E443FDE1A416C71004AF69
- .text          0x6037ef24       0xb8 ../../components/lib/libAiSound5.a(ivMemory.o)
-                0x6037ef24                SYMCDC058107DFE101483E50F02102408A5
-                0x6037ef3c                SYMCDBF32AF7DFE101483E50F02102408A5
-                0x6037ef5c                SYMCDC19C4B7DFE101483E50F02102408A5
-                0x6037efa0                SYMCDC2EBBE7DFE101483E50F02102408A5
- .text          0x6037efdc      0x248 ../../components/lib/libAiSound5.a(ivParam.o)
-                0x6037efdc                SYM947E6DACF7D548C12080F5D3F020A717
-                0x6037efe8                SYM22DEA28C1DA145804E8BD0B789C997FD
-                0x6037efec                SYMC4D5C8C0B2FD444397A554FCC30C0440
-                0x6037f020                SYM3982C5DF4B704C6A158D546FCA0C87F1
-                0x6037f03c                SYM96658BE5688F4D199EB3601D4A73C4F9
- .text          0x6037f224      0x2e4 ../../components/lib/libAiSound5.a(ivRes.o)
-                0x6037f224                SYM640DDBE58FAA461FF3A459A82EA91F08
-                0x6037f260                SYMF0DE1515080B40AFE8860E1E52579364
-                0x6037f298                SYMFF6DD1FE43EC4AE87DB1174E6F2F0AE2
-                0x6037f2a4                SYM99B5E89325A744A075A66483F3175450
-                0x6037f2d4                SYM8403F1141018470F0EAEE7558F0F506F
-                0x6037f30c                SYM1D7C146305C44FABC991D5BC1AB891E9
-                0x6037f354                SYM1C1225E43E794F3C62BE05D4D2DB0144
-                0x6037f380                SYM474FDCA327CE459DB6B574AD5AD77C98
-                0x6037f3ac                SYMF0161C99DFC347DBFB802DD4D00EE33B
-                0x6037f3d8                SYMAD4FBCE1A215417BC2AF5E4A13DD5A4E
-                0x6037f424                SYM65816B0614FD4F20798B3047074317E6
-                0x6037f47c                SYMF389F5CB98C14AFC80AF6BAB33736A1E
-                0x6037f4d4                SYMCA55762BCDC44DFDEEA8BC1A54B0F559
- .text          0x6037f508      0x3d8 ../../components/lib/libAiSound5.a(ivResGroup.o)
-                0x6037f508                SYMC74F178A950A40ECEA84854D874BAA67
-                0x6037f584                SYM6EF5ED2A0442451A3F895AA6B3291569
-                0x6037f5c8                SYMD64BD6E9EF314E40DCACE2A6ABC7ED3D
-                0x6037f7cc                SYMF36F6F3A51FA47BA39BBA4143DD27C45
- .text          0x6037f8e0      0x358 ../../components/lib/libAiSound5.a(ivResPack.o)
-                0x6037f8e0                SYMA4182A0A185140E79A9669DC838FB95C
-                0x6037f9f4                SYM2CC5F3BEC58E4DD383BDABCAF04C596A
-                0x6037fad8                SYM6012828CF28F4995ED9C6E216AFCB5BA
-                0x6037fb88                SYME19864E4271C45619780B4685A97CAD5
-                0x6037fc2c                SYM4E217B5EE58C41D8A591F6F7C02BF275
- .text          0x6037fc38      0x310 ../../components/lib/libAiSound5.a(ivString.o)
-                0x6037fc38                SYMCAB93112E3D044DE27AB45928DEF2816
-                0x6037fc94                SYM75A66CD44E354A51938F2F6F3B33F23C
-                0x6037fd34                SYM33E78F170CD64EE62C9421FC5CD7D122
-                0x6037fd60                SYM3CF8A7E9DA5949F4F4A6FC3C5E5958DD
-                0x6037fe04                SYM6695106914F24F71D08F6A7326FB3F45
-                0x6037fe5c                SYM0320DDF7A214451831820E61A52E8B78
-                0x6037fe9c                SYM5260E83A546A4638DC8549011DD63CC0
-                0x6037ff08                SYMCDDD5FDC7DFE101483E50F02102408A5
-                0x6037ff28                SYMCDEEE6267DFE101483E50F02102408A5
- .text          0x6037ff48      0xa94 ../../components/lib/libAiSound5.a(PureEnglish.o)
-                0x603804bc                SYM70E2982AF8664C14A5A16EBB91984187
- .text          0x603809dc     0x14dc ../../components/lib/libAiSound5.a(IsCEEngine.o)
-                0x603815a0                SYM86CFBCCF741B4536D584E453454C9035
- .text          0x60381eb8      0x644 ../../components/lib/libAiSound5.a(IsCEFront.o)
-                0x60381f54                SYM9BB80FDCCE9F44F311B6FA065FA5459A
-                0x60381fec                SYM4DA59903FF8F4BB28FA7791221C31528
-                0x60382064                SYM9A4E4822A8DC4F81B78EA4B0670073D4
-                0x603820ac                SYMF944F8BD8EC8438C40AC5ABB3383A509
-                0x60382174                SYMD489035763A246DBD582E827AD290F35
-                0x60382194                SYM0D479CC51E2D431CB58FF969F884F100
-                0x603821b4                SYM42C8C6D013F1409AA0B99BBC8810D72D
-                0x60382474                SYM20C6D09B049E4850539A682011297F97
- .text          0x603824fc      0x54c ../../components/lib/libAiSound5.a(IsCEFront_ChsChangeTone.o)
-                0x603824fc                SYM08DD46A806E546F9FF8C8323E9079BD7
- .text          0x60382a48      0xd3c ../../components/lib/libAiSound5.a(IsCEFront_ChsDict.o)
-                0x60382ce4                SYM3CC2146FB4CF4D9C79A58989BB4A8393
-                0x60382cf4                SYMA6ED5AB658EB4E85D28286089D682406
-                0x60382db0                SYMB207A3A0A6DE4A90C5B9247664589262
-                0x603832f8                SYMBDDA0BE4F9FC47594AAA43C883A2DB20
-                0x60383334                SYM350D6202F13C4385E790E98051FCBCA2
-                0x603834b0                SYM14E55FCE91484140F1B5ACD2F6A4DDA4
-                0x603835e4                SYM0685B635AB154484DA97580CDE6F52F7
- .text          0x60383784      0xddc ../../components/lib/libAiSound5.a(IsCEFront_ChsNameRule.o)
-                0x60384310                SYM51BA880F6F9C47347F8698C3B8183702
-                0x60384344                SYM66C2A787182D40C9A7B374A38C8C0081
-                0x60384354                SYM8E153197AD4945B759812D665DE222FB
- .text          0x60384560      0xea4 ../../components/lib/libAiSound5.a(IsCEFront_ChsPolyphone.o)
-                0x60384e80                SYM4809378DB5FE4E7D739329541C4FFFF2
-                0x60384f0c                SYMD8EAFDD16CAE44A5B7A493DB7A954BFF
-                0x60384f1c                SYM5C41EA1BBA9B46BCD9A2CDABD033E836
- .text          0x60385404      0x918 ../../components/lib/libAiSound5.a(IsCEFront_ChsSplitWord.o)
-                0x60385404                SYM8AB9198C8D764D998288FA731E7E49EC
- .text          0x60385d1c      0x12c ../../components/lib/libAiSound5.a(IsCEFront_ChsSymbol.o)
-                0x60385d1c                SYM240BEA874A954591F6A4B2503B1BC04C
-                0x60385d58                SYM009975B9106F40D1098FAED2A4BA938B
-                0x60385db0                SYMEDE1DDAEF42F43600CB1269C24C69BB2
-                0x60385df4                SYM800C39EC87BD4EF976AC502E4BC5F2AD
- .text          0x60385e48      0x134 ../../components/lib/libAiSound5.a(IsCEFront_CtnSymbol.o)
-                0x60385e48                SYM0B627D898ED347B57684CCDE1F8B4757
-                0x60385e88                SYMF9646ABA97FA4CC0BE99F5BFFD8FDE64
-                0x60385ee4                SYM402F3866B24248B152814EFEE03FC97F
-                0x60385f28                SYM8795AF2204DA4E65E2B9205ADD8F992E
- .text          0x60385f7c      0x5ec ../../components/lib/libAiSound5.a(IsCEFront_EngDict.o)
-                0x6038606c                SYM443DBC9F9B7F4E974B927D5AD7C40BB3
-                0x60386098                SYMBDC1945B9BE246CBF68ADF9637CD2396
-                0x603860dc                SYMB3F0D5129D50442CA7AFDB7A78EEBDA9
-                0x603860ec                SYM989AD3CF93304052A28A70511F32B068
-                0x603861d8                SYMFFCDC6CE845B4C8DD89E6C03044919D8
-                0x60386278                SYM6BF251BEB9F4454AAFA716BD9C990808
-                0x6038635c                SYM007423531CDF4950BBA21A4E3A87F491
- .text          0x60386568      0x5cc ../../components/lib/libAiSound5.a(IsCEFront_EngLTS.o)
-                0x603866fc                SYM7EA74C094DDC480B8387CA95210396AB
-                0x60386718                SYMC364B2BC25AB4C7D84AE5E3C7A80DAE8
-                0x60386728                SYMF087E9012E0B4ABEF786BE9BA408CE2D
-                0x60386900                SYM4F86CA2DA48F4EFF0AA46149D741A128
- .text          0x60386b34     0x11a4 ../../components/lib/libAiSound5.a(IsCEFront_EngSplitWord.o)
-                0x60386b34                SYM0FAD0400B1DB4D709387525E6F19B379
-                0x60386c50                SYM757ACA7B11F348F21E83789BFC3DE096
-                0x603879d0                SYM7DC56E38271948425BA035DBB6668DB6
- .text          0x60387cd8     0x1ff0 ../../components/lib/libAiSound5.a(IsCEFront_FootAdjust.o)
-                0x60389528                SYMBE04ED9F77AB4BFCE8B979E98F3D8EF2
-                0x603895b0                SYM82A0EAB55C344D37B894F2FB4496E3B4
-                0x603895c0                SYMA7A7D0C194794752FAA0870EE7E4ADA9
- .text          0x60389cc8      0x568 ../../components/lib/libAiSound5.a(IsCEFront_PartOfSpeech.o)
-                0x60389d3c                SYM8A8AE973E70A41520487FDC30F69E0CB
-                0x60389d58                SYM98DA39B35DDB455795AC0EDDFD1FBCC6
-                0x60389d68                SYM21945764CAE9470B42870FA117254848
- .text          0x6038a230      0x520 ../../components/lib/libAiSound5.a(IsCEFront_PhoneProp.o)
-                0x6038a724                SYM3C0D552A02E5459115BAE0D5FD61A018
-                0x6038a730                SYMEE39C1BE03454EB0FEB4FAB38A387D76
- .text          0x6038a750      0x138 ../../components/lib/libAiSound5.a(IsCEFront_PhoneSet.o)
-                0x6038a750                SYMFA05F8E108774CF629857D5E0A9B3EAA
- .text          0x6038a888       0x34 ../../components/lib/libAiSound5.a(IsCEFront_PoSSet.o)
-                0x6038a888                SYMEC4199646F85416C118FBF41475C991E
- .text          0x6038a8bc      0x494 ../../components/lib/libAiSound5.a(IsCEFront_ProsPos.o)
-                0x6038a8bc                SYM2575139D55E644DDD48F812FFBAA6E3E
-                0x6038a8e8                SYMB9479DDBA8764DA87AA1E130010AD205
-                0x6038a920                SYM996024AF636F4483ED87DA21977DC347
-                0x6038a9b4                SYM4D42AE8C570C4C1C25B3E2E21F6D2926
-                0x6038a9f8                SYM103663DEE4D04DD3039DEAE73AD5F397
-                0x6038aa5c                SYM82DC3D7FF6DA4AAC2F93E99A53C05347
-                0x6038aa94                SYMDFC9C38A16234B4C448F317E8CB89AF9
-                0x6038aaec                SYM58DA70478F9C4B6CDFB92B89BA09D432
-                0x6038ab48                SYM61C57E99AF634AD7AC9323945F36A57D
-                0x6038abe4                SYM16F053229D714F2926A0D24AF546E161
-                0x6038ac00                SYM027E0E1587A64D011FB05A77DB21239F
-                0x6038ac1c                SYM2EEE849B859F4E1CFFA3168F30972950
-                0x6038ac70                SYM5B5AD0426CF04F15108DA9E312C24ADE
-                0x6038acc8                SYMF5F33AC5DD054720D29100EA1BDE7615
- .text          0x6038ad50      0xc24 ../../components/lib/libAiSound5.a(IsCEFront_Syntax.o)
-                0x6038b400                SYMAD9945B1A7C74DBEE79479C79969E907
-                0x6038b478                SYMC5BF5D9C21DD4F6DEEA1FEF00001CFC8
-                0x6038b4ac                SYMFA022E943299462BE991C2DA2B3B4B6E
- .text          0x6038b974       0x48 ../../components/lib/libAiSound5.a(IsCEFront_ToneSet.o)
-                0x6038b974                SYMD41B1E0E4DA64757C19C328D229E9D59
- .text          0x6038b9bc      0x76c ../../components/lib/libAiSound5.a(IsCERear.o)
-                0x6038b9bc                SYM33EF3D9575774D7BE4AFAB93CF5D3410
-                0x6038bac4                SYMD1EFE7F7D4074CE67E8C48AA3D43B7D2
-                0x6038bb2c                SYM024ECDD1E657436619B859808C067D8B
-                0x6038bfcc                SYMC39BC104811F4820DEA1497C2CC591FD
- .text          0x6038c128      0x12c ../../components/lib/libAiSound5.a(IsCERear_Common.o)
-                0x6038c128                SYM00C028211F8C41CD54B11E027A3960CD
-                0x6038c1e4                SYM0221ED3C4D584C29F8BE0A6DEB8CC61B
- .text          0x6038c254      0xf30 ../../components/lib/libAiSound5.a(IsCERear_FrameList.o)
-                0x6038c254                SYM2C4F315B0B4141A3CF8AF161138C2246
-                0x6038c280                SYME156D66C5A78480B1489A662F64A8343
-                0x6038cefc                SYM81A73DFFE8314C5D13BC508E2344BF49
- .text          0x6038d184      0x180 ../../components/lib/libAiSound5.a(IsCERear_LoadParam.o)
-                0x6038d184                SYM12A573DB26884BB7439C6D6A77B810E0
-                0x6038d1d4                SYMD0477E0065304199DEA5B23437E17571
-                0x6038d1f4                SYM44E21D31B80A4D4D77B6791F9FEF8713
-                0x6038d260                SYMCDE8DDD37DFE101483E50F02102408A5
-                0x6038d2e0                SYMCDEA02087DFE101483E50F02102408A5
- .text          0x6038d304      0x9e8 ../../components/lib/libAiSound5.a(IsCERear_ParamDecision.o)
-                0x6038d3dc                SYM1430B53923EE44711B9EA4C3F0044C83
-                0x6038d860                SYMDFE98924A635496AA19AC364998E1AB7
- .text          0x6038dcec       0xe8 ../../components/lib/libAiSound5.a(IsCERear_Pulse.o)
-                0x6038dcec                SYMFA506FD1EBDA46415187A5CA0F0BE2B5
- .text          0x6038ddd4      0xc14 ../../components/lib/libAiSound5.a(IsCERear_SynthWave.o)
-                0x6038e690                SYMC6422C25F5654B792EB908D93D84D62D
-                0x6038e6c0                SYM83D0B843794C4D68BBA29B804EAA0230
-                0x6038e6d0                SYMC31DECD7B5154BE5F69675E4F07146F6
- .text          0x6038e9e8      0x390 ../../components/lib/libAiSound5.a(IsCERear_Watch.o)
-                0x6038e9e8                SYM856D2DBF91394CB40AB4FAABDA25272C
-                0x6038ec9c                SYM2CADE57240DD4209A3B49901D903D971
-                0x6038ed08                SYMC8526E89EEDA48244CB444A659C35C88
- .text          0x6038ed78      0x108 ../../components/lib/libAiSound5.a(IsTTSRole.o)
-                0x6038ed78                SYM66D26E8C21B9442EDEB6B89757CC6E55
- .text          0x6038ee80      0x140 ../../components/lib/libAiSound5.a(IsVoice.o)
-                0x6038ee80                SYMFC75640D962145297FB11EC112CDD514
-                0x6038ee84                SYM05A6AE25CE7D4BC3C08C66A66DDA6F55
-                0x6038ee9c                SYME919E80CA7ED4C06A4839221FED2D1A6
-                0x6038eeb8                SYM558c25f374a44109a9aaae1d3ef86afb
-                0x6038ef4c                SYM2A672CE2780B4E9343970B01D4E130CD
-                0x6038ef7c                SYM4929D9972CFB418DC68353B24F63D3E2
-                0x6038ef88                SYM51F7C3E3F1AD4468C68FBA6D6FC6F500
- .text          0x6038efc0       0xb4 ../../components/lib/libAiSound5.a(IsVoicePcm16Bit.o)
-                0x6038efc0                SYME9B5D989BD88474E7BAD87E597BB98CE
-                0x6038f004                SYMEFE2517088204EBDED801EF4AA11EE98
- .text          0x6038f074      0x574 ../../components/lib/libAiSound5.a(IsSpclMarkTTS.o)
-                0x6038f110                SYM77EED5C8D073451009931FA24E49FDBA
- .text          0x6038f5e8     0x1650 ../../components/lib/libAiSound5.a(IsSpclMarkTTS_English.o)
-                0x60390a40                SYMEB9FB1B5DF4048393BA6CC435AA7AF92
- .text          0x60390c38      0x76c ../../components/lib/libAiSound5.a(IsSpclMarkTTS_MatchRule.o)
-                0x60391340                SYM0B735A4F89294225A9BC2760FFA5D737
- .text          0x603913a4      0x454 ../../components/lib/libAiSound5.a(IsSpclMarkTTS_PerformRule.o)
- .text          0x603917f8      0xdf0 ../../components/lib/libAiSound5.a(IsSpclMarkTTS_TokenMgr.o)
-                0x60391eb8                SYM3FA0A77563FB474E1781CAC437CCB382
-                0x60391ed4                SYMCFE25DCF40FB42F556BAB6C985D8828F
-                0x60392268                SYM185B90DD6D2A4A77809300E1E470ACFE
- .text          0x603925e8      0x37c ../../components/lib/libAiSound5.a(ivTTSApi.o)
-                0x603925e8                SYMCD00026B7DFE101483E50F02102408A5
-                0x603927a4                SYMCCFA40947DFE101483E50F02102408A5
-                0x60392808                SYMCCFB67E47DFE101483E50F02102408A5
- .text          0x60392964      0x178 ../../components/lib/libAiSound5.a(ivTTS_BufMrg.o)
-                0x60392964                SYMCCF7F2477DFE101483E50F02102408A5
-                0x60392980                SYMCCF919E97DFE101483E50F02102408A5
-                0x60392a1c                SYMCCF6CAAC7DFE101483E50F02102408A5
- .text          0x60392adc       0xc0 ../../components/lib/libAiSound5.a(IsASCIITable.o)
-                0x60392adc                SYM85998F457A5C4EA0B0B78DE720C6D6AE
- .text          0x60392b9c       0x54 ../../components/lib/libAiSound5.a(IsChsNameCall.o)
-                0x60392b9c                SYM79F108B588914EB6DCA77B17773B8B2A
- .text          0x60392bf0      0x8ec ../../components/lib/libAiSound5.a(IsLWUserDict.o)
-                0x60392bf0                SYMBE0523965CEF44DBDE882F3668958B4D
-                0x60392c08                SYMA4A9CC3531F448FBB7B461C4513A1EEF
-                0x60392c34                SYM701C9D867A114C80F9AD0FDE599A1E7A
-                0x60392cd8                SYM69703EBC7CEB443258B6CA0F4BA61A45
-                0x60392cdc                SYM7470D71566694423EFBA25427D0975F1
-                0x60392ce0                SYM3DE95806C5EB4E37F3A658459E69FAFF
-                0x60392cf0                SYM5E55E5B38D784B9C65A4518540FA2EB3
-                0x60392e80                SYMB31BACB15AD94937D1B2CEFCD9AC26BF
-                0x60392e8c                SYM51E569600557468D6AA5B990046AF6E0
-                0x60393038                SYM3068D1C96AAC4A5A589B7786DA953BF8
-                0x6039304c                SYM4F2A971AD10744D8D88F97E95ACC24D3
-                0x603930dc                SYM521A2161B30D46714AA4AF6CE3DDAACF
-                0x603932e4                SYM9CB1AA9EBC8248ECF1A81EED14C8EE9C
-                0x603933e0                SYMEB52B28B7D0E49F62A9F1A27BD6EDAA3
-                0x603934c0                SYM224646E4F916497FABA0CCCE06674ABB
- .text          0x603934dc      0xd3c ../../components/lib/libAiSound5.a(IsNumTrans.o)
-                0x603934dc                SYM95682D76E5D143A121B249BB5D8E7C7B
-                0x60393854                SYMDDEFF09DB55D48B924B83568C9FE6DBF
-                0x60393994                SYMC36E2753E8F94D469D89825D7D1EE34F
-                0x603939e8                SYM5B2E68AAEA1A440359B12C06577F756F
-                0x60393a6c                SYMB18E0E1F3F954539C08B21158115275C
-                0x60393bec                SYM7152A890372945E79F98A542DF2BC7C9
-                0x60393d84                SYM1730FF86650E4FC8C180A21712A3D9AB
-                0x603940dc                SYM1739DA61170946119D8197996668E1CD
-                0x603941e0                SYM149D9CBE1435488F159824C2F45DC654
- .text          0x60394218      0x2ec ../../components/lib/libAiSound5.a(ivMath.o)
-                0x60394218                SYM6C5CC01619124CC693950D877448E9DB
-                0x60394244                SYM407E20F2220048D256844C8B103D7099
-                0x60394264                SYM713CA5A1A0534C3BA891EE89455720B6
-                0x60394288                SYM83DBCDE45A8B41D7D2AC1B881ECB8AC3
-                0x603942c0                SYMB7ACAD7F67124B49E8886BED27A3E8BD
-                0x603942f8                SYMAA0CB140D7994BC6CC9E0A57D24691C9
-                0x6039432c                SYM3630AA957DC0412868AA28E8A1439E88
-                0x60394384                SYMA15F508696D64D7278B1CD38E16C0B83
-                0x603943c4                SYM8F98382AD54A4373C89CB113E6BA9242
-                0x6039440c                SYM4635DB233C0942CC2F9D46250EE7C621
-                0x603944b0                SYMD169D44B36944E2749B23488FC9F688D
- .text          0x60394504     0x1500 ../../components/lib/libAiSound5.a(Dictionary.o)
-                0x60394504                SYM43DCC876983F47FD9C9F51E647AD4A55
-                0x60394530                SYM87CD6F58659C4D92988CEA0586121D06
-                0x6039454c                SYMC96A191F9C04412811BDA775EC5779FC
-                0x60394570                SYM651804D635F34F642884124AAB575C4A
-                0x603945cc                SYM2572745E4AEC420A408BDDFC53188508
-                0x60394730                SYM2A58899576D14AF7B8B07F6FF6EB175D
-                0x603947b8                SYMFC6E50925B5E4370179E12BD860D3087
-                0x60395320                SYM9F02BA50864D4D2AE7BFC76A7935DD66
-                0x603954dc                SYMDE375793BAFC4322968D43F75602DE81
- .text          0x60395a04      0xe50 ../../components/lib/libAiSound5.a(FrontDefine.o)
-                0x60395a04                SYMB001D6F49BAD4E5CB094E7DA9B99DB6F
-                0x60395a44                SYM6C432A8E3B244E244FB19F10222ACB5D
-                0x60395aa8                SYME7E9B3028AA04E94F9A454FB9DD47DEC
-                0x60395aec                SYM300B0CC41939475E88BC9486607EB80D
-                0x60395b40                SYME240D24E38C6431EC7A765A209049670
-                0x60395b70                SYMB226EEE726F7480FBE95FAFD8AA85977
-                0x60395ba0                SYM87485D99FB4F4FE7F6970B77E4B4DE26
-                0x60395bc4                SYM14A500C0DD9B4A3AD096AF5C53A077E5
-                0x60395c1c                SYMA8AE7CEF26F34A40C3B5A4E15902235B
-                0x60395c2c                SYM8E955311D3B543E2D28F5DBE768EBF19
-                0x60395c58                SYM1CEC1C4E7A8145184BA4E30E5C247C4F
-                0x60395c84                SYMF0A40A642BFA481ECCBA24C9E0139800
-                0x60395ccc                SYM6AF8D45013F9479283822F6A8652D6DE
-                0x60395cf8                SYMEBA8C45CA4B943CD01BFBBA03BC8D199
-                0x60395d24                SYMAE2A53304E93446BDE9875BDAB954E4D
-                0x60395d54                SYMA58D772B5AE5487B11907C059FBC93A9
-                0x60395da0                SYMCE319B046F8A435B5382D5AE3E799E72
-                0x60395ddc                SYMD9A9CE50FF8C434A4DB68173E991D1D1
-                0x60395e2c                SYM21244E3B1DC44F8FBF9AE9A0AB34D854
-                0x60395e78                SYM62DBB790D1D347CD37B93F8064B54657
-                0x60395ec8                SYM2F568F84C30D457D9F95D1AE5A6353AE
-                0x60395f28                SYM3668EA010D994BE5F3B09408A62AEF5D
-                0x60395f7c                SYM9C3D4985017546DB418A4CE5A5931608
-                0x60395fdc                SYMF8C7085161144771E8A9D027B39891B4
-                0x60396088                SYMF4BF5C251846478CC0BA22B521B01CCF
-                0x603960d8                SYM81696C26915142ACF7A6A11B9602C89B
-                0x6039613c                SYM5DE82826D9924506838E6B5EA3B6D457
-                0x60396190                SYM483E8BE73D004001C1A2FCD860DD4938
-                0x60396328                SYMCCF573487DFE101483E50F02102408A5
-                0x6039680c                SYMCCC8421F7DFE101483E50F02102408A5
- .text          0x60396854      0xbf0 ../../components/lib/libAiSound5.a(L3Decision.o)
-                0x60396854                SYM9C5979DD52564B209AAAA0ABD85191F6
-                0x603968b4                SYMCE98902CC4BE4B044DAB89281A7D82B2
-                0x603968f0                SYM5D4A5CB1CAC34BB01499890512B7AF8E
-                0x60396954                SYMA387DF8B4DF646F3B3B0B26D977547B7
-                0x603969cc                SYM01DD9084B40C4DD3A1AC73A7B4BE86A4
-                0x60396a9c                SYMC6529D27454F4F6CF28F81A37B0F7514
-                0x60396d0c                SYM2F33D4B3F5E24EF930B950F501D833B0
-                0x60396db8                SYM1E8D70F1CA6C46E775B3360B34477A7D
-                0x60396f08                SYMBA6C47C5987A4101EEADC1632BF54DBF
-                0x60396f7c                SYM76FDAC86F23145F894B99AA783D4A69D
-                0x60396fa0                SYMCD277A13B21D4175B283EC29C11979B8
- .text          0x60397444      0x6f0 ../../components/lib/libAiSound5.a(LTS.o)
-                0x60397444                SYMB3772311A7254177459FADF37C0D35EC
-                0x6039757c                SYM3685612E9CC3484AAFA27C275BABF035
-                0x603975c8                SYM9FF77D6BB5924165D2AF5520C8D1E129
-                0x603978f4                SYMDAF6336639D64F5F298EEEB233CA7710
- .text          0x60397b34     0x12f4 ../../components/lib/libAiSound5.a(PhoneProp.o)
-                0x60397b34                SYMC7232BE936DA4B5A16A7FA71ADDEBD78
-                0x60397b68                SYM003D00DB8C1D4134D291E8487C99BA86
-                0x60398db0                SYM5D606688BB394382C0BBC9184790B314
-                0x60398dcc                SYMD79DE009E4E54B246FB3F17B812A55A2
- .text          0x60398e28       0xc4 ../../components/lib/libAiSound5.a(PhoneSet.o)
-                0x60398e28                SYM29C76810F60949BB3E8CA57FFC57BE8E
-                0x60398e88                SYM4B204673A12F499268A977A49E9E675A
-                0x60398ecc                SYM4CBDB3A54CAF459D928865BBBC544994
- .text          0x60398eec      0x2e4 ../../components/lib/libAiSound5.a(POSAdjust.o)
-                0x60398eec                SYMEF2143144E17494A3499C78A0448FE0A
-                0x60398f08                SYM46C87CF6DBA3469C6A93B11537178372
-                0x60398f10                SYM4D995F7D063D48A900BCCF777C8EAD4E
- .text          0x603991d0       0xc4 ../../components/lib/libAiSound5.a(POSSet.o)
-                0x603991d0                SYMA64988E3648B42B964B7C9ABEEDC62F0
-                0x60399210                SYM982BB9E8EB9846FF78B0A41D831393C9
-                0x60399270                SYM721870967808495AACBE2FA34E6EFCCD
-                0x60399284                SYMB89EF11255184664FA887562D259DDB2
- .text          0x60399294     0x15ac ../../components/lib/libAiSound5.a(SplitWord.o)
-                0x603995dc                SYMCD3EC3897DFE101483E50F02102408A5
-                0x60399fec                SYMEFD4DD15E9A84A72A79AD20122A9D3C2
- .text          0x6039a840      0x674 ../../components/lib/libAiSound5.a(ToBIDecision.o)
-                0x6039a840                SYM10D1042F3BA74EC48DB80357E8BB7F56
-                0x6039a870                SYMC314D27AA03945B08AB26B196BBAECE4
-                0x6039acb8                SYMF3D9397CCCBC4228BB80D3DE42310C0B
- .text          0x6039aeb4       0x88 ../../components/lib/libAiSound5.a(Utility.o)
-                0x6039aeb4                SYM2ED46D169C944CD488A58323247739D5
-                0x6039aedc                SYM9FCA83AC4ADD4D83AE81D3C1DE51E034
- .text          0x6039af3c      0x5c0 ../../components/lib/libAiSound5.a(WordFix.o)
-                0x6039b0c4                SYMF18DE9D87D9F4C38C7BBCEC58A70CF15
-                0x6039b124                SYME96AC9BC47F14C4B58A55C12E4ABB7C4
-                0x6039b140                SYM289FE8CE214942FE1DB46BBE6E05E6FC
-                0x6039b1f8                SYM24773E4B0983474D5F9716CFDC674DEA
-                0x6039b30c                SYMCF4D666CA6514AD5B680E1D95F957A80
- .text          0x6039b4fc       0xa8 ../../components/lib/libAiSound5.a(IsCECommon.o)
-                0x6039b4fc                SYM2BDB713343C145315F99276F30BB7016
-                0x6039b51c                SYMAA80A09AAEA045A1F7963CBDF34FDD76
-                0x6039b53c                SYM7F8BE12022E84A9333ACD0A225CBFE1B
-                0x6039b55c                SYM6EAEDE5127474285429816677781E8E5
-                0x6039b57c                SYM8A817B9CB23D46B0DDBA4289126EEE56
-                0x6039b58c                SYMFE176E0172844255C19CE3FD6079C095
- .text          0x6039b5a4      0x2dc ../../components/lib/libAiSound5.a(IsCEFront_EngAlpha.o)
-                0x6039b5a4                SYME0BA3D512E604A3D39A9E5CA489CB13B
-                0x6039b828                SYM4F9C9E63115045EF86AC143E00EC3D47
- .text          0x6039b880      0x730 ../../components/lib/libAiSound5.a(IsCERear_CalcParam.o)
-                0x6039bb78                SYMCB75A12A9C8E483527A9D17B27EBA1C1
- .text          0x6039bfb0      0x244 ../../components/lib/libAiSound5.a(IsCERear_GenerateLSF.o)
-                0x6039bfb0                SYMA80ED72F42894E62C387B3B0D3274F21
- .text          0x6039c1f4      0x44c ../../components/lib/libAiSound5.a(C45.o)
-                0x6039c1f4                SYM8B3219AF9677445C639EEDD61DFAFD11
-                0x6039c254                SYMD5D5643D02184CA8BA94804432A30094
-                0x6039c25c                SYMDE7265F7E8064B5D779CBEB9CECACB45
- .text          0x6039c640      0x3ac ../../components/lib/libAiSound5.a(FootAdjust.o)
-                0x6039c640                SYMD8E1F8E457584F167789709BAE4BA905
-                0x6039c6b0                SYMAD6C30C9E4FB4242B6828D5623FED791
- .text          0x6039c9ec      0x5c0 ../../components/lib/libAiSound5.a(FootRule.o)
-                0x6039c9ec                SYMA658E4FA14324AAFB58D648C067D7443
-                0x6039ca34                SYMCFE9E093ABDF4C7E29A443D3E113C10C
-                0x6039cac0                SYMFBC0D70AC15E4AF7D0ACD239096C3929
-                0x6039cb50                SYM87CF3C718C1A4C2FF98B7B2D45B70BF5
-                0x6039cb94                SYMB7DC9B8A10594E032690E26B3AA63C64
-                0x6039ce80                SYM7E22795C74D6490F7587F1D43F0B14FA
- .text          0x6039cfac      0x11c ../../components/lib/libAiSound5.a(SpecialSymbol.o)
-                0x6039cfac                SYMF0E050A6F4AB485BE3A026D416603E25
-                0x6039cfd8                SYM5F77BA49CDBA447DBCB45F05045B3BE7
-                0x6039d040                SYM89FB4D716D8D499AF19B94F3A1C7BEA7
+                0x6037947f      0x1dd ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+ .text          0x6037965c      0xf9c ../../components/lib/libAiSound5.a(ivTTS_Ctrl.o)
+                0x6037965c                ivTTS_SetParam
+                0x60379d8c                SYMD4FB359DE1954864F2B8BB2411A2559A
+                0x6037a338                ivTTS_GetParam
+ .text          0x6037a5f8       0x48 ../../components/lib/libAiSound5.a(ivTTS_Input0.o)
+ .text          0x6037a640      0x14c ../../components/lib/libAiSound5.a(ivTTS_Input1.o)
+ .text          0x6037a78c      0x7ac ../../components/lib/libAiSound5.a(ivTTS_Inst.o)
+                0x6037a78c                ivTTS_Create
+                0x6037ad70                ivTTS_Destroy
+ .text          0x6037af38      0x2c8 ../../components/lib/libAiSound5.a(ivTTS_Main.o)
+                0x6037af38                ivTTS_Run
+                0x6037b03c                ivTTS_Exit
+                0x6037b088                ivTTS_SynthText
+                0x6037b12c                ivTTS_SynthStart
+                0x6037b14c                ivTTS_GetData
+ .text          0x6037b200      0x3c4 ../../components/lib/libAiSound5.a(ivTTS_Output.o)
+ .text          0x6037b5c4       0xf8 ../../components/lib/libAiSound5.a(ivTTS_Progress.o)
+ .text          0x6037b6bc      0x404 ../../components/lib/libAiSound5.a(ivTTS_Resample.o)
+                0x6037b6bc                SYM0A0713095F2B424A2FB60E7BCEAD1989
+                0x6037b810                SYMFB1039AD30314667409982C244D9856C
+                0x6037b838                SYME3BCF4F036FE482330BBDE5609034DB4
+                0x6037b858                SYM7B9118E5760240FB3A94C6BAF3863613
+                0x6037ba24                SYMD1B69DAE5A6C423224A81DEEE87F7020
+                0x6037ba34                SYM5291E43175DE4B3DCC85543BC6A8B1B6
+                0x6037ba40                SYMC70A9830DA80430CE8BA52525A1F3360
+                0x6037ba48                SYM06CE5334B0E44C9EB6A594B756E8C6B1
+                0x6037ba54                SYMF755309C5936451A3C998F1CD34C4D22
+                0x6037ba5c                SYM2D5C4852AE2E44624396A58C43B62237
+ .text          0x6037bac0       0x38 ../../components/lib/libAiSound5.a(ivTTS_Version.o)
+                0x6037bac0                ivTTS_GetVersion
+ .text          0x6037baf8      0x1c4 ../../components/lib/libAiSound5.a(ivTTS_Watch.o)
+ .text          0x6037bcbc      0x1ac ../../components/lib/libAiSound5.a(IsCodePageASCII.o)
+                0x6037bcbc                SYM08C3453BA1614A0703B8A6A2B0F1FE3E
+ .text          0x6037be68      0x36c ../../components/lib/libAiSound5.a(IsCodePageBig5.o)
+                0x6037be68                SYM08F11E8E182C4810C1A004B7D9566ED0
+ .text          0x6037c1d4      0x47c ../../components/lib/libAiSound5.a(IsCodePageGB.o)
+                0x6037c1d4                SYM1995FAACEAAC448CDEAB6E4AF9C722A6
+ .text          0x6037c650      0x158 ../../components/lib/libAiSound5.a(IsCodePagePhoneticPlain.o)
+                0x6037c650                SYM2292D4AA5A174C5554AEB7A8698C1B75
+ .text          0x6037c7a8      0x248 ../../components/lib/libAiSound5.a(IsCodePageUnicode.o)
+                0x6037c7a8                SYMAED793FE8D3A451C9AB2A8DCFCAB7410
+ .text          0x6037c9f0      0x268 ../../components/lib/libAiSound5.a(IsCodePageUTF8.o)
+                0x6037c9f0                SYMD4D0157F3B334284738F6255283F5515
+ .text          0x6037cc58      0x11c ../../components/lib/libAiSound5.a(IsMixTextParser.o)
+                0x6037cc58                SYM2874B78C04D842FC31A8CC81BC6EF82E
+ .text          0x6037cd74      0x634 ../../components/lib/libAiSound5.a(IsUnicodeTable.o)
+                0x6037ceec                SYM448171DD9F534536F898172A09C9D224
+                0x6037d044                SYM3ECBED98595A4C0542BAFA5A0250A75B
+                0x6037d0a8                SYM96BD36B3858140B7E2A053EA1ABED7DC
+ .text          0x6037d3a8      0x13c ../../components/lib/libAiSound5.a(IsOutputDirect.o)
+                0x6037d3c8                SYM5D73FC95DEFF456B3DBEF43CED699BB1
+ .text          0x6037d4e4      0xe14 ../../components/lib/libAiSound5.a(IsMixedSynther.o)
+                0x6037d7d0                SYM032D71FD5D73447EBCBCAA0825A991C1
+                0x6037d89c                SYM6B00B8FEB3BA4C4CA1823677FB66086A
+ .text          0x6037e2f8      0x7ac ../../components/lib/libAiSound5.a(IsTTSEngineControl.o)
+                0x6037e2f8                SYM567741F07E2D41070389CE6F71830146
+                0x6037e340                SYM567741F07E2D41070389CE6F71830147
+ .text          0x6037eaa4      0x27c ../../components/lib/libAiSound5.a(IsTTSEngineSymbol.o)
+                0x6037eaa4                SYMADE70427C1A949A7D49B13C8C5F9C840
+ .text          0x6037ed20       0x58 ../../components/lib/libAiSound5.a(ivGlobal.o)
+                0x6037ed20                SYM9D99173BA22C4660FDB6585EE74CB745
+                0x6037ed54                SYM59DCB514FB9F425A909E9FBFED9F60E5
+ .text          0x6037ed78       0x64 ../../components/lib/libAiSound5.a(ivGUID.o)
+                0x6037ed78                SYMDF5D41E15E4E4F082BB77E33BB8FE2C8
+ .text          0x6037eddc      0x164 ../../components/lib/libAiSound5.a(ivHeap.o)
+                0x6037eddc                SYM46938F8899804F42588FE9EB49BDD4A5
+                0x6037ee04                SYM45700C138AFD43AAF5892070B872AC88
+                0x6037ee08                SYME4FEE4E2E8844206ABA9566B4C9EDFB6
+                0x6037ee14                SYM73762E898774481F0DB54A36AB7EF168
+                0x6037ee38                SYMFF1BAC90F2B2431654A5479586142A3C
+                0x6037ee50                SYMF202CB66A79F4D019FA75149766F2987
+                0x6037eea4                SYM8DE34B8A75164D68DE83634631D11369
+                0x6037eec8                SYM619FDCB63C644FB56291923EC4CB7FA8
+                0x6037eef4                SYM7E5A8BC755074A09ACA6D8F675E04832
+                0x6037ef00                SYMDE7C23B4A14E4170FBB830C43A9A5294
+                0x6037ef10                SYM1AF36715DD564A7F3EBF8A26531645B8
+                0x6037ef20                SYMB4789CFDC1E443FDE1A416C71004AF69
+ .text          0x6037ef40       0xb8 ../../components/lib/libAiSound5.a(ivMemory.o)
+                0x6037ef40                SYMCDC058107DFE101483E50F02102408A5
+                0x6037ef58                SYMCDBF32AF7DFE101483E50F02102408A5
+                0x6037ef78                SYMCDC19C4B7DFE101483E50F02102408A5
+                0x6037efbc                SYMCDC2EBBE7DFE101483E50F02102408A5
+ .text          0x6037eff8      0x248 ../../components/lib/libAiSound5.a(ivParam.o)
+                0x6037eff8                SYM947E6DACF7D548C12080F5D3F020A717
+                0x6037f004                SYM22DEA28C1DA145804E8BD0B789C997FD
+                0x6037f008                SYMC4D5C8C0B2FD444397A554FCC30C0440
+                0x6037f03c                SYM3982C5DF4B704C6A158D546FCA0C87F1
+                0x6037f058                SYM96658BE5688F4D199EB3601D4A73C4F9
+ .text          0x6037f240      0x2e4 ../../components/lib/libAiSound5.a(ivRes.o)
+                0x6037f240                SYM640DDBE58FAA461FF3A459A82EA91F08
+                0x6037f27c                SYMF0DE1515080B40AFE8860E1E52579364
+                0x6037f2b4                SYMFF6DD1FE43EC4AE87DB1174E6F2F0AE2
+                0x6037f2c0                SYM99B5E89325A744A075A66483F3175450
+                0x6037f2f0                SYM8403F1141018470F0EAEE7558F0F506F
+                0x6037f328                SYM1D7C146305C44FABC991D5BC1AB891E9
+                0x6037f370                SYM1C1225E43E794F3C62BE05D4D2DB0144
+                0x6037f39c                SYM474FDCA327CE459DB6B574AD5AD77C98
+                0x6037f3c8                SYMF0161C99DFC347DBFB802DD4D00EE33B
+                0x6037f3f4                SYMAD4FBCE1A215417BC2AF5E4A13DD5A4E
+                0x6037f440                SYM65816B0614FD4F20798B3047074317E6
+                0x6037f498                SYMF389F5CB98C14AFC80AF6BAB33736A1E
+                0x6037f4f0                SYMCA55762BCDC44DFDEEA8BC1A54B0F559
+ .text          0x6037f524      0x3d8 ../../components/lib/libAiSound5.a(ivResGroup.o)
+                0x6037f524                SYMC74F178A950A40ECEA84854D874BAA67
+                0x6037f5a0                SYM6EF5ED2A0442451A3F895AA6B3291569
+                0x6037f5e4                SYMD64BD6E9EF314E40DCACE2A6ABC7ED3D
+                0x6037f7e8                SYMF36F6F3A51FA47BA39BBA4143DD27C45
+ .text          0x6037f8fc      0x358 ../../components/lib/libAiSound5.a(ivResPack.o)
+                0x6037f8fc                SYMA4182A0A185140E79A9669DC838FB95C
+                0x6037fa10                SYM2CC5F3BEC58E4DD383BDABCAF04C596A
+                0x6037faf4                SYM6012828CF28F4995ED9C6E216AFCB5BA
+                0x6037fba4                SYME19864E4271C45619780B4685A97CAD5
+                0x6037fc48                SYM4E217B5EE58C41D8A591F6F7C02BF275
+ .text          0x6037fc54      0x310 ../../components/lib/libAiSound5.a(ivString.o)
+                0x6037fc54                SYMCAB93112E3D044DE27AB45928DEF2816
+                0x6037fcb0                SYM75A66CD44E354A51938F2F6F3B33F23C
+                0x6037fd50                SYM33E78F170CD64EE62C9421FC5CD7D122
+                0x6037fd7c                SYM3CF8A7E9DA5949F4F4A6FC3C5E5958DD
+                0x6037fe20                SYM6695106914F24F71D08F6A7326FB3F45
+                0x6037fe78                SYM0320DDF7A214451831820E61A52E8B78
+                0x6037feb8                SYM5260E83A546A4638DC8549011DD63CC0
+                0x6037ff24                SYMCDDD5FDC7DFE101483E50F02102408A5
+                0x6037ff44                SYMCDEEE6267DFE101483E50F02102408A5
+ .text          0x6037ff64      0xa94 ../../components/lib/libAiSound5.a(PureEnglish.o)
+                0x603804d8                SYM70E2982AF8664C14A5A16EBB91984187
+ .text          0x603809f8     0x14dc ../../components/lib/libAiSound5.a(IsCEEngine.o)
+                0x603815bc                SYM86CFBCCF741B4536D584E453454C9035
+ .text          0x60381ed4      0x644 ../../components/lib/libAiSound5.a(IsCEFront.o)
+                0x60381f70                SYM9BB80FDCCE9F44F311B6FA065FA5459A
+                0x60382008                SYM4DA59903FF8F4BB28FA7791221C31528
+                0x60382080                SYM9A4E4822A8DC4F81B78EA4B0670073D4
+                0x603820c8                SYMF944F8BD8EC8438C40AC5ABB3383A509
+                0x60382190                SYMD489035763A246DBD582E827AD290F35
+                0x603821b0                SYM0D479CC51E2D431CB58FF969F884F100
+                0x603821d0                SYM42C8C6D013F1409AA0B99BBC8810D72D
+                0x60382490                SYM20C6D09B049E4850539A682011297F97
+ .text          0x60382518      0x54c ../../components/lib/libAiSound5.a(IsCEFront_ChsChangeTone.o)
+                0x60382518                SYM08DD46A806E546F9FF8C8323E9079BD7
+ .text          0x60382a64      0xd3c ../../components/lib/libAiSound5.a(IsCEFront_ChsDict.o)
+                0x60382d00                SYM3CC2146FB4CF4D9C79A58989BB4A8393
+                0x60382d10                SYMA6ED5AB658EB4E85D28286089D682406
+                0x60382dcc                SYMB207A3A0A6DE4A90C5B9247664589262
+                0x60383314                SYMBDDA0BE4F9FC47594AAA43C883A2DB20
+                0x60383350                SYM350D6202F13C4385E790E98051FCBCA2
+                0x603834cc                SYM14E55FCE91484140F1B5ACD2F6A4DDA4
+                0x60383600                SYM0685B635AB154484DA97580CDE6F52F7
+ .text          0x603837a0      0xddc ../../components/lib/libAiSound5.a(IsCEFront_ChsNameRule.o)
+                0x6038432c                SYM51BA880F6F9C47347F8698C3B8183702
+                0x60384360                SYM66C2A787182D40C9A7B374A38C8C0081
+                0x60384370                SYM8E153197AD4945B759812D665DE222FB
+ .text          0x6038457c      0xea4 ../../components/lib/libAiSound5.a(IsCEFront_ChsPolyphone.o)
+                0x60384e9c                SYM4809378DB5FE4E7D739329541C4FFFF2
+                0x60384f28                SYMD8EAFDD16CAE44A5B7A493DB7A954BFF
+                0x60384f38                SYM5C41EA1BBA9B46BCD9A2CDABD033E836
+ .text          0x60385420      0x918 ../../components/lib/libAiSound5.a(IsCEFront_ChsSplitWord.o)
+                0x60385420                SYM8AB9198C8D764D998288FA731E7E49EC
+ .text          0x60385d38      0x12c ../../components/lib/libAiSound5.a(IsCEFront_ChsSymbol.o)
+                0x60385d38                SYM240BEA874A954591F6A4B2503B1BC04C
+                0x60385d74                SYM009975B9106F40D1098FAED2A4BA938B
+                0x60385dcc                SYMEDE1DDAEF42F43600CB1269C24C69BB2
+                0x60385e10                SYM800C39EC87BD4EF976AC502E4BC5F2AD
+ .text          0x60385e64      0x134 ../../components/lib/libAiSound5.a(IsCEFront_CtnSymbol.o)
+                0x60385e64                SYM0B627D898ED347B57684CCDE1F8B4757
+                0x60385ea4                SYMF9646ABA97FA4CC0BE99F5BFFD8FDE64
+                0x60385f00                SYM402F3866B24248B152814EFEE03FC97F
+                0x60385f44                SYM8795AF2204DA4E65E2B9205ADD8F992E
+ .text          0x60385f98      0x5ec ../../components/lib/libAiSound5.a(IsCEFront_EngDict.o)
+                0x60386088                SYM443DBC9F9B7F4E974B927D5AD7C40BB3
+                0x603860b4                SYMBDC1945B9BE246CBF68ADF9637CD2396
+                0x603860f8                SYMB3F0D5129D50442CA7AFDB7A78EEBDA9
+                0x60386108                SYM989AD3CF93304052A28A70511F32B068
+                0x603861f4                SYMFFCDC6CE845B4C8DD89E6C03044919D8
+                0x60386294                SYM6BF251BEB9F4454AAFA716BD9C990808
+                0x60386378                SYM007423531CDF4950BBA21A4E3A87F491
+ .text          0x60386584      0x5cc ../../components/lib/libAiSound5.a(IsCEFront_EngLTS.o)
+                0x60386718                SYM7EA74C094DDC480B8387CA95210396AB
+                0x60386734                SYMC364B2BC25AB4C7D84AE5E3C7A80DAE8
+                0x60386744                SYMF087E9012E0B4ABEF786BE9BA408CE2D
+                0x6038691c                SYM4F86CA2DA48F4EFF0AA46149D741A128
+ .text          0x60386b50     0x11a4 ../../components/lib/libAiSound5.a(IsCEFront_EngSplitWord.o)
+                0x60386b50                SYM0FAD0400B1DB4D709387525E6F19B379
+                0x60386c6c                SYM757ACA7B11F348F21E83789BFC3DE096
+                0x603879ec                SYM7DC56E38271948425BA035DBB6668DB6
+ .text          0x60387cf4     0x1ff0 ../../components/lib/libAiSound5.a(IsCEFront_FootAdjust.o)
+                0x60389544                SYMBE04ED9F77AB4BFCE8B979E98F3D8EF2
+                0x603895cc                SYM82A0EAB55C344D37B894F2FB4496E3B4
+                0x603895dc                SYMA7A7D0C194794752FAA0870EE7E4ADA9
+ .text          0x60389ce4      0x568 ../../components/lib/libAiSound5.a(IsCEFront_PartOfSpeech.o)
+                0x60389d58                SYM8A8AE973E70A41520487FDC30F69E0CB
+                0x60389d74                SYM98DA39B35DDB455795AC0EDDFD1FBCC6
+                0x60389d84                SYM21945764CAE9470B42870FA117254848
+ .text          0x6038a24c      0x520 ../../components/lib/libAiSound5.a(IsCEFront_PhoneProp.o)
+                0x6038a740                SYM3C0D552A02E5459115BAE0D5FD61A018
+                0x6038a74c                SYMEE39C1BE03454EB0FEB4FAB38A387D76
+ .text          0x6038a76c      0x138 ../../components/lib/libAiSound5.a(IsCEFront_PhoneSet.o)
+                0x6038a76c                SYMFA05F8E108774CF629857D5E0A9B3EAA
+ .text          0x6038a8a4       0x34 ../../components/lib/libAiSound5.a(IsCEFront_PoSSet.o)
+                0x6038a8a4                SYMEC4199646F85416C118FBF41475C991E
+ .text          0x6038a8d8      0x494 ../../components/lib/libAiSound5.a(IsCEFront_ProsPos.o)
+                0x6038a8d8                SYM2575139D55E644DDD48F812FFBAA6E3E
+                0x6038a904                SYMB9479DDBA8764DA87AA1E130010AD205
+                0x6038a93c                SYM996024AF636F4483ED87DA21977DC347
+                0x6038a9d0                SYM4D42AE8C570C4C1C25B3E2E21F6D2926
+                0x6038aa14                SYM103663DEE4D04DD3039DEAE73AD5F397
+                0x6038aa78                SYM82DC3D7FF6DA4AAC2F93E99A53C05347
+                0x6038aab0                SYMDFC9C38A16234B4C448F317E8CB89AF9
+                0x6038ab08                SYM58DA70478F9C4B6CDFB92B89BA09D432
+                0x6038ab64                SYM61C57E99AF634AD7AC9323945F36A57D
+                0x6038ac00                SYM16F053229D714F2926A0D24AF546E161
+                0x6038ac1c                SYM027E0E1587A64D011FB05A77DB21239F
+                0x6038ac38                SYM2EEE849B859F4E1CFFA3168F30972950
+                0x6038ac8c                SYM5B5AD0426CF04F15108DA9E312C24ADE
+                0x6038ace4                SYMF5F33AC5DD054720D29100EA1BDE7615
+ .text          0x6038ad6c      0xc24 ../../components/lib/libAiSound5.a(IsCEFront_Syntax.o)
+                0x6038b41c                SYMAD9945B1A7C74DBEE79479C79969E907
+                0x6038b494                SYMC5BF5D9C21DD4F6DEEA1FEF00001CFC8
+                0x6038b4c8                SYMFA022E943299462BE991C2DA2B3B4B6E
+ .text          0x6038b990       0x48 ../../components/lib/libAiSound5.a(IsCEFront_ToneSet.o)
+                0x6038b990                SYMD41B1E0E4DA64757C19C328D229E9D59
+ .text          0x6038b9d8      0x76c ../../components/lib/libAiSound5.a(IsCERear.o)
+                0x6038b9d8                SYM33EF3D9575774D7BE4AFAB93CF5D3410
+                0x6038bae0                SYMD1EFE7F7D4074CE67E8C48AA3D43B7D2
+                0x6038bb48                SYM024ECDD1E657436619B859808C067D8B
+                0x6038bfe8                SYMC39BC104811F4820DEA1497C2CC591FD
+ .text          0x6038c144      0x12c ../../components/lib/libAiSound5.a(IsCERear_Common.o)
+                0x6038c144                SYM00C028211F8C41CD54B11E027A3960CD
+                0x6038c200                SYM0221ED3C4D584C29F8BE0A6DEB8CC61B
+ .text          0x6038c270      0xf30 ../../components/lib/libAiSound5.a(IsCERear_FrameList.o)
+                0x6038c270                SYM2C4F315B0B4141A3CF8AF161138C2246
+                0x6038c29c                SYME156D66C5A78480B1489A662F64A8343
+                0x6038cf18                SYM81A73DFFE8314C5D13BC508E2344BF49
+ .text          0x6038d1a0      0x180 ../../components/lib/libAiSound5.a(IsCERear_LoadParam.o)
+                0x6038d1a0                SYM12A573DB26884BB7439C6D6A77B810E0
+                0x6038d1f0                SYMD0477E0065304199DEA5B23437E17571
+                0x6038d210                SYM44E21D31B80A4D4D77B6791F9FEF8713
+                0x6038d27c                SYMCDE8DDD37DFE101483E50F02102408A5
+                0x6038d2fc                SYMCDEA02087DFE101483E50F02102408A5
+ .text          0x6038d320      0x9e8 ../../components/lib/libAiSound5.a(IsCERear_ParamDecision.o)
+                0x6038d3f8                SYM1430B53923EE44711B9EA4C3F0044C83
+                0x6038d87c                SYMDFE98924A635496AA19AC364998E1AB7
+ .text          0x6038dd08       0xe8 ../../components/lib/libAiSound5.a(IsCERear_Pulse.o)
+                0x6038dd08                SYMFA506FD1EBDA46415187A5CA0F0BE2B5
+ .text          0x6038ddf0      0xc14 ../../components/lib/libAiSound5.a(IsCERear_SynthWave.o)
+                0x6038e6ac                SYMC6422C25F5654B792EB908D93D84D62D
+                0x6038e6dc                SYM83D0B843794C4D68BBA29B804EAA0230
+                0x6038e6ec                SYMC31DECD7B5154BE5F69675E4F07146F6
+ .text          0x6038ea04      0x390 ../../components/lib/libAiSound5.a(IsCERear_Watch.o)
+                0x6038ea04                SYM856D2DBF91394CB40AB4FAABDA25272C
+                0x6038ecb8                SYM2CADE57240DD4209A3B49901D903D971
+                0x6038ed24                SYMC8526E89EEDA48244CB444A659C35C88
+ .text          0x6038ed94      0x108 ../../components/lib/libAiSound5.a(IsTTSRole.o)
+                0x6038ed94                SYM66D26E8C21B9442EDEB6B89757CC6E55
+ .text          0x6038ee9c      0x140 ../../components/lib/libAiSound5.a(IsVoice.o)
+                0x6038ee9c                SYMFC75640D962145297FB11EC112CDD514
+                0x6038eea0                SYM05A6AE25CE7D4BC3C08C66A66DDA6F55
+                0x6038eeb8                SYME919E80CA7ED4C06A4839221FED2D1A6
+                0x6038eed4                SYM558c25f374a44109a9aaae1d3ef86afb
+                0x6038ef68                SYM2A672CE2780B4E9343970B01D4E130CD
+                0x6038ef98                SYM4929D9972CFB418DC68353B24F63D3E2
+                0x6038efa4                SYM51F7C3E3F1AD4468C68FBA6D6FC6F500
+ .text          0x6038efdc       0xb4 ../../components/lib/libAiSound5.a(IsVoicePcm16Bit.o)
+                0x6038efdc                SYME9B5D989BD88474E7BAD87E597BB98CE
+                0x6038f020                SYMEFE2517088204EBDED801EF4AA11EE98
+ .text          0x6038f090      0x574 ../../components/lib/libAiSound5.a(IsSpclMarkTTS.o)
+                0x6038f12c                SYM77EED5C8D073451009931FA24E49FDBA
+ .text          0x6038f604     0x1650 ../../components/lib/libAiSound5.a(IsSpclMarkTTS_English.o)
+                0x60390a5c                SYMEB9FB1B5DF4048393BA6CC435AA7AF92
+ .text          0x60390c54      0x76c ../../components/lib/libAiSound5.a(IsSpclMarkTTS_MatchRule.o)
+                0x6039135c                SYM0B735A4F89294225A9BC2760FFA5D737
+ .text          0x603913c0      0x454 ../../components/lib/libAiSound5.a(IsSpclMarkTTS_PerformRule.o)
+ .text          0x60391814      0xdf0 ../../components/lib/libAiSound5.a(IsSpclMarkTTS_TokenMgr.o)
+                0x60391ed4                SYM3FA0A77563FB474E1781CAC437CCB382
+                0x60391ef0                SYMCFE25DCF40FB42F556BAB6C985D8828F
+                0x60392284                SYM185B90DD6D2A4A77809300E1E470ACFE
+ .text          0x60392604      0x37c ../../components/lib/libAiSound5.a(ivTTSApi.o)
+                0x60392604                SYMCD00026B7DFE101483E50F02102408A5
+                0x603927c0                SYMCCFA40947DFE101483E50F02102408A5
+                0x60392824                SYMCCFB67E47DFE101483E50F02102408A5
+ .text          0x60392980      0x178 ../../components/lib/libAiSound5.a(ivTTS_BufMrg.o)
+                0x60392980                SYMCCF7F2477DFE101483E50F02102408A5
+                0x6039299c                SYMCCF919E97DFE101483E50F02102408A5
+                0x60392a38                SYMCCF6CAAC7DFE101483E50F02102408A5
+ .text          0x60392af8       0xc0 ../../components/lib/libAiSound5.a(IsASCIITable.o)
+                0x60392af8                SYM85998F457A5C4EA0B0B78DE720C6D6AE
+ .text          0x60392bb8       0x54 ../../components/lib/libAiSound5.a(IsChsNameCall.o)
+                0x60392bb8                SYM79F108B588914EB6DCA77B17773B8B2A
+ .text          0x60392c0c      0x8ec ../../components/lib/libAiSound5.a(IsLWUserDict.o)
+                0x60392c0c                SYMBE0523965CEF44DBDE882F3668958B4D
+                0x60392c24                SYMA4A9CC3531F448FBB7B461C4513A1EEF
+                0x60392c50                SYM701C9D867A114C80F9AD0FDE599A1E7A
+                0x60392cf4                SYM69703EBC7CEB443258B6CA0F4BA61A45
+                0x60392cf8                SYM7470D71566694423EFBA25427D0975F1
+                0x60392cfc                SYM3DE95806C5EB4E37F3A658459E69FAFF
+                0x60392d0c                SYM5E55E5B38D784B9C65A4518540FA2EB3
+                0x60392e9c                SYMB31BACB15AD94937D1B2CEFCD9AC26BF
+                0x60392ea8                SYM51E569600557468D6AA5B990046AF6E0
+                0x60393054                SYM3068D1C96AAC4A5A589B7786DA953BF8
+                0x60393068                SYM4F2A971AD10744D8D88F97E95ACC24D3
+                0x603930f8                SYM521A2161B30D46714AA4AF6CE3DDAACF
+                0x60393300                SYM9CB1AA9EBC8248ECF1A81EED14C8EE9C
+                0x603933fc                SYMEB52B28B7D0E49F62A9F1A27BD6EDAA3
+                0x603934dc                SYM224646E4F916497FABA0CCCE06674ABB
+ .text          0x603934f8      0xd3c ../../components/lib/libAiSound5.a(IsNumTrans.o)
+                0x603934f8                SYM95682D76E5D143A121B249BB5D8E7C7B
+                0x60393870                SYMDDEFF09DB55D48B924B83568C9FE6DBF
+                0x603939b0                SYMC36E2753E8F94D469D89825D7D1EE34F
+                0x60393a04                SYM5B2E68AAEA1A440359B12C06577F756F
+                0x60393a88                SYMB18E0E1F3F954539C08B21158115275C
+                0x60393c08                SYM7152A890372945E79F98A542DF2BC7C9
+                0x60393da0                SYM1730FF86650E4FC8C180A21712A3D9AB
+                0x603940f8                SYM1739DA61170946119D8197996668E1CD
+                0x603941fc                SYM149D9CBE1435488F159824C2F45DC654
+ .text          0x60394234      0x2ec ../../components/lib/libAiSound5.a(ivMath.o)
+                0x60394234                SYM6C5CC01619124CC693950D877448E9DB
+                0x60394260                SYM407E20F2220048D256844C8B103D7099
+                0x60394280                SYM713CA5A1A0534C3BA891EE89455720B6
+                0x603942a4                SYM83DBCDE45A8B41D7D2AC1B881ECB8AC3
+                0x603942dc                SYMB7ACAD7F67124B49E8886BED27A3E8BD
+                0x60394314                SYMAA0CB140D7994BC6CC9E0A57D24691C9
+                0x60394348                SYM3630AA957DC0412868AA28E8A1439E88
+                0x603943a0                SYMA15F508696D64D7278B1CD38E16C0B83
+                0x603943e0                SYM8F98382AD54A4373C89CB113E6BA9242
+                0x60394428                SYM4635DB233C0942CC2F9D46250EE7C621
+                0x603944cc                SYMD169D44B36944E2749B23488FC9F688D
+ .text          0x60394520     0x1500 ../../components/lib/libAiSound5.a(Dictionary.o)
+                0x60394520                SYM43DCC876983F47FD9C9F51E647AD4A55
+                0x6039454c                SYM87CD6F58659C4D92988CEA0586121D06
+                0x60394568                SYMC96A191F9C04412811BDA775EC5779FC
+                0x6039458c                SYM651804D635F34F642884124AAB575C4A
+                0x603945e8                SYM2572745E4AEC420A408BDDFC53188508
+                0x6039474c                SYM2A58899576D14AF7B8B07F6FF6EB175D
+                0x603947d4                SYMFC6E50925B5E4370179E12BD860D3087
+                0x6039533c                SYM9F02BA50864D4D2AE7BFC76A7935DD66
+                0x603954f8                SYMDE375793BAFC4322968D43F75602DE81
+ .text          0x60395a20      0xe50 ../../components/lib/libAiSound5.a(FrontDefine.o)
+                0x60395a20                SYMB001D6F49BAD4E5CB094E7DA9B99DB6F
+                0x60395a60                SYM6C432A8E3B244E244FB19F10222ACB5D
+                0x60395ac4                SYME7E9B3028AA04E94F9A454FB9DD47DEC
+                0x60395b08                SYM300B0CC41939475E88BC9486607EB80D
+                0x60395b5c                SYME240D24E38C6431EC7A765A209049670
+                0x60395b8c                SYMB226EEE726F7480FBE95FAFD8AA85977
+                0x60395bbc                SYM87485D99FB4F4FE7F6970B77E4B4DE26
+                0x60395be0                SYM14A500C0DD9B4A3AD096AF5C53A077E5
+                0x60395c38                SYMA8AE7CEF26F34A40C3B5A4E15902235B
+                0x60395c48                SYM8E955311D3B543E2D28F5DBE768EBF19
+                0x60395c74                SYM1CEC1C4E7A8145184BA4E30E5C247C4F
+                0x60395ca0                SYMF0A40A642BFA481ECCBA24C9E0139800
+                0x60395ce8                SYM6AF8D45013F9479283822F6A8652D6DE
+                0x60395d14                SYMEBA8C45CA4B943CD01BFBBA03BC8D199
+                0x60395d40                SYMAE2A53304E93446BDE9875BDAB954E4D
+                0x60395d70                SYMA58D772B5AE5487B11907C059FBC93A9
+                0x60395dbc                SYMCE319B046F8A435B5382D5AE3E799E72
+                0x60395df8                SYMD9A9CE50FF8C434A4DB68173E991D1D1
+                0x60395e48                SYM21244E3B1DC44F8FBF9AE9A0AB34D854
+                0x60395e94                SYM62DBB790D1D347CD37B93F8064B54657
+                0x60395ee4                SYM2F568F84C30D457D9F95D1AE5A6353AE
+                0x60395f44                SYM3668EA010D994BE5F3B09408A62AEF5D
+                0x60395f98                SYM9C3D4985017546DB418A4CE5A5931608
+                0x60395ff8                SYMF8C7085161144771E8A9D027B39891B4
+                0x603960a4                SYMF4BF5C251846478CC0BA22B521B01CCF
+                0x603960f4                SYM81696C26915142ACF7A6A11B9602C89B
+                0x60396158                SYM5DE82826D9924506838E6B5EA3B6D457
+                0x603961ac                SYM483E8BE73D004001C1A2FCD860DD4938
+                0x60396344                SYMCCF573487DFE101483E50F02102408A5
+                0x60396828                SYMCCC8421F7DFE101483E50F02102408A5
+ .text          0x60396870      0xbf0 ../../components/lib/libAiSound5.a(L3Decision.o)
+                0x60396870                SYM9C5979DD52564B209AAAA0ABD85191F6
+                0x603968d0                SYMCE98902CC4BE4B044DAB89281A7D82B2
+                0x6039690c                SYM5D4A5CB1CAC34BB01499890512B7AF8E
+                0x60396970                SYMA387DF8B4DF646F3B3B0B26D977547B7
+                0x603969e8                SYM01DD9084B40C4DD3A1AC73A7B4BE86A4
+                0x60396ab8                SYMC6529D27454F4F6CF28F81A37B0F7514
+                0x60396d28                SYM2F33D4B3F5E24EF930B950F501D833B0
+                0x60396dd4                SYM1E8D70F1CA6C46E775B3360B34477A7D
+                0x60396f24                SYMBA6C47C5987A4101EEADC1632BF54DBF
+                0x60396f98                SYM76FDAC86F23145F894B99AA783D4A69D
+                0x60396fbc                SYMCD277A13B21D4175B283EC29C11979B8
+ .text          0x60397460      0x6f0 ../../components/lib/libAiSound5.a(LTS.o)
+                0x60397460                SYMB3772311A7254177459FADF37C0D35EC
+                0x60397598                SYM3685612E9CC3484AAFA27C275BABF035
+                0x603975e4                SYM9FF77D6BB5924165D2AF5520C8D1E129
+                0x60397910                SYMDAF6336639D64F5F298EEEB233CA7710
+ .text          0x60397b50     0x12f4 ../../components/lib/libAiSound5.a(PhoneProp.o)
+                0x60397b50                SYMC7232BE936DA4B5A16A7FA71ADDEBD78
+                0x60397b84                SYM003D00DB8C1D4134D291E8487C99BA86
+                0x60398dcc                SYM5D606688BB394382C0BBC9184790B314
+                0x60398de8                SYMD79DE009E4E54B246FB3F17B812A55A2
+ .text          0x60398e44       0xc4 ../../components/lib/libAiSound5.a(PhoneSet.o)
+                0x60398e44                SYM29C76810F60949BB3E8CA57FFC57BE8E
+                0x60398ea4                SYM4B204673A12F499268A977A49E9E675A
+                0x60398ee8                SYM4CBDB3A54CAF459D928865BBBC544994
+ .text          0x60398f08      0x2e4 ../../components/lib/libAiSound5.a(POSAdjust.o)
+                0x60398f08                SYMEF2143144E17494A3499C78A0448FE0A
+                0x60398f24                SYM46C87CF6DBA3469C6A93B11537178372
+                0x60398f2c                SYM4D995F7D063D48A900BCCF777C8EAD4E
+ .text          0x603991ec       0xc4 ../../components/lib/libAiSound5.a(POSSet.o)
+                0x603991ec                SYMA64988E3648B42B964B7C9ABEEDC62F0
+                0x6039922c                SYM982BB9E8EB9846FF78B0A41D831393C9
+                0x6039928c                SYM721870967808495AACBE2FA34E6EFCCD
+                0x603992a0                SYMB89EF11255184664FA887562D259DDB2
+ .text          0x603992b0     0x15ac ../../components/lib/libAiSound5.a(SplitWord.o)
+                0x603995f8                SYMCD3EC3897DFE101483E50F02102408A5
+                0x6039a008                SYMEFD4DD15E9A84A72A79AD20122A9D3C2
+ .text          0x6039a85c      0x674 ../../components/lib/libAiSound5.a(ToBIDecision.o)
+                0x6039a85c                SYM10D1042F3BA74EC48DB80357E8BB7F56
+                0x6039a88c                SYMC314D27AA03945B08AB26B196BBAECE4
+                0x6039acd4                SYMF3D9397CCCBC4228BB80D3DE42310C0B
+ .text          0x6039aed0       0x88 ../../components/lib/libAiSound5.a(Utility.o)
+                0x6039aed0                SYM2ED46D169C944CD488A58323247739D5
+                0x6039aef8                SYM9FCA83AC4ADD4D83AE81D3C1DE51E034
+ .text          0x6039af58      0x5c0 ../../components/lib/libAiSound5.a(WordFix.o)
+                0x6039b0e0                SYMF18DE9D87D9F4C38C7BBCEC58A70CF15
+                0x6039b140                SYME96AC9BC47F14C4B58A55C12E4ABB7C4
+                0x6039b15c                SYM289FE8CE214942FE1DB46BBE6E05E6FC
+                0x6039b214                SYM24773E4B0983474D5F9716CFDC674DEA
+                0x6039b328                SYMCF4D666CA6514AD5B680E1D95F957A80
+ .text          0x6039b518       0xa8 ../../components/lib/libAiSound5.a(IsCECommon.o)
+                0x6039b518                SYM2BDB713343C145315F99276F30BB7016
+                0x6039b538                SYMAA80A09AAEA045A1F7963CBDF34FDD76
+                0x6039b558                SYM7F8BE12022E84A9333ACD0A225CBFE1B
+                0x6039b578                SYM6EAEDE5127474285429816677781E8E5
+                0x6039b598                SYM8A817B9CB23D46B0DDBA4289126EEE56
+                0x6039b5a8                SYMFE176E0172844255C19CE3FD6079C095
+ .text          0x6039b5c0      0x2dc ../../components/lib/libAiSound5.a(IsCEFront_EngAlpha.o)
+                0x6039b5c0                SYME0BA3D512E604A3D39A9E5CA489CB13B
+                0x6039b844                SYM4F9C9E63115045EF86AC143E00EC3D47
+ .text          0x6039b89c      0x730 ../../components/lib/libAiSound5.a(IsCERear_CalcParam.o)
+                0x6039bb94                SYMCB75A12A9C8E483527A9D17B27EBA1C1
+ .text          0x6039bfcc      0x244 ../../components/lib/libAiSound5.a(IsCERear_GenerateLSF.o)
+                0x6039bfcc                SYMA80ED72F42894E62C387B3B0D3274F21
+ .text          0x6039c210      0x44c ../../components/lib/libAiSound5.a(C45.o)
+                0x6039c210                SYM8B3219AF9677445C639EEDD61DFAFD11
+                0x6039c270                SYMD5D5643D02184CA8BA94804432A30094
+                0x6039c278                SYMDE7265F7E8064B5D779CBEB9CECACB45
+ .text          0x6039c65c      0x3ac ../../components/lib/libAiSound5.a(FootAdjust.o)
+                0x6039c65c                SYMD8E1F8E457584F167789709BAE4BA905
+                0x6039c6cc                SYMAD6C30C9E4FB4242B6828D5623FED791
+ .text          0x6039ca08      0x5c0 ../../components/lib/libAiSound5.a(FootRule.o)
+                0x6039ca08                SYMA658E4FA14324AAFB58D648C067D7443
+                0x6039ca50                SYMCFE9E093ABDF4C7E29A443D3E113C10C
+                0x6039cadc                SYMFBC0D70AC15E4AF7D0ACD239096C3929
+                0x6039cb6c                SYM87CF3C718C1A4C2FF98B7B2D45B70BF5
+                0x6039cbb0                SYMB7DC9B8A10594E032690E26B3AA63C64
+                0x6039ce9c                SYM7E22795C74D6490F7587F1D43F0B14FA
+ .text          0x6039cfc8      0x11c ../../components/lib/libAiSound5.a(SpecialSymbol.o)
+                0x6039cfc8                SYMF0E050A6F4AB485BE3A026D416603E25
+                0x6039cff4                SYM5F77BA49CDBA447DBCB45F05045B3BE7
+                0x6039d05c                SYM89FB4D716D8D499AF19B94F3A1C7BEA7
  .text.__aeabi_memcpy
-                0x6039d0c8        0x4 ../../components/newlib/armca5/libc.a(lib_a-aeabi_memcpy.o)
-                0x6039d0c8                __aeabi_memcpy4
-                0x6039d0c8                __aeabi_memcpy8
-                0x6039d0c8                __aeabi_memcpy
- .text.atof     0x6039d0cc        0x6 ../../components/newlib/armca5/libc.a(lib_a-atof.o)
-                0x6039d0cc                atof
- .text.atoi     0x6039d0d2        0x8 ../../components/newlib/armca5/libc.a(lib_a-atoi.o)
-                0x6039d0d2                atoi
- .text.atol     0x6039d0da        0x8 ../../components/newlib/armca5/libc.a(lib_a-atol.o)
-                0x6039d0da                atol
- *fill*         0x6039d0e2        0x2 
- .text.memcpy   0x6039d0e4       0xc8 ../../components/newlib/armca5/libc.a(lib_a-memcpy-stub.o)
-                0x6039d0e4                memcpy
- .text.memset   0x6039d1ac       0xa8 ../../components/newlib/armca5/libc.a(lib_a-memset.o)
-                0x6039d1ac                memset
+                0x6039d0e4        0x4 ../../components/newlib/armca5/libc.a(lib_a-aeabi_memcpy.o)
+                0x6039d0e4                __aeabi_memcpy4
+                0x6039d0e4                __aeabi_memcpy8
+                0x6039d0e4                __aeabi_memcpy
+ .text.atof     0x6039d0e8        0x6 ../../components/newlib/armca5/libc.a(lib_a-atof.o)
+                0x6039d0e8                atof
+ .text.atoi     0x6039d0ee        0x8 ../../components/newlib/armca5/libc.a(lib_a-atoi.o)
+                0x6039d0ee                atoi
+ .text.atol     0x6039d0f6        0x8 ../../components/newlib/armca5/libc.a(lib_a-atol.o)
+                0x6039d0f6                atol
+ *fill*         0x6039d0fe        0x2 
+ .text.memcpy   0x6039d100       0xc8 ../../components/newlib/armca5/libc.a(lib_a-memcpy-stub.o)
+                0x6039d100                memcpy
+ .text.memset   0x6039d1c8       0xa8 ../../components/newlib/armca5/libc.a(lib_a-memset.o)
+                0x6039d1c8                memset
  .text.snprintf
-                0x6039d254       0x66 ../../components/newlib/armca5/libc.a(lib_a-snprintf.o)
-                0x6039d254                snprintf
- *fill*         0x6039d2ba        0x2 
- .text.sprintf  0x6039d2bc       0x40 ../../components/newlib/armca5/libc.a(lib_a-sprintf.o)
-                0x6039d2bc                sprintf
- .text.strcat   0x6039d2fc       0x40 ../../components/newlib/armca5/libc.a(lib_a-strcat.o)
-                0x6039d2fc                strcat
- *fill*         0x6039d33c        0x4 
- .text          0x6039d340      0x2dc ../../components/newlib/armca5/libc.a(lib_a-strcmp.o)
-                0x6039d348                strcmp
- .text.strcpy   0x6039d61c       0xc4 ../../components/newlib/armca5/libc.a(lib_a-strcpy.o)
-                0x6039d61c                strcpy
- *fill*         0x6039d6e0       0x20 
+                0x6039d270       0x66 ../../components/newlib/armca5/libc.a(lib_a-snprintf.o)
+                0x6039d270                snprintf
+ *fill*         0x6039d2d6        0x2 
+ .text.sprintf  0x6039d2d8       0x40 ../../components/newlib/armca5/libc.a(lib_a-sprintf.o)
+                0x6039d2d8                sprintf
+ .text.strcat   0x6039d318       0x40 ../../components/newlib/armca5/libc.a(lib_a-strcat.o)
+                0x6039d318                strcat
+ *fill*         0x6039d358        0x8 
+ .text          0x6039d360      0x2dc ../../components/newlib/armca5/libc.a(lib_a-strcmp.o)
+                0x6039d368                strcmp
+ .text.strcpy   0x6039d63c       0xc4 ../../components/newlib/armca5/libc.a(lib_a-strcpy.o)
+                0x6039d63c                strcpy
  .text          0x6039d700       0xdc ../../components/newlib/armca5/libc.a(lib_a-strlen.o)
                 0x6039d700                strlen
  .text.strncpy  0x6039d7dc       0x74 ../../components/newlib/armca5/libc.a(lib_a-strncpy.o)
@@ -6801,7 +6802,7 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
  *(.gnu*)
 OUTPUT(hex\hello_flash.elf elf32-littlearm)
 
-.debug_info     0x00000000    0x2e60b
+.debug_info     0x00000000    0x2e620
  .debug_info    0x00000000     0x20bf CMakeFiles/hello_flash.dir/app/aes.c.obj
  .debug_info    0x000020bf     0x1f25 CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
  .debug_info    0x00003fe4     0x372b CMakeFiles/hello_flash.dir/app/app_ble.c.obj
@@ -6819,9 +6820,9 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_info    0x000226b6     0x11b9 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .debug_info    0x0002386f     0x2958 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .debug_info    0x000261c7     0x148a CMakeFiles/hello_flash.dir/app/app_sys.c.obj
- .debug_info    0x00027651     0x3dc7 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .debug_info    0x0002b418     0x1010 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
- .debug_info    0x0002c428     0x21e3 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+ .debug_info    0x00027651     0x3ddc CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .debug_info    0x0002b42d     0x1010 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+ .debug_info    0x0002c43d     0x21e3 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
 
 .debug_abbrev   0x00000000     0x5781
  .debug_abbrev  0x00000000      0x531 CMakeFiles/hello_flash.dir/app/aes.c.obj
@@ -6931,7 +6932,7 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_ranges  0x00001fb8       0x70 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
  .debug_ranges  0x00002028       0xb8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
 
-.debug_line     0x00000000     0x73b3
+.debug_line     0x00000000     0x73b6
  .debug_line    0x00000000      0x586 CMakeFiles/hello_flash.dir/app/aes.c.obj
  .debug_line    0x00000586      0x41c CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
  .debug_line    0x000009a2      0x86d CMakeFiles/hello_flash.dir/app/app_ble.c.obj
@@ -6949,9 +6950,9 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_line    0x000052c5      0x44b CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .debug_line    0x00005710      0x671 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
  .debug_line    0x00005d81      0x443 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
- .debug_line    0x000061c4      0xa26 CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .debug_line    0x00006bea      0x2f5 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
- .debug_line    0x00006edf      0x4d4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+ .debug_line    0x000061c4      0xa29 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .debug_line    0x00006bed      0x2f5 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+ .debug_line    0x00006ee2      0x4d4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
 
 .debug_str      0x00000000     0x78d7
  .debug_str     0x00000000      0x7df CMakeFiles/hello_flash.dir/app/aes.c.obj

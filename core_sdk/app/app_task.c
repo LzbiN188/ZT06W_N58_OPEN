@@ -412,7 +412,7 @@ static void motionCheckTask(void)
             if (gpsinfo->fixstatus && gpsinfo->speed >= 30)
             {
                 detTick++;
-                if (detTick >= 15)
+                if (detTick >= 20)
                 {
                     //ÍÏ³µ±¨¾¯
                     alarmFlag = 1;
@@ -626,7 +626,7 @@ static void gpsRequestTask(void)
 {
     static gpsState_e gpsFsm = GPS_STATE_IDLE;
     static uint8_t runTick = 0;
-    static uint8_t gpsInvalidTick = 0;
+    static uint16_t gpsInvalidTick = 0;
     gpsinfo_s *gpsinfo;
     uint32_t noNmeaOutputTick;
     switch (gpsFsm)
