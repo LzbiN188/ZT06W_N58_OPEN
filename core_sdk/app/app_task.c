@@ -412,7 +412,7 @@ static void motionCheckTask(void)
             if (gpsinfo->fixstatus && gpsinfo->speed >= 30)
             {
                 detTick++;
-                if (detTick >= 20)
+                if (detTick >= 60)
                 {
                     //ÍÏ³µ±¨¾¯
                     alarmFlag = 1;
