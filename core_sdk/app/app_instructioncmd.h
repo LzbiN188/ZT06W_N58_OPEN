@@ -48,6 +48,7 @@ typedef enum
     RELAYFUN_INS,
     RELAYSPEED_INS,
     BLESERVER_INS,
+    RELAYFORCE_INS,
 } cmd_e;
 
 

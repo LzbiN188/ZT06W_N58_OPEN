@@ -64,6 +64,7 @@ const instruction_s instructiontable[] =
     {RELAYFUN_INS, "RELAYFUN"},
     {RELAYSPEED_INS, "RELAYSPEED"},
     {BLESERVER_INS, "BLESERVER"},
+    {RELAYFORCE_INS, "RELAYFORCE"},
     {SN_INS, "*"},
 };
 
@@ -1458,6 +1459,34 @@ static void doBleServerInstruction(ITEM *item, char *message)
 
     }
 }
+static void doRelayForceInstrucion(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == '1')
+    {
+        RELAY_ON;
+        sysparam.relayCtl = 1;
+        paramSaveAll();
+        relayAutoClear();
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+        bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
+		
+        strcpy(message, "Relay force on");
+    }
+    else if (item->item_data[1][0] == '0')
+    {
+        RELAY_OFF;
+        sysparam.relayCtl = 0;
+        paramSaveAll();
+        relayAutoClear();
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT);
+        bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
+        strcpy(message, "Relay force offf");
+    }
+    else
+    {
+        sprintf(message, "Relay status was %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
+    }
+}
 
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
@@ -1592,6 +1621,9 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
         case BLESERVER_INS:
             doBleServerInstruction(item, message);
             break;
+		case RELAYFORCE_INS:
+			doRelayForceInstrucion(item, message);
+			break;
         default:
             if (param->mode == MESSAGE_MODE)
                 return ;
