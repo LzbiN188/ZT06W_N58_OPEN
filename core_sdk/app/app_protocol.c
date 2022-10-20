@@ -1888,6 +1888,32 @@ void protoclUpdateSn(char *sn)
 }
 
 /**************************************************
+@bref		更新ICCID
+@param
+	ICCID	
+@return
+@note
+**************************************************/
+
+void protocolUpdateIccid(char * iccid)
+{
+	strncpy(protocolInfo.iccid,iccid,21);
+}
+
+/**************************************************
+@bref		更新IMSI
+@param
+	IMSI	
+@return
+@note
+**************************************************/
+
+void protocolUpdateImsi(char * imsi)
+{
+	strncpy(protocolInfo.imsi,imsi,21);
+}
+
+/**************************************************
 @bref		更新电压，电池，电量信息
 @param
 	outvol	外电电压

@@ -10,6 +10,7 @@
 #include "app_net.h"
 #include "app_task.h"
 #include "app_param.h"
+#include "app_protocol.h"
 
 static socketInfo_s 	socketlist[SOCKET_LIST_MAX];
 static networkInfo_s	networkInfo;
@@ -824,7 +825,21 @@ static void radioRestore(void)
     portSetRadio(1);
 }
 
+/**************************************************
+@bref		更细协议中必须包含的信息
+@param
+@note
+**************************************************/
 
+static void protocolUpdate(void)
+{
+    char imsi[25];
+    char iccid[25];
+    portGetModuleIMSI(imsi);
+    portGetModuleICCID(iccid);
+    protocolUpdateIccid(iccid);
+    protocolUpdateImsi(imsi);
+}
 /**************************************************
 @bref		负责网络连接
 @param
@@ -911,6 +926,7 @@ void networkConnectTask(void)
         case CHECK_DATACALL:
             if (netCheckDataCall())
             {
+                protocolUpdate();
                 LogMessage(DEBUG_ALL, "DataCall success");
                 nwy_socket_event_report_reg(socketCallBack);
                 changeNetFsm(CHECK_SOCKET);

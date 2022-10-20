@@ -192,7 +192,9 @@ void socketRecvPush(uint8_t link, char *protocol, int size);
 void protocolInit(void);
 
 void protoclUpdateSn(char *sn);
-void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev,uint16_t startCnt,uint16_t runTime);
+void protocolUpdateIccid(char * iccid);
+void protocolUpdateImsi(char * imsi);
+void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev, uint16_t startCnt, uint16_t runTime);
 void protocolUpdateRssi(uint8_t rssi);
 void protocolUpdateSatelliteUsed(uint8_t gps, uint8_t bd);
 void protocolUpdateLbsInfo(uint16_t mcc, uint8_t mnc, uint16_t lac, uint32_t cid);

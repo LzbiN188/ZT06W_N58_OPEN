@@ -672,7 +672,7 @@ static uint16_t jt808PositionInfo(uint8_t *dest, uint16_t len, jt808Position_s *
 
 static uint16_t jt808TerminalPosition(uint8_t *dest, uint8_t *sn, jt808Position_s *positionInfo, uint8_t type)
 {
-    uint16_t len;
+    uint16_t len,jt808vol;
 
     len = jt808PackMessageHead(dest, TERMINAL_POSITION_MSGID, sn, jt808GetSerial(), 0);
     len = jt808PositionInfo(dest, len, positionInfo);
@@ -687,6 +687,12 @@ static uint16_t jt808TerminalPosition(uint8_t *dest, uint8_t *sn, jt808Position_
         dest[len++] = 0x31;
         dest[len++] = 0x01;
         dest[len++] = positionInfo->statelliteUsed;
+		//Íâ²¿µçÑ¹
+        jt808vol = sysinfo.outsideVol * 100;
+        dest[len++] = 0xE4;
+        dest[len++] = 0x02;
+        dest[len++] = (jt808vol >> 8) & 0xFF;
+        dest[len++] = (jt808vol) & 0xFF;
     }
 
     len = jt808PackMessageTail(dest, len);
