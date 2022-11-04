@@ -636,6 +636,7 @@ static void doLEDInstruction(ITEM *item, char *message)
 static void doResetInstruction(ITEM *item, char *message)
 {
     sprintf(message, "System will reset after 5 seconds");
+	sysparam.bleErrCnt=0;
     paramSaveAll();
     startTimer(50, portSystemReset, 0);
 }

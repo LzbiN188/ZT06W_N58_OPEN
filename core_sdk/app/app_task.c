@@ -1425,7 +1425,7 @@ static void voltageCheckTask(void)
     static uint8_t  lowwflag = 0;
     static uint8_t  LostVoltageFlag = 0;
     static uint16_t lowpowertick = 0;
-	static uint16_t LostTick=0;
+    static uint16_t LostTick = 0;
     static uint32_t  LostVoltageTick = 0;
 
     sysinfo.outsideVol = portGetOutSideVolAdcVol() * sysparam.adccal;
@@ -1465,8 +1465,8 @@ static void voltageCheckTask(void)
 
     if (sysinfo.outsideVol < 5.0)
     {
-    	LostTick++;
-        if (LostVoltageFlag == 0 && LostTick>=20)
+        LostTick++;
+        if (LostVoltageFlag == 0 && LostTick >= 20)
         {
             LostVoltageFlag = 1;
             LostVoltageTick = sysinfo.sysTick;
@@ -1496,7 +1496,7 @@ static void voltageCheckTask(void)
     }
     else if (sysinfo.outsideVol > 6.0)
     {
-    	LostTick=0;
+        LostTick = 0;
         terminalCharge();
         if (LostVoltageFlag == 1)
         {
@@ -1656,6 +1656,8 @@ static void autoShutDownTask(void)
     {
         return;
     }
+    sysparam.bleErrCnt = 0;
+    paramSaveAll();
     portSystemShutDown();
 }
 

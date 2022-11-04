@@ -1285,7 +1285,7 @@ static void bleErrAutoRestore(void)
             tick = 0;
             sysparam.bleErrCnt++;
             paramSaveAll();
-            LogPrintf(DEBUG_ALL, "bleErrAutoRestore==>%d",sysparam.bleErrCnt);
+            LogPrintf(DEBUG_ALL, "bleErrAutoRestore==>%d", sysparam.bleErrCnt);
             portSystemReset();
         }
     }
@@ -1300,6 +1300,11 @@ static void bleErrAutoRestore(void)
 
 void bleScheduleTask(void)
 {
+
+    if (sysinfo.sysTick < 10)
+    {
+        return;
+    }
 
     /*À¶ÑÀ¶ÏÁ¬Õì²â£¬²úÉúÀ¶ÑÀ¶ÏÁ¬±¨¾¯*/
     bleDiscDetector();
