@@ -33,6 +33,8 @@
 #define CMD_GET_PRE_ALARM_PARAM   0x14  //读取屏蔽预警参数
 #define CMD_GET_DISCONNECT_PARAM  0x15  //读取倒计时参数
 
+#define CMD_SET_RTC               0xA8//更新RTC时间
+
 
 #define BLE_EVENT_GET_OUTV		  0x00000001 //读取蓝牙继电器的外部电压
 #define BLE_EVENT_GET_RFV		  0x00000002 //读取蓝牙继电器的屏蔽电压
@@ -49,7 +51,8 @@
 #define BLE_EVENT_CLR_PREALARM	  0x00008000 //清除预警
 #define BLE_EVENT_SET_PRE_PARAM	  0x00010000 //设置预警参数
 #define BLE_EVENT_GET_PRE_PARAM	  0x00020000 //读取预警参数
-#define BLE_EVENT_GET_AD_THRE  0x00040000 //读取自动断连参数
+#define BLE_EVENT_GET_AD_THRE  	  0x00040000 //读取自动断连参数
+#define BLE_EVENT_SET_RTC	  	  0x00080000 //更新RTC
 
 typedef enum
 {
@@ -73,6 +76,7 @@ typedef enum
     BLE_SCH_OPEN,
     BLE_SCH_RUN,
     BLE_SCH_CLOSE,
+    BLE_SCH_SCAN
 } ble_schedule_fsm_e;
 
 typedef enum
@@ -135,12 +139,14 @@ typedef struct
 {
     uint8_t bleDo	    : 1;
     uint8_t bleTryOpen	: 1;
+	uint8_t bleTryScan	: 1;
     uint8_t bleSchFsm;
     uint8_t bleConnFsm;
     uint8_t bleCurConnInd;
     uint8_t bleListCnt;
     uint8_t bleConnFailCnt;
     uint8_t bleQuickRun;
+	uint8_t bleKey[13];
 
     uint16_t runTick;
     uint16_t connTick;
@@ -158,6 +164,7 @@ void bleServRequestOn5Minutes(void);
 
 void bleServRunTask(void);
 
+void bleClientSendEvent(ble_clientevent_e event);
 
 void bleClientInfoInit(void);
 void bleClientDoEventProcess(uint8_t id);
@@ -173,6 +180,9 @@ bleRelayInfo_s *bleGetDevInfo(uint8_t i);
 
 void bleScheduleSetReq(uint8_t ind, uint32_t event);
 void bleScheduleClearReq(uint8_t ind, uint32_t event);
+
+void bleScheduleSetKey(uint8_t *key);
+void bleScheduleScan(void);
 
 
 void bleScheduleInit(void);

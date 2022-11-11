@@ -65,6 +65,7 @@ const instruction_s instructiontable[] =
     {RELAYSPEED_INS, "RELAYSPEED"},
     {BLESERVER_INS, "BLESERVER"},
     {RELAYFORCE_INS, "RELAYFORCE"},
+    {BLESCAN_INS, "BLESCAN"},
     {SN_INS, "*"},
 };
 
@@ -636,7 +637,7 @@ static void doLEDInstruction(ITEM *item, char *message)
 static void doResetInstruction(ITEM *item, char *message)
 {
     sprintf(message, "System will reset after 5 seconds");
-	sysparam.bleErrCnt=0;
+    sysparam.bleErrCnt = 0;
     paramSaveAll();
     startTimer(50, portSystemReset, 0);
 }
@@ -798,12 +799,28 @@ static void doFactoryInstrucion(ITEM *item, char *message)
 
 static void doRelayInstrucion(ITEM *item, char *message)
 {
+    uint8_t key[13];
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Relay status %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
+        return;
+    }
+    if (strlen(item->item_data[2]) != 26)
+    {
+        strcpy(message, "please enter secret key");
+        return;
+    }
+
+    changeHexStringToByteArray(key, (uint8_t *) item->item_data[2], 13);
+    bleScheduleSetKey(key);
+
     if (item->item_data[1][0] == '1')
     {
         sysparam.relayCtl = 1;
         paramSaveAll();
         relayAutoRequest();
-        strcpy(message, "Relay on success");
+        strcpy(message, "try to relay on");
+
     }
     else if (item->item_data[1][0] == '0')
     {
@@ -811,13 +828,9 @@ static void doRelayInstrucion(ITEM *item, char *message)
         sysparam.relayCtl = 0;
         paramSaveAll();
         relayAutoClear();
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT);
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
-        strcpy(message, "Relay off success");
-    }
-    else
-    {
-        sprintf(message, "Relay status %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
+        strcpy(message, "try to relay off");
     }
 }
 static void doVolInstrucion(ITEM *item, char *message)
@@ -1462,6 +1475,23 @@ static void doBleServerInstruction(ITEM *item, char *message)
 }
 static void doRelayForceInstrucion(ITEM *item, char *message)
 {
+    uint8_t key[13];
+
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Relay status %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
+        return ;
+    }
+
+    if (strlen(item->item_data[2]) != 26)
+    {
+        strcpy(message, "please enter secret key");
+        return;
+    }
+
+    changeHexStringToByteArray(key, (uint8_t *) item->item_data[2], 13);
+    bleScheduleSetKey(key);
+
     if (item->item_data[1][0] == '1')
     {
         RELAY_ON;
@@ -1470,7 +1500,7 @@ static void doRelayForceInstrucion(ITEM *item, char *message)
         relayAutoClear();
         bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-		
+
         strcpy(message, "Relay force on");
     }
     else if (item->item_data[1][0] == '0')
@@ -1483,12 +1513,19 @@ static void doRelayForceInstrucion(ITEM *item, char *message)
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
         strcpy(message, "Relay force offf");
     }
-    else
-    {
-        sprintf(message, "Relay status was %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
-    }
 }
 
+static void doBleScanInstruction(ITEM *item, char *message,instructionParam_s *param)
+{
+    bleScheduleScan();
+	mode123 = param->mode;
+    link123 = param->link;
+    if (param->telNum != NULL)
+    {
+        strcpy(telnum123, param->telNum);
+    }
+	saveInstructionId();
+}
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
 {
@@ -1622,9 +1659,12 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
         case BLESERVER_INS:
             doBleServerInstruction(item, message);
             break;
-		case RELAYFORCE_INS:
-			doRelayForceInstrucion(item, message);
-			break;
+        case RELAYFORCE_INS:
+            doRelayForceInstrucion(item, message);
+            break;
+        case BLESCAN_INS:
+            doBleScanInstruction(item, message,param);
+            break;
         default:
             if (param->mode == MESSAGE_MODE)
                 return ;
@@ -1694,3 +1734,16 @@ void doPositionRespon(void)
     sendMessageWithDifMode((uint8_t *)message, strlen(message), mode123, telnum123, link123);
 }
 
+/**************************************************
+@bref		BLESCAN÷∏¡Óªÿ∏¥
+@param
+@return
+@note
+**************************************************/
+
+void doBleScanRespon(char * message)
+{
+    recoverInstructionId();
+    sendMessageWithDifMode((uint8_t *)message, strlen(message), mode123, telnum123, link123);
+
+}

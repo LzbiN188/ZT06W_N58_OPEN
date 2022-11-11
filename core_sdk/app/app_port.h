@@ -159,7 +159,7 @@ float portGetBatteryAdcVol(void);
 uint8_t portGetModuleRssi(void);
 void portGetModuleICCID(char *iccid);
 void portGetModuleIMSI(char *imsi);
-void portGetModuleIMEI(char *imei);
+int portGetModuleIMEI(char *imei);
 lbsInfo_s portGetLbsInfo(void);
 
 int portStartAgps(char *agpsServer, int agpsPort, char *agpsUser, char *agpsPswd);

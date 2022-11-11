@@ -11,7 +11,10 @@
 #include "nwy_ble_client.h"
 #include "app_net.h"
 #include "app_protocol.h"
+#include "app_instructioncmd.h"
 #include "aes.h"
+
+#define INS_MSG_SIZE		500
 
 static bleServer_s bleServInfo;
 static bleClinet_s bleClientInfo;
@@ -19,8 +22,9 @@ static bleConnectShchedule_s bleSchedule;
 
 static void bleServRecvParser(uint8_t *buf, uint8_t len);
 static void bleRecvParser(uint8_t *data, uint8_t len);
-static void bleClientSendEvent(ble_clientevent_e event);
+//static void bleClientSendEvent(ble_clientevent_e event);
 
+static char insMessage[INS_MSG_SIZE];
 /***********************************************************************/
 //                         蓝牙从机
 /***********************************************************************/
@@ -334,12 +338,19 @@ static void bleClientSetConnect(char *mac, uint8_t type)
 
 static void bleClientScanCallBack(void)
 {
-    char debug[50];
+    char debug[80];
+    int ret;
     nwy_ble_c_scan_dev scan;
     nwy_ble_client_scan_result(&scan);
     changeByteArrayToHexString(scan.bdAddress.addr, (uint8_t *)debug, 6);
     debug[12] = 0;
-    LogPrintf(DEBUG_ALL, "MAC:%s,name:%s,rssi:%d,addrType:%d", debug, scan.name, -scan.rssi, scan.addr_type);
+    LogPrintf(DEBUG_ALL, "MAC:%s,name:%s,rssi:%d", debug, scan.name, -scan.rssi);
+
+    ret = strncmp((char *)scan.name, "EN ", 3);
+    if (strlen(insMessage) <= (INS_MSG_SIZE - 30) && ret == 0)
+    {
+        sprintf(insMessage + strlen(insMessage), "[%s](%d);", debug, -scan.rssi);
+    }
 }
 /**************************************************
 @bref		蓝牙主机数据接收回调
@@ -416,7 +427,7 @@ uint8_t bleClientSendData(uint8_t serId, uint8_t charId, uint8_t *data, uint8_t 
     return ret;
 }
 
-static void bleClientSendEvent(ble_clientevent_e event)
+void bleClientSendEvent(ble_clientevent_e event)
 {
     appSendThreadEvent(THREAD_EVENT_BLE_CLIENT, event);
 }
@@ -466,10 +477,14 @@ void bleClientDoEventProcess(uint8_t id)
             ret = nwy_ble_client_scan(BLE_CLIENT_SCAN_TIME);
             if (ret == 1)
             {
+
+                doBleScanRespon(insMessage);
                 LogMessage(DEBUG_ALL, "ble client scan success");
             }
             else
             {
+
+                doBleScanRespon("Scan Fail");
                 LogMessage(DEBUG_ALL, "ble client scan fail");
             }
             break;
@@ -699,7 +714,7 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
         {
             continue;
         }
-        //LogPrintf(DEBUG_ALL, "CMD[0x%02X]", data[readInd + 3]);
+        LogPrintf(DEBUG_ALL, "CMD[0x%02X]", data[readInd + 3]);
         /*状态更新*/
         bleSchedule.bleList[bleSchedule.bleCurConnInd].bleInfo.updateTick = sysinfo.sysTick;
         if (bleSchedule.bleList[bleSchedule.bleCurConnInd].bleInfo.bleLost == 1)
@@ -720,13 +735,27 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_CNT);
                 break;
             case CMD_DEV_ON:
-                LogMessage(DEBUG_ALL, "BLE==>relayon success");
-                alarmRequestSet(ALARM_OIL_CUTDOWN_REQUEST);
+                if (data[readInd + 4] == 1)
+                {
+                    LogMessage(DEBUG_ALL, "BLE==>relayon success");
+                    alarmRequestSet(ALARM_OIL_CUTDOWN_REQUEST);
+                }
+                else
+                {
+                    LogMessage(DEBUG_ALL, "BLE==>relayon fail");
+                }
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_DEVON);
                 break;
             case CMD_DEV_OFF:
-                LogMessage(DEBUG_ALL, "BLE==>relayoff success");
-                alarmRequestSet(ALARM_OIL_RESTORE_REQUEST);
+                if (data[readInd + 4] == 1)
+                {
+                    LogMessage(DEBUG_ALL, "BLE==>relayoff success");
+                    alarmRequestSet(ALARM_OIL_RESTORE_REQUEST);
+                }
+                else
+                {
+                    LogMessage(DEBUG_ALL, "BLE==>relayoff fail");
+                }
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_DEVOFF);
                 break;
             case CMD_SET_VOLTAGE:
@@ -814,6 +843,10 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 bleSchedule.bleList[bleSchedule.bleCurConnInd].bleInfo.disc_threshold = data[readInd + 4];
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_GET_AD_THRE);
                 break;
+            case CMD_SET_RTC:
+                LogPrintf(DEBUG_ALL, "BLE==>update rtc success");
+                bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_RTC);
+                break;
         }
         readInd += size + 3;
     }
@@ -873,7 +906,7 @@ int8_t bleScheduleInsert(char *mac)
             LogPrintf(DEBUG_ALL, "BLE insert [%d]:%s", ind, mac);
             bleScheduleSetReq(ind, BLE_EVENT_SET_RF_THRE | BLE_EVENT_SET_OUTV_THRE | BLE_EVENT_SET_AD_THRE | BLE_EVENT_GET_AD_THRE |
                               BLE_EVENT_GET_RF_THRE | BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_OUTV | BLE_EVENT_GET_RFV |
-                              BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_PRE_PARAM | BLE_EVENT_GET_PRE_PARAM);
+                              BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_PRE_PARAM | BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_RTC);
             bleSchedule.bleListCnt++;
             return ind;
         }
@@ -990,6 +1023,26 @@ void bleScheduleClearReq(uint8_t ind, uint32_t event)
 }
 
 /**************************************************
+@bref		写入密钥
+@param		key,13个字节的密钥
+@return
+@note
+**************************************************/
+
+void bleScheduleSetKey(uint8_t *key)
+{
+    memcpy(bleSchedule.bleKey, key, 13);
+}
+
+void bleScheduleScan(void)
+{
+    bleSchedule.bleTryScan = 1;
+    insMessage[0] = 0;
+    LogMessage(DEBUG_ALL, "ble try to scan");
+}
+
+
+/**************************************************
 @bref		蓝牙断连侦测
 @param
 @return
@@ -1028,6 +1081,25 @@ static void bleDiscDetector(void)
     }
 }
 
+static void bleUpdateDevRtc(void)
+{
+    uint8_t param[10];
+    uint16_t year;
+    uint8_t  month;
+    uint8_t date;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+
+    portGetRtcDateTime(&year, &month, &date, &hour, &minute, &second);
+    param[0] = year % 100;
+    param[1] = month;
+    param[2] = date;
+    param[3] = hour;
+    param[4] = minute;
+    param[5] = second;
+    bleSendProtocol(CMD_SET_RTC, param, 6);
+}
 
 /**************************************************
 @bref		蓝牙数据发送
@@ -1065,15 +1137,23 @@ static uint8_t bleDataSendTry(void)
     //非固定发送组
     if (bleSchedule.sendTick % 2 == 0)
     {
+
+        if (event & BLE_EVENT_SET_RTC)
+        {
+            LogMessage(DEBUG_ALL, "try to update rtc");
+            bleUpdateDevRtc();
+            ret = 1;
+            return ret;
+        }
         if (event & BLE_EVENT_SET_DEVON)
         {
             LogMessage(DEBUG_ALL, "try to set relay on");
-            bleSendProtocol(CMD_DEV_ON, param, 0);
+            bleSendProtocol(CMD_DEV_ON, bleSchedule.bleKey, 13);
         }
         if (event & BLE_EVENT_SET_DEVOFF)
         {
             LogMessage(DEBUG_ALL, "try to set relay off");
-            bleSendProtocol(CMD_DEV_OFF, param, 0);
+            bleSendProtocol(CMD_DEV_OFF, bleSchedule.bleKey, 13);
         }
         if (event & BLE_EVENT_CLR_CNT)
         {
@@ -1314,7 +1394,7 @@ void bleScheduleTask(void)
     switch (bleSchedule.bleSchFsm)
     {
         case BLE_SCH_OPEN:
-            if (bleSchedule.bleDo == 0)
+            if (bleSchedule.bleDo == 0 && bleSchedule.bleTryScan == 0)
             {
                 if (bleClientInfo.bleClientOnoff == 1)
                 {
@@ -1324,7 +1404,15 @@ void bleScheduleTask(void)
             }
             if (bleClientInfo.bleClientOnoff == 1)
             {
-                bleScheduleChangeFsm(BLE_SCH_RUN);
+                if (bleSchedule.bleTryScan)
+                {
+
+                    bleScheduleChangeFsm(BLE_SCH_SCAN);
+                }
+                else
+                {
+                    bleScheduleChangeFsm(BLE_SCH_RUN);
+                }
             }
             else
             {
@@ -1347,7 +1435,16 @@ void bleScheduleTask(void)
             }
             else
             {
-                bleConnectTry();
+                if (bleSchedule.bleTryScan)
+                {
+                    bleClientSendEvent(BLE_CLIENT_DISCONNECT);
+                    bleConnTryChangeFsm(BLE_CONN_IDLE);
+                    bleScheduleChangeFsm(BLE_SCH_SCAN);
+                }
+                else
+                {
+                    bleConnectTry();
+                }
                 break;
             }
         case BLE_SCH_CLOSE:
@@ -1360,6 +1457,26 @@ void bleScheduleTask(void)
             }
             bleClientSendEvent(BLE_CLIENT_CLOSE);
             bleScheduleChangeFsm(BLE_SCH_OPEN);
+            break;
+        case BLE_SCH_SCAN:
+
+            if (bleSchedule.runTick == 3)
+            {
+                bleSchedule.bleTryScan = 0;
+                bleClientSendEvent(BLE_CLIENT_SCAN);
+            }
+
+            if (bleSchedule.runTick >= 10)
+            {
+                if (bleSchedule.bleDo)
+                {
+                    bleScheduleChangeFsm(BLE_SCH_RUN);
+                }
+                else
+                {
+                    bleScheduleChangeFsm(BLE_SCH_CLOSE);
+                }
+            }
             break;
     }
 

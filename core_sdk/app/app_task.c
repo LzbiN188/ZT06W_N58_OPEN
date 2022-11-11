@@ -1719,7 +1719,7 @@ static void doRelayOn(void)
     relayAutoClear();
     RELAY_ON;
     bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON|BLE_EVENT_SET_RTC);
     LogMessage(DEBUG_ALL, "do relay on");
 
 }

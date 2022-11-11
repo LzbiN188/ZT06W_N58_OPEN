@@ -49,6 +49,7 @@ typedef enum
     RELAYSPEED_INS,
     BLESERVER_INS,
     RELAYFORCE_INS,
+    BLESCAN_INS,
 } cmd_e;
 
 
@@ -77,5 +78,6 @@ typedef struct{
 
 void instructionParser(uint8_t *str, uint16_t len, instructionParam_s *param);
 void doPositionRespon(void);
+void doBleScanRespon(char * message);
 
 #endif

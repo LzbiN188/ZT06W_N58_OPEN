@@ -840,6 +840,34 @@ static void protocolUpdate(void)
     protocolUpdateIccid(iccid);
     protocolUpdateImsi(imsi);
 }
+
+/**************************************************
+@bref		自动获取SN号作为IMEI号
+@param
+@note
+**************************************************/
+
+static void getSn(void)
+{
+    int ret;
+    char imei[20];
+    ret = portGetModuleIMEI(imei);
+    if (ret != 0)
+    {
+        LogMessage(DEBUG_ALL, "get sn error");
+        return;
+    }
+    if (imei[0] == 0)
+    {
+        return;
+    }
+    if (strncmp(sysparam.SN, imei, 15) == 0)
+    {
+        return;
+    }
+    strncpy(sysparam.SN, imei, 15);
+    paramSaveAll();
+}
 /**************************************************
 @bref		负责网络连接
 @param
@@ -869,6 +897,7 @@ void networkConnectTask(void)
         case CHECK_SIM:
             if (nwy_sim_get_card_status() == NWY_SIM_STATUS_READY)
             {
+                getSn();
                 LogMessage(DEBUG_ALL, "Sim OK");
                 changeNetFsm(CHECK_SIGNAL);
             }

@@ -14,6 +14,8 @@
 #include "app_jt808.h"
 #include "app_ble.h"
 #include "stdlib.h"
+#include "app_encrypt.h"
+#include "app_ble.h"
 
 
 const atCmd_s atCmdTable[] =
@@ -145,6 +147,22 @@ static void doAtdebugCmd(char *buf, uint32_t len)
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SHOW"))
     {
         showBleList();
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"ENCRYPT"))
+    {
+        uint8_t mac[6];
+        mac[0] = 0xBF;
+        mac[1] = 0x90;
+        mac[2] = 0xda;
+        mac[3] = 0xe4;
+        mac[4] = 0xc2;
+        mac[5] = 0x84;
+        encryptTest(mac);
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SCAN"))
+    {
+        bleClientSendEvent(BLE_CLIENT_SCAN);
+        LogMessage(DEBUG_ALL, "ble scan");
     }
     else
     {

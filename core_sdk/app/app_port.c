@@ -709,12 +709,12 @@ void portGetModuleIMSI(char *imsi)
 @note
 **************************************************/
 
-void portGetModuleIMEI(char *imei)
+int portGetModuleIMEI(char *imei)
 {
-    nwy_result_type ret;
+    nwy_result_type ret = NWY_RES_ERROR;
     nwy_sim_result_type simResult;
     if (imei == NULL)
-        return;
+        return NWY_RES_ERROR;
     ret = nwy_sim_get_imei(&simResult);
     if (ret == NWY_RES_OK)
     {
@@ -725,6 +725,7 @@ void portGetModuleIMEI(char *imei)
     {
         imei[0] = 0;
     }
+    return ret;
 }
 
 /**************************************************
@@ -861,7 +862,7 @@ void portSystemShutDown(void)
 @note		以追加方式保存到文件
 **************************************************/
 
-void portSaveAudio(char * filePath,uint8_t *audio, uint16_t len)
+void portSaveAudio(char *filePath, uint8_t *audio, uint16_t len)
 {
     uint16_t  fileOperation;
     int fd, writelen;
@@ -897,22 +898,22 @@ void portSaveAudio(char * filePath,uint8_t *audio, uint16_t len)
 @note
 **************************************************/
 
-void portDeleteAudio(char * filePath)
+void portDeleteAudio(char *filePath)
 {
     if (nwy_sdk_fexist(filePath))
     {
         if (nwy_sdk_file_unlink(filePath) == 0)
         {
-            LogPrintf(DEBUG_ALL, "Delete %s success",filePath);
+            LogPrintf(DEBUG_ALL, "Delete %s success", filePath);
         }
         else
         {
-            LogPrintf(DEBUG_ALL, "Delete %s fail",filePath);
+            LogPrintf(DEBUG_ALL, "Delete %s fail", filePath);
         }
     }
     else
     {
-        LogPrintf(DEBUG_ALL, "%s not exist",filePath);
+        LogPrintf(DEBUG_ALL, "%s not exist", filePath);
     }
 }
 
@@ -922,7 +923,7 @@ void portDeleteAudio(char * filePath)
 @note
 **************************************************/
 
-void portPlayAudio(char * filePath)
+void portPlayAudio(char *filePath)
 {
     long size = 0;
     size = nwy_sdk_fsize(filePath);
@@ -1594,7 +1595,7 @@ void portSetApn(char *apn, char *userName, char *password)
     strcpy(cfgpdn.apn, sysparam.apn);
     strcpy(cfgpdn.userName, sysparam.apnuser);
     strcpy(cfgpdn.password, sysparam.apnpassword);
-    ret=nwy_nw_set_cfgdftpdn_info(cfgpdn);
+    ret = nwy_nw_set_cfgdftpdn_info(cfgpdn);
     LogPrintf(DEBUG_ALL, "portSetApn==>%s", ret == 0 ? "Success" : "Fail");
 }
 
