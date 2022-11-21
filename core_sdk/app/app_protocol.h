@@ -23,6 +23,7 @@ typedef enum
     PROTOCOL_62,
     PROTOCOL_8A,	//时间
     PROTOCOL_F1,	//信息
+    PROTOCOL_F6,
     PROTOCOL_F3,
     PROTOCOL_21,
     PROTOCOL_UP,
@@ -87,13 +88,15 @@ typedef struct
     uint8_t instructionIdBle[4];
     uint8_t mnc;
     uint8_t event;
+    uint8_t slaverMac[5][6];
+    uint8_t slaverCnt;
 
     uint16_t Serial;
     uint16_t mcc;
     uint16_t lac;
 
-	uint16_t startUpCnt;
-	uint16_t runTime;
+    uint16_t startUpCnt;
+    uint16_t runTime;
 
     uint32_t cid;
     float	outsideVol;
@@ -165,6 +168,9 @@ typedef struct
     uint16_t packSize;
 } recordUploadInfo_s;
 
+
+
+
 void terminalDefense(void);
 void terminalDisarm(void);
 uint8_t getTerminalAccState(void);
@@ -192,8 +198,8 @@ void socketRecvPush(uint8_t link, char *protocol, int size);
 void protocolInit(void);
 
 void protoclUpdateSn(char *sn);
-void protocolUpdateIccid(char * iccid);
-void protocolUpdateImsi(char * imsi);
+void protocolUpdateIccid(char *iccid);
+void protocolUpdateImsi(char *imsi);
 void protocolUpdateSomeInfo(float outvol, float batvol, uint8_t batlev, uint16_t startCnt, uint16_t runTime);
 void protocolUpdateRssi(uint8_t rssi);
 void protocolUpdateSatelliteUsed(uint8_t gps, uint8_t bd);
@@ -203,6 +209,7 @@ void protocolUpdateWifiList(wifiList_s *wifilist);
 void protocolUpdateEvent(uint8_t event);
 
 void protocolRegisterTcpSend(int (*tcpSend)(uint8_t, uint8_t *, uint16_t));
+void protocolUpdateSlaverMac(void);
 
 void upgradeStartInit(void);
 void upgradeFromServer(void);

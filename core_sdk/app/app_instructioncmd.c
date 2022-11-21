@@ -799,21 +799,11 @@ static void doFactoryInstrucion(ITEM *item, char *message)
 
 static void doRelayInstrucion(ITEM *item, char *message)
 {
-    uint8_t key[13];
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
     {
         sprintf(message, "Relay status %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
         return;
     }
-    if (strlen(item->item_data[2]) != 26)
-    {
-        strcpy(message, "please enter secret key");
-        return;
-    }
-
-    changeHexStringToByteArray(key, (uint8_t *) item->item_data[2], 13);
-    bleScheduleSetKey(key);
-
     if (item->item_data[1][0] == '1')
     {
         sysparam.relayCtl = 1;
@@ -1215,6 +1205,12 @@ static void doHideServerInstruction(ITEM *item, char *message)
         paramSaveAll();
     }
 }
+
+static void blemacChangeReport(void)
+{
+    protocolUpdateSlaverMac();
+    sendProtocolToServer(NORMAL_LINK, PROTOCOL_F6, NULL);
+}
 static void doSetBleMacInstruction(ITEM *item, char *message)
 {
     uint8_t i, j, l, ind;
@@ -1285,6 +1281,8 @@ static void doSetBleMacInstruction(ITEM *item, char *message)
         {
             bleScheduleCtrl(1);
         }
+	startTimer(20,blemacChangeReport,0);
+
     }
 }
 
@@ -1475,22 +1473,11 @@ static void doBleServerInstruction(ITEM *item, char *message)
 }
 static void doRelayForceInstrucion(ITEM *item, char *message)
 {
-    uint8_t key[13];
-
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
     {
         sprintf(message, "Relay status %s", sysparam.relayCtl == 1 ? "relay on" : "relay off");
         return ;
     }
-
-    if (strlen(item->item_data[2]) != 26)
-    {
-        strcpy(message, "please enter secret key");
-        return;
-    }
-
-    changeHexStringToByteArray(key, (uint8_t *) item->item_data[2], 13);
-    bleScheduleSetKey(key);
 
     if (item->item_data[1][0] == '1')
     {
@@ -1515,16 +1502,16 @@ static void doRelayForceInstrucion(ITEM *item, char *message)
     }
 }
 
-static void doBleScanInstruction(ITEM *item, char *message,instructionParam_s *param)
+static void doBleScanInstruction(ITEM *item, char *message, instructionParam_s *param)
 {
     bleScheduleScan();
-	mode123 = param->mode;
+    mode123 = param->mode;
     link123 = param->link;
     if (param->telNum != NULL)
     {
         strcpy(telnum123, param->telNum);
     }
-	saveInstructionId();
+    saveInstructionId();
 }
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
@@ -1663,7 +1650,7 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
             doRelayForceInstrucion(item, message);
             break;
         case BLESCAN_INS:
-            doBleScanInstruction(item, message,param);
+            doBleScanInstruction(item, message, param);
             break;
         default:
             if (param->mode == MESSAGE_MODE)
@@ -1741,7 +1728,7 @@ void doPositionRespon(void)
 @note
 **************************************************/
 
-void doBleScanRespon(char * message)
+void doBleScanRespon(char *message)
 {
     recoverInstructionId();
     sendMessageWithDifMode((uint8_t *)message, strlen(message), mode123, telnum123, link123);

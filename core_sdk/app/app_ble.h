@@ -147,6 +147,7 @@ typedef struct
     uint8_t bleConnFailCnt;
     uint8_t bleQuickRun;
 	uint8_t bleKey[13];
+	uint8_t bleKeyLen;
 
     uint16_t runTick;
     uint16_t connTick;
@@ -181,8 +182,8 @@ bleRelayInfo_s *bleGetDevInfo(uint8_t i);
 void bleScheduleSetReq(uint8_t ind, uint32_t event);
 void bleScheduleClearReq(uint8_t ind, uint32_t event);
 
-void bleScheduleSetKey(uint8_t *key);
 void bleScheduleScan(void);
+void bleChangToByte(uint8_t *byteMac, uint8_t *hexMac);
 
 
 void bleScheduleInit(void);

@@ -13,6 +13,7 @@
 #include "app_protocol.h"
 #include "app_instructioncmd.h"
 #include "aes.h"
+#include "app_encrypt.h"
 
 #define INS_MSG_SIZE		500
 
@@ -1022,18 +1023,6 @@ void bleScheduleClearReq(uint8_t ind, uint32_t event)
     //LogPrintf(DEBUG_ALL, "clear bleList[%X] req 0x%02x", ind, event);
 }
 
-/**************************************************
-@bref		写入密钥
-@param		key,13个字节的密钥
-@return
-@note
-**************************************************/
-
-void bleScheduleSetKey(uint8_t *key)
-{
-    memcpy(bleSchedule.bleKey, key, 13);
-}
-
 void bleScheduleScan(void)
 {
     bleSchedule.bleTryScan = 1;
@@ -1102,6 +1091,32 @@ static void bleUpdateDevRtc(void)
 }
 
 /**************************************************
+@bref		将字符串形式的mac地址转换为6个字节的地址
+@param		
+@return
+@note
+**************************************************/
+
+void bleChangToByte(uint8_t *byteMac, uint8_t *hexMac)
+{
+    uint8_t macBuff[12];
+    macBuff[0] = hexMac[0];
+    macBuff[1] = hexMac[1];
+    macBuff[2] = hexMac[3];
+    macBuff[3] = hexMac[4];
+    macBuff[4] = hexMac[6];
+    macBuff[5] = hexMac[7];
+    macBuff[6] = hexMac[9];
+    macBuff[7] = hexMac[10];
+    macBuff[8] = hexMac[12];
+    macBuff[9] = hexMac[13];
+    macBuff[10] = hexMac[15];
+    macBuff[11] = hexMac[16];
+
+    changeHexStringToByteArray(byteMac, macBuff, 6);
+
+}
+/**************************************************
 @bref		蓝牙数据发送
 @param
 @return
@@ -1113,6 +1128,7 @@ static void bleUpdateDevRtc(void)
 static uint8_t bleDataSendTry(void)
 {
     uint32_t event;
+    uint8_t mac[10];
     uint8_t param[10];
     uint8_t ret = 0;
     uint16_t value16;
@@ -1148,12 +1164,16 @@ static uint8_t bleDataSendTry(void)
         if (event & BLE_EVENT_SET_DEVON)
         {
             LogMessage(DEBUG_ALL, "try to set relay on");
-            bleSendProtocol(CMD_DEV_ON, bleSchedule.bleKey, 13);
+            bleChangToByte(mac, (uint8_t *)bleSchedule.bleList[bleSchedule.bleCurConnInd].bleMac);
+            createEncrypt(mac, bleSchedule.bleKey, &bleSchedule.bleKeyLen);
+            bleSendProtocol(CMD_DEV_ON, bleSchedule.bleKey, bleSchedule.bleKeyLen);
         }
         if (event & BLE_EVENT_SET_DEVOFF)
         {
             LogMessage(DEBUG_ALL, "try to set relay off");
-            bleSendProtocol(CMD_DEV_OFF, bleSchedule.bleKey, 13);
+            bleChangToByte(mac,(uint8_t *) bleSchedule.bleList[bleSchedule.bleCurConnInd].bleMac);
+            createEncrypt(mac, bleSchedule.bleKey, &bleSchedule.bleKeyLen);
+            bleSendProtocol(CMD_DEV_OFF, bleSchedule.bleKey, bleSchedule.bleKeyLen);
         }
         if (event & BLE_EVENT_CLR_CNT)
         {

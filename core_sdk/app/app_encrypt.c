@@ -147,7 +147,7 @@ uint8_t dencryptStr(uint8_t *data, uint8_t len, uint8_t *encData, uint8_t *encLe
 
 
 
-void encryptTest(uint8_t *mac)
+void createEncrypt(uint8_t *mac, uint8_t *encBuff, uint8_t *encLen)
 {
     uint8_t debug[50];
     uint8_t src[50];
@@ -155,52 +155,44 @@ void encryptTest(uint8_t *mac)
     uint8_t dec[50];
     uint8_t decLen;
     uint8_t i;
-    uint8_t limit;
 
     uint16_t year;
     uint8_t  month;
     uint8_t date;
     uint8_t hour;
     uint8_t minute;
-    uint8_t second;
+    uint8_t second; 
 
     portGetRtcDateTime(&year, &month, &date, &hour, &minute, &second);
 
     srcLen = 0;
+    //蓝牙MAC地址
     for (i = 0; i < 6; i++)
     {
         src[srcLen++] = mac[i];
     }
-
+    //起始有效期：年月日时分
     src[srcLen++] = year % 100;
     src[srcLen++] = month;
     src[srcLen++] = date;
     src[srcLen++] = hour;
     src[srcLen++] = minute;
+    //有效时长：分钟
     src[srcLen++] = 5;
-
     i = rand();
+	//生成密钥
     encryptStr(i, src, srcLen, dec, &decLen);
+	
+    changeByteArrayToHexString(mac, debug, 6);
+    debug[12] = 0;
+    //LogPrintf(DEBUG_ALL, "MAC:[%s]", debug);
+
     changeByteArrayToHexString(dec, debug, decLen);
     debug[decLen * 2] = 0;
-    LogPrintf(DEBUG_ALL, "DEC:[%s],DECLEN:%d", debug, decLen);
+    //LogPrintf(DEBUG_ALL, "DEC:[%s],DECLEN:%d", debug, decLen);
+    //LogPrintf(DEBUG_ALL, "LimiteTime:[%02d/%02d/%02d %02d:%02d],Limit Minute:%d", year, month, date, hour, minute, 5);
 
-    memset(src, 0, sizeof(src));
-    srcLen = 0;
-
-    dencryptStr(dec, decLen, src, &srcLen);
-    changeByteArrayToHexString(src, debug,  srcLen);
-    debug[srcLen * 2] = 0;
-    LogPrintf(DEBUG_ALL, "SRC:[%s],SRCLEN:%d", debug, srcLen);
-    //D9E671263B38 1401010001 1401010006
-    year = src[6] + 2000;
-    month = src[7];
-    date = src[8];
-    hour = src[9];
-    minute = src[10];
-    limit = src[11];
-
-    LogPrintf(DEBUG_ALL, "LimiteTime:[%02d/%02d/%02d %02d:%02d],Limit Minute:%d", year, month, date, hour, minute, limit);
-
+    memcpy(encBuff, dec, decLen);
+    *encLen = decLen;
 }
 

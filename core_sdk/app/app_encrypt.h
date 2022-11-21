@@ -14,5 +14,5 @@
 uint8_t encryptStr(uint8_t seed,uint8_t * data ,uint8_t len,uint8_t * encData,uint8_t * encLen);
 uint8_t dencryptStr(uint8_t * data ,uint8_t len,uint8_t * encData,uint8_t * encLen);
 
-void encryptTest(uint8_t *mac);
+void createEncrypt(uint8_t *mac, uint8_t *encBuff, uint8_t *encLen);
 #endif /* APP_INCLUDE_APP_ENCRYPT_H_ */

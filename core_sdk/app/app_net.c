@@ -105,8 +105,10 @@ static void serverConnRunTask(void)
             }
             protoclUpdateSn(sysparam.SN);
             LogMessage(DEBUG_ALL, "Send login message");
+			protocolUpdateSlaverMac();
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_01, NULL);
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_F1, NULL);
+            sendProtocolToServer(NORMAL_LINK, PROTOCOL_F6, NULL);
             sendProtocolToServer(NORMAL_LINK, PROTOCOL_8A, NULL);
             serverChangeFsm(SERV_LOGIN_WAIT);
             sysinfo.dbFileUpload = 1;

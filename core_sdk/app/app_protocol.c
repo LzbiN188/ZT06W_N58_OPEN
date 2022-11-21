@@ -1005,6 +1005,29 @@ static int createProtocolF1(char *dest)
 }
 
 /**************************************************
+@bref		信息回传
+@param
+	dest		协议存放区域
+
+@return
+@note
+**************************************************/
+static int createProtocolF6(char *dest)
+{
+    int pdu_len;
+    uint8_t i = 0;
+    pdu_len = createProtocolHead(dest, 0xF6);
+    dest[pdu_len++] = protocolInfo.slaverCnt;
+    for (i = 0; i < protocolInfo.slaverCnt; i++)
+    {
+        memcpy(dest + pdu_len, protocolInfo.slaverMac[i], 6);
+        pdu_len += 6;
+    }
+    pdu_len = createProtocolTail_78(dest, pdu_len, protocolInfo.Serial);
+    return pdu_len;
+}
+
+/**************************************************
 @bref		指令透传回复
 @param
 	dest		协议存放区域
@@ -1251,6 +1274,9 @@ void sendProtocolToServer(uint8_t link, int type, void *param)
         case PROTOCOL_F1:
             txlen = createProtocolF1(txdata);
             break;
+        case PROTOCOL_F6:
+            txlen = createProtocolF6(txdata);
+            break;
         case PROTOCOL_F3:
             txlen = createProtocolF3(txdata);
             break;
@@ -1264,6 +1290,7 @@ void sendProtocolToServer(uint8_t link, int type, void *param)
             return;
             break;
     }
+    protocolInfo.Serial++;
 
 
     sendTcpDataDebugShow(link, debugP, txlen);
@@ -1890,27 +1917,27 @@ void protoclUpdateSn(char *sn)
 /**************************************************
 @bref		更新ICCID
 @param
-	ICCID	
+	ICCID
 @return
 @note
 **************************************************/
 
-void protocolUpdateIccid(char * iccid)
+void protocolUpdateIccid(char *iccid)
 {
-	strncpy(protocolInfo.iccid,iccid,21);
+    strncpy(protocolInfo.iccid, iccid, 21);
 }
 
 /**************************************************
 @bref		更新IMSI
 @param
-	IMSI	
+	IMSI
 @return
 @note
 **************************************************/
 
-void protocolUpdateImsi(char * imsi)
+void protocolUpdateImsi(char *imsi)
 {
-	strncpy(protocolInfo.imsi,imsi,21);
+    strncpy(protocolInfo.imsi, imsi, 21);
 }
 
 /**************************************************
@@ -2032,6 +2059,26 @@ void protocolRegisterTcpSend(int (*tcpSend)(uint8_t, uint8_t *, uint16_t))
     protocolInfo.tcpSend = tcpSend;
 }
 
+/**************************************************
+@bref		更新蓝牙从机地址
+@param
+@return
+@note
+**************************************************/
+
+void protocolUpdateSlaverMac(void)
+{
+    uint8_t i, mac[6];
+    protocolInfo.slaverCnt = 0;
+    for (i = 0; i < 5; i++)
+    {
+        if (sysparam.bleConnMac[i][0] != 0)
+        {
+            bleChangToByte(mac, sysparam.bleConnMac[i]);
+            memcpy(protocolInfo.slaverMac[protocolInfo.slaverCnt++], mac, 6);
+        }
+    }
+}
 
 /*-------------------------------------------------------------------------------*/
 

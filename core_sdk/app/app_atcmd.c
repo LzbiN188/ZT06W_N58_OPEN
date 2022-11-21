@@ -150,14 +150,24 @@ static void doAtdebugCmd(char *buf, uint32_t len)
     }
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"ENCRYPT"))
     {
-        uint8_t mac[6];
-        mac[0] = 0xBF;
-        mac[1] = 0x90;
-        mac[2] = 0xda;
-        mac[3] = 0xe4;
-        mac[4] = 0xc2;
-        mac[5] = 0x84;
-        encryptTest(mac);
+        uint8_t mac[20], encBuff[20],macBuff[20], enclen;
+        char connmac[] = "BF:90:DA:E4:C2:84";
+
+        macBuff[0]=connmac[0];
+        macBuff[1]=connmac[1];
+        macBuff[2]=connmac[3];
+        macBuff[3]=connmac[4];
+        macBuff[4]=connmac[6];
+        macBuff[5]=connmac[7];
+        macBuff[6]=connmac[9];
+        macBuff[7]=connmac[10];
+        macBuff[8]=connmac[12];
+        macBuff[9]=connmac[13];
+        macBuff[10]=connmac[15];
+        macBuff[11]=connmac[16];
+
+		changeHexStringToByteArray(mac,macBuff,6);
+        createEncrypt(mac, encBuff, &enclen);
     }
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SCAN"))
     {
