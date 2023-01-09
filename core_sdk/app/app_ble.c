@@ -1159,6 +1159,7 @@ static uint8_t bleDataSendTry(void)
             LogMessage(DEBUG_ALL, "try to update rtc");
             bleUpdateDevRtc();
             ret = 1;
+			bleSchedule.bleQuickRun = bleSchedule.bleListCnt;
             return ret;
         }
         if (event & BLE_EVENT_SET_DEVON)

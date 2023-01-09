@@ -1,4 +1,4 @@
-# Install script for directory: D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk
+# Install script for directory: D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

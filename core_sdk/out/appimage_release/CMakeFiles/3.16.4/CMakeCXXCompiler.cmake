@@ -1,4 +1,4 @@
-set(CMAKE_CXX_COMPILER "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-g++.exe")
+set(CMAKE_CXX_COMPILER "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-g++.exe")
 set(CMAKE_CXX_COMPILER_ARG1 "")
 set(CMAKE_CXX_COMPILER_ID "GNU")
 set(CMAKE_CXX_COMPILER_VERSION "7.2.1")
@@ -19,11 +19,11 @@ set(CMAKE_CXX_SIMULATE_VERSION "")
 
 
 
-set(CMAKE_AR "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar.exe")
-set(CMAKE_CXX_COMPILER_AR "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc-ar.exe")
-set(CMAKE_RANLIB "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ranlib.exe")
-set(CMAKE_CXX_COMPILER_RANLIB "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc-ranlib.exe")
-set(CMAKE_LINKER "D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ld.exe")
+set(CMAKE_AR "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ar.exe")
+set(CMAKE_CXX_COMPILER_AR "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc-ar.exe")
+set(CMAKE_RANLIB "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ranlib.exe")
+set(CMAKE_CXX_COMPILER_RANLIB "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-gcc-ranlib.exe")
+set(CMAKE_LINKER "D:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/prebuilts/win32/gcc-arm-none-eabi/bin/arm-none-eabi-ld.exe")
 set(CMAKE_MT "")
 set(CMAKE_COMPILER_IS_GNUCXX 1)
 set(CMAKE_CXX_COMPILER_LOADED 1)
