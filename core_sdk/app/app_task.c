@@ -1428,6 +1428,9 @@ static void voltageCheckTask(void)
     static uint16_t LostTick = 0;
     static uint32_t  LostVoltageTick = 0;
 
+    static uint8_t bleCutFlag = 0;
+    static uint8_t bleCutTick = 0;
+
     sysinfo.outsideVol = portGetOutSideVolAdcVol() * sysparam.adccal;
     sysinfo.batteryVol = portGetBatteryAdcVol();
 
@@ -1477,25 +1480,48 @@ static void voltageCheckTask(void)
             lbsRequestSet();
             wifiRequestSet();
             gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
-            sysparam.relayCtl = 1;
-            paramSaveAll();
-            if (sysparam.relayFun == 0)
+            if (sysparam.bleRelay != 0 && bleCutFlag != 0)
             {
-                relayAutoClear();
-                RELAY_ON;
-                bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-                bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
-                LogMessage(DEBUG_ALL, "relay on immediately");
+                LogMessage(DEBUG_ALL, "ble relay on immediately");
+                sysparam.relayCtl = 1;
+                paramSaveAll();
+                if (sysparam.relayFun == 0)
+                {
+                    relayAutoClear();
+                    RELAY_ON;
+                    bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
+                    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON);
+                }
+                else
+                {
+                    relayAutoRequest();
+                }
             }
             else
             {
-                relayAutoRequest();
+                LogMessage(DEBUG_ALL, "relay on was disable");
             }
         }
 
     }
     else if (sysinfo.outsideVol > 6.0)
     {
+
+        //电压小于设置的保护电压范围时，则运行蓝牙去执行断电报警
+        if (sysinfo.outsideVol >= sysparam.bleVoltage)
+        {
+            if (bleCutTick++ >= 30)
+            {
+                bleCutFlag = 1;
+            }
+        }
+        else
+        {
+            bleCutTick = 0;
+            bleCutFlag = 0;
+        }
+
+
         LostTick = 0;
         terminalCharge();
         if (LostVoltageFlag == 1)
@@ -1719,7 +1745,7 @@ static void doRelayOn(void)
     relayAutoClear();
     RELAY_ON;
     bleScheduleClearAllReq(BLE_EVENT_SET_DEVOFF);
-    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON|BLE_EVENT_SET_RTC);
+    bleScheduleSetAllReq(BLE_EVENT_SET_DEVON | BLE_EVENT_SET_RTC);
     LogMessage(DEBUG_ALL, "do relay on");
 
 }

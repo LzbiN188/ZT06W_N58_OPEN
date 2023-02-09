@@ -5,7 +5,7 @@
 
 #define PARAM_VER		0x1F
 
-#define EEPROM_VERSION	"N58_CA_V4.3.3"
+#define EEPROM_VERSION	"N58_CA_V4.3.4"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -88,6 +88,8 @@ typedef struct
 	uint16_t bleServerPort;
 
 	uint8_t bleErrCnt;
+	uint8_t bleRelay;
+	float   bleVoltage;
 } systemParam_s;
 
 extern systemParam_s sysparam;

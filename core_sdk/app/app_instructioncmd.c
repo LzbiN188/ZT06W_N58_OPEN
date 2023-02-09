@@ -66,6 +66,7 @@ const instruction_s instructiontable[] =
     {BLESERVER_INS, "BLESERVER"},
     {RELAYFORCE_INS, "RELAYFORCE"},
     {BLESCAN_INS, "BLESCAN"},
+    {BLERELAYCTL_INS, "BLERELAYCTL"},
     {SN_INS, "*"},
 };
 
@@ -1281,7 +1282,7 @@ static void doSetBleMacInstruction(ITEM *item, char *message)
         {
             bleScheduleCtrl(1);
         }
-	startTimer(20,blemacChangeReport,0);
+        startTimer(20, blemacChangeReport, 0);
 
     }
 }
@@ -1514,6 +1515,19 @@ static void doBleScanInstruction(ITEM *item, char *message, instructionParam_s *
     saveInstructionId();
 }
 
+static void doBleRelayCtrlInstruction(ITEM *item, char *message, instructionParam_s *param)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "BleRelayCtrl param is %d,%.2f", sysparam.bleRelay, sysparam.bleVoltage);
+        return ;
+    }
+    sysparam.bleRelay = atoi(item->item_data[1]);
+    sysparam.bleVoltage = atof(item->item_data[2]);
+    paramSaveAll();
+    sprintf(message, "set success ,%d,%.2f", sysparam.bleRelay, sysparam.bleVoltage);
+}
+
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
 {
     char message[512];
@@ -1651,6 +1665,9 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
             break;
         case BLESCAN_INS:
             doBleScanInstruction(item, message, param);
+            break;
+        case BLERELAYCTL_INS:
+            doBleRelayCtrlInstruction(item, message, param);
             break;
         default:
             if (param->mode == MESSAGE_MODE)

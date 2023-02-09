@@ -50,6 +50,7 @@ typedef enum
     BLESERVER_INS,
     RELAYFORCE_INS,
     BLESCAN_INS,
+    BLERELAYCTL_INS,
 } cmd_e;
 
 
