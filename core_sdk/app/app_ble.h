@@ -84,6 +84,7 @@ typedef enum
     BLE_CONN_IDLE,
     BLE_CONN_WATI,
     BLE_CONN_RUN,
+    BLE_CONN_CHANGE_WAIT,
     BLE_CONN_CHANGE,
 } ble_conn_fsm_e;
 

@@ -1092,7 +1092,7 @@ static void bleUpdateDevRtc(void)
 
 /**************************************************
 @bref		将字符串形式的mac地址转换为6个字节的地址
-@param		
+@param
 @return
 @note
 **************************************************/
@@ -1159,7 +1159,7 @@ static uint8_t bleDataSendTry(void)
             LogMessage(DEBUG_ALL, "try to update rtc");
             bleUpdateDevRtc();
             ret = 1;
-			bleSchedule.bleQuickRun = bleSchedule.bleListCnt;
+            bleSchedule.bleQuickRun = bleSchedule.bleListCnt;
             return ret;
         }
         if (event & BLE_EVENT_SET_DEVON)
@@ -1172,7 +1172,7 @@ static uint8_t bleDataSendTry(void)
         if (event & BLE_EVENT_SET_DEVOFF)
         {
             LogMessage(DEBUG_ALL, "try to set relay off");
-            bleChangToByte(mac,(uint8_t *) bleSchedule.bleList[bleSchedule.bleCurConnInd].bleMac);
+            bleChangToByte(mac, (uint8_t *) bleSchedule.bleList[bleSchedule.bleCurConnInd].bleMac);
             createEncrypt(mac, bleSchedule.bleKey, &bleSchedule.bleKeyLen);
             bleSendProtocol(CMD_DEV_OFF, bleSchedule.bleKey, bleSchedule.bleKeyLen);
         }
@@ -1323,6 +1323,12 @@ static void bleConnectTry(void)
             if (bleSchedule.connTick >= BLE_CONN_HOLD_TIME || ret != 0)
             {
                 //链接一定时间后，切换其他蓝牙
+                bleConnTryChangeFsm(BLE_CONN_CHANGE_WAIT);
+            }
+            break;
+        case BLE_CONN_CHANGE_WAIT:
+            if (bleSchedule.connTick >= 5)
+            {
                 bleConnTryChangeFsm(BLE_CONN_CHANGE);
             }
             break;
