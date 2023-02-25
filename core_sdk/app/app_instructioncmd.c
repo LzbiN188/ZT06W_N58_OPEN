@@ -1499,7 +1499,7 @@ static void doRelayForceInstrucion(ITEM *item, char *message)
         relayAutoClear();
         bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
-        strcpy(message, "Relay force offf");
+        strcpy(message, "Relay force off");
     }
 }
 

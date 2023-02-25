@@ -178,7 +178,7 @@ void createEncrypt(uint8_t *mac, uint8_t *encBuff, uint8_t *encLen)
     src[srcLen++] = hour;
     src[srcLen++] = minute;
     //有效时长：分钟
-    src[srcLen++] = 5;
+    src[srcLen++] = 0xAA;
     i = rand();
 	//生成密钥
     encryptStr(i, src, srcLen, dec, &decLen);

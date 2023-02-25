@@ -35,7 +35,7 @@ int appimg_enter(void *param)
 
 void appimg_exit(void)
 {
-
+	
 }
 
 

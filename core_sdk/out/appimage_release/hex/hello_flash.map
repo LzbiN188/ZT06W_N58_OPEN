@@ -4322,27 +4322,27 @@ LOAD ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/
  .rodata.doPositionRespon.str1.1
                 0x60243e42       0x76 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
  .rodata.instructionParser.str1.1
-                0x60243eb8      0xf01 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
-                                0xfb3 (size before relaxing)
- *fill*         0x60244db9        0x3 
+                0x60243eb8      0xf00 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
+                                0xfb2 (size before relaxing)
  .rodata.instructiontable
-                0x60244dbc      0x170 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
-                0x60244dbc                instructiontable
+                0x60244db8      0x170 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
+                0x60244db8                instructiontable
  .rodata.sendMessageWithDifMode.part.16.str1.1
-                0x60244f2c       0x58 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
+                0x60244f28       0x58 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
  .rodata.str1.1
-                0x60244f84      0x121 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
+                0x60244f80      0x121 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
                                 0x14b (size before relaxing)
- *fill*         0x602450a5        0x3 
+ *fill*         0x602450a1        0x3 
  .text.jt808GetSerial
-                0x602450a8       0x14 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
+                0x602450a4       0x14 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
  .text.jt808PackMessageTail
-                0x602450bc       0x34 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
+                0x602450b8       0x34 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
  .text.byteToBcd
-                0x602450f0       0x16 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
- *fill*         0x60245106        0x2 
+                0x602450ec       0x16 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
+ *fill*         0x60245102        0x2 
  .text.jt808gpsRestoreSave
-                0x60245108       0x68 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
+                0x60245104       0x68 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
+ *fill*         0x6024516c        0x4 
  .text.jt808gpsRestoreChange
                 0x60245170       0xa8 CMakeFiles/hello_flash.dir/app/app_jt808.c.obj
  .text.jt808Escape
