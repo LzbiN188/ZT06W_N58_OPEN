@@ -1323,8 +1323,8 @@ static void doSetBleParamInstruction(ITEM *item, char *message)
             if (bleinfo != NULL)
             {
                 cnt++;
-                sprintf(message + strlen(message), "(%d:[%.2f,%.2f,%d]) ", i, bleinfo->rf_threshold, bleinfo->out_threshold,
-                        bleinfo->disc_threshold);
+                sprintf(message + strlen(message), "(%d:[%.2f,%.2f,%d,%d]) ", i, bleinfo->rf_threshold, bleinfo->out_threshold,
+                        bleinfo->disc_threshold, bleinfo->rfHold_threshold);
             }
         }
         if (cnt == 0)
@@ -1350,11 +1350,12 @@ static void doSetBleParamInstruction(ITEM *item, char *message)
         sysparam.bleRfThreshold = atoi(item->item_data[1]);
         sysparam.bleOutThreshold = atoi(item->item_data[2]);
         sysparam.bleAutoDisc = atoi(item->item_data[3]);
+        sysparam.bleRfHoldThreshold = atoi(item->item_data[4]);
         paramSaveAll();
-        sprintf(message, "Update new ble param to %.2fv,%.2fv,%d", sysparam.bleRfThreshold / 100.0,
-                sysparam.bleOutThreshold / 100.0, sysparam.bleAutoDisc);
+        sprintf(message, "Update new ble param to %.2fv,%.2fv,%d,%d", sysparam.bleRfThreshold / 100.0,
+                sysparam.bleOutThreshold / 100.0, sysparam.bleAutoDisc, sysparam.bleRfHoldThreshold);
         bleScheduleSetAllReq(BLE_EVENT_SET_RF_THRE | BLE_EVENT_SET_OUTV_THRE | BLE_EVENT_SET_AD_THRE | BLE_EVENT_GET_RF_THRE |
-                             BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_AD_THRE);
+                             BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_AD_THRE | BLE_EVENT_SET_REHOLD | BLE_EVENT_GET_RFHOLD);
     }
 }
 

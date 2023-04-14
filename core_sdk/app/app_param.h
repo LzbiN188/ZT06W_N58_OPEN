@@ -53,6 +53,7 @@ typedef struct
     uint8_t bleConnMac[5][20];
     uint8_t bleAutoDisc;
     uint8_t bleRfThreshold;
+    uint8_t bleRfHoldThreshold;
 	uint8_t blePreShieldVoltage;
 	uint8_t blePreShieldDetCnt;
 	uint8_t blePreShieldHoldTime;

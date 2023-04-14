@@ -770,6 +770,15 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogPrintf(DEBUG_ALL, "BLE==>get shield voltage range %.2fV", valuef);
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_GET_RF_THRE);
                 break;
+            case CMD_SET_SHIEL_ALARM_HOLD_PARAM:
+				LogMessage(DEBUG_ALL, "BLE==>set shield alarm hold param");
+				bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_RFHOLD);
+            	break;
+            case CMD_GET_SHIEL_ALARM_HOLD_PARAM:
+				LogPrintf(DEBUG_ALL, "BLE==>get shield alarm hold param %d min", data[readInd + 4]);
+				bleSchedule.bleList[bleSchedule.bleCurConnInd].bleInfo.rfHold_threshold = data[readInd + 4];
+				bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_GET_RFHOLD);
+            	break;
             case CMD_GET_ADCV:
                 value16 = data[readInd + 4];
                 value16 = value16 << 8 | data[readInd + 5];
@@ -907,7 +916,7 @@ int8_t bleScheduleInsert(char *mac)
             LogPrintf(DEBUG_ALL, "BLE insert [%d]:%s", ind, mac);
             bleScheduleSetReq(ind, BLE_EVENT_SET_RF_THRE | BLE_EVENT_SET_OUTV_THRE | BLE_EVENT_SET_AD_THRE | BLE_EVENT_GET_AD_THRE |
                               BLE_EVENT_GET_RF_THRE | BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_OUTV | BLE_EVENT_GET_RFV |
-                              BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_PRE_PARAM | BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_RTC);
+                              BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_PRE_PARAM | BLE_EVENT_GET_PRE_PARAM | BLE_EVENT_SET_RTC | BLE_EVENT_SET_RFHOLD | BLE_EVENT_GET_RFHOLD);
             bleSchedule.bleListCnt++;
             return ind;
         }
@@ -1195,6 +1204,12 @@ static uint8_t bleDataSendTry(void)
             param[1] = value16 & 0xFF;
             bleSendProtocol(CMD_SET_OUTVOLTAGE, param, 2);
         }
+        if (event & BLE_EVENT_SET_RFHOLD)
+        {
+			LogMessage(DEBUG_ALL, "try to set rf hold time")
+			param[0] = sysparam.bleRfHoldThreshold;
+			bleSendProtocol(CMD_SET_SHIEL_ALARM_HOLD_PARAM, param, 1);
+        }
         if (event & BLE_EVENT_SET_AD_THRE)
         {
             LogMessage(DEBUG_ALL, "try to set auto disconnect param");
@@ -1218,6 +1233,13 @@ static uint8_t bleDataSendTry(void)
             LogMessage(DEBUG_ALL, "try to get out threshold");
             bleSendProtocol(CMD_GET_OUTVOLTAGE, param, 0);
         }
+
+		if (event & BLE_EVENT_GET_RFHOLD)
+		{
+			LogMessage(DEBUG_ALL, "try to get rf hold time");
+			bleSendProtocol(CMD_GET_SHIEL_ALARM_HOLD_PARAM, param, 0);
+		}
+        
         if (event & BLE_EVENT_CLR_PREALARM)
         {
             LogMessage(DEBUG_ALL, "try to clear prealarm");
