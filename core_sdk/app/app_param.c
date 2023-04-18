@@ -175,6 +175,8 @@ void paramSetDefault(uint8_t lev)
     thisparam.relaySpeed = 20;
     thisparam.bleRelay = 1;
     thisparam.bleVoltage = 11.5;
+    
+    thisparam.bleRfHoldThreshold = 60;
 
     memcpy(&sysparam, &thisparam, sizeof(systemParam_s));
     paramSaveAll();

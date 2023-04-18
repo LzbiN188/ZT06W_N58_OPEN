@@ -130,7 +130,7 @@ typedef struct
     uint8_t preDetCnt_threshold;
     uint8_t preHold_threshold;
 	uint8_t disc_threshold;
-	uitn8_t rfHold_threshold;
+	uint8_t rfHold_threshold;
 } bleRelayInfo_s;
 
 

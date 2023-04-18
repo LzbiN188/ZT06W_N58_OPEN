@@ -67,6 +67,7 @@ const instruction_s instructiontable[] =
     {RELAYFORCE_INS, "RELAYFORCE"},
     {BLESCAN_INS, "BLESCAN"},
     {BLERELAYCTL_INS, "BLERELAYCTL"},
+    {SETRFHOLD_INS, "SETRFHOLD"},
     {SN_INS, "*"},
 };
 
@@ -1323,8 +1324,9 @@ static void doSetBleParamInstruction(ITEM *item, char *message)
             if (bleinfo != NULL)
             {
                 cnt++;
-                sprintf(message + strlen(message), "(%d:[%.2f,%.2f,%d,%d]) ", i, bleinfo->rf_threshold, bleinfo->out_threshold,
-                        bleinfo->disc_threshold, bleinfo->rfHold_threshold);
+                sprintf(message + strlen(message), "(%d:[%.2f,%.2f,%d]) ", i, bleinfo->rf_threshold, bleinfo->out_threshold,
+                        bleinfo->disc_threshold);
+
             }
         }
         if (cnt == 0)
@@ -1350,12 +1352,11 @@ static void doSetBleParamInstruction(ITEM *item, char *message)
         sysparam.bleRfThreshold = atoi(item->item_data[1]);
         sysparam.bleOutThreshold = atoi(item->item_data[2]);
         sysparam.bleAutoDisc = atoi(item->item_data[3]);
-        sysparam.bleRfHoldThreshold = atoi(item->item_data[4]);
         paramSaveAll();
-        sprintf(message, "Update new ble param to %.2fv,%.2fv,%d,%d", sysparam.bleRfThreshold / 100.0,
-                sysparam.bleOutThreshold / 100.0, sysparam.bleAutoDisc, sysparam.bleRfHoldThreshold);
+        sprintf(message, "Update new ble param to %.2fv,%.2fv,%d", sysparam.bleRfThreshold / 100.0,
+                sysparam.bleOutThreshold / 100.0, sysparam.bleAutoDisc);
         bleScheduleSetAllReq(BLE_EVENT_SET_RF_THRE | BLE_EVENT_SET_OUTV_THRE | BLE_EVENT_SET_AD_THRE | BLE_EVENT_GET_RF_THRE |
-                             BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_AD_THRE | BLE_EVENT_SET_REHOLD | BLE_EVENT_GET_RFHOLD);
+                             BLE_EVENT_GET_OUT_THRE | BLE_EVENT_GET_AD_THRE);
     }
 }
 
@@ -1529,6 +1530,49 @@ static void doBleRelayCtrlInstruction(ITEM *item, char *message, instructionPara
     sprintf(message, "set success ,%d,%.2f", sysparam.bleRelay, sysparam.bleVoltage);
 }
 
+static void doSetRfHoldInstruction(ITEM *item, char *message)
+{
+    uint8_t i, cnt;
+    bleRelayInfo_s *bleinfo;
+    
+    
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        cnt = 0;
+
+        for (i = 0; i < BLE_CONNECT_LIST_SIZE; i++)
+        {
+            bleinfo = bleGetDevInfo(i);
+            if (bleinfo != NULL)
+            {
+                cnt++;
+                sprintf(message, "ble rf hold time is %d sec", bleinfo->rfHold_threshold);
+
+            }
+            if (cnt == 0)
+        	{
+            	sprintf(message, "no ble info");
+        	}
+        }
+   	}
+   	else
+   	{
+		for (i = 0; i < BLE_CONNECT_LIST_SIZE; i++)
+        {
+            bleinfo = bleGetDevInfo(i);
+            if (bleinfo != NULL)
+            {
+                bleinfo->rfHold_threshold = 0;
+            }
+        }
+        sysparam.bleRfHoldThreshold = atoi(item->item_data[1]);
+        paramSaveAll();
+        sprintf(message, "Update rf hold time to %d sec", sysparam.bleRfHoldThreshold);
+        bleScheduleSetAllReq(BLE_EVENT_SET_RFHOLD | BLE_EVENT_GET_RFHOLD);
+   	}
+
+}
+
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
 {
     char message[512];
@@ -1670,6 +1714,9 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
         case BLERELAYCTL_INS:
             doBleRelayCtrlInstruction(item, message, param);
             break;
+        case SETRFHOLD_INS:
+        	doSetRfHoldInstruction(item, message);
+        	break;
         default:
             if (param->mode == MESSAGE_MODE)
                 return ;

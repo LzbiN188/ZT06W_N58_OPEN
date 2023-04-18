@@ -5,7 +5,7 @@
 
 #define PARAM_VER		0x1F
 
-#define EEPROM_VERSION	"N58_CA_V4.3.6"
+#define EEPROM_VERSION	"N58_CA_V4.3.7"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -53,7 +53,6 @@ typedef struct
     uint8_t bleConnMac[5][20];
     uint8_t bleAutoDisc;
     uint8_t bleRfThreshold;
-    uint8_t bleRfHoldThreshold;
 	uint8_t blePreShieldVoltage;
 	uint8_t blePreShieldDetCnt;
 	uint8_t blePreShieldHoldTime;
@@ -91,6 +90,8 @@ typedef struct
 	uint8_t bleErrCnt;
 	uint8_t bleRelay;
 	float   bleVoltage;
+
+	uint8_t bleRfHoldThreshold;
 } systemParam_s;
 
 extern systemParam_s sysparam;

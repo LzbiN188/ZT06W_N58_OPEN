@@ -51,6 +51,7 @@ typedef enum
     RELAYFORCE_INS,
     BLESCAN_INS,
     BLERELAYCTL_INS,
+    SETRFHOLD_INS,
 } cmd_e;
 
 

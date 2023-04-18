@@ -775,7 +775,7 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
 				bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_RFHOLD);
             	break;
             case CMD_GET_SHIEL_ALARM_HOLD_PARAM:
-				LogPrintf(DEBUG_ALL, "BLE==>get shield alarm hold param %d min", data[readInd + 4]);
+				LogPrintf(DEBUG_ALL, "BLE==>get shield alarm hold param %d sec", data[readInd + 4]);
 				bleSchedule.bleList[bleSchedule.bleCurConnInd].bleInfo.rfHold_threshold = data[readInd + 4];
 				bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_GET_RFHOLD);
             	break;
@@ -1206,7 +1206,7 @@ static uint8_t bleDataSendTry(void)
         }
         if (event & BLE_EVENT_SET_RFHOLD)
         {
-			LogMessage(DEBUG_ALL, "try to set rf hold time")
+			LogMessage(DEBUG_ALL, "try to set rf hold time");
 			param[0] = sysparam.bleRfHoldThreshold;
 			bleSendProtocol(CMD_SET_SHIEL_ALARM_HOLD_PARAM, param, 1);
         }
