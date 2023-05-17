@@ -3,7 +3,7 @@
 #include "nwy_osi_api.h"
 
 #define EEPROM_VER				0X2B
-#define EEPROM_VERSION			"WT07_V4.1.0"
+#define EEPROM_VERSION			"WT07_V4.1.6"
 
 #define CUPDATE_FLAT			0xAB
 

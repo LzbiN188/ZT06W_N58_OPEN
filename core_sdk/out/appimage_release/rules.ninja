@@ -17,7 +17,7 @@
 rule C_COMPILER__hello_flash_ldscript
   depfile = $DEP_FILE
   deps = gcc
-  command = D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\gcc-arm-none-eabi\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  command = R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\gcc-arm-none-eabi\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
   description = Building C object $out
 
 
@@ -27,7 +27,7 @@ rule C_COMPILER__hello_flash_ldscript
 rule C_COMPILER__hello_flash
   depfile = $DEP_FILE
   deps = gcc
-  command = D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\gcc-arm-none-eabi\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  command = R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\gcc-arm-none-eabi\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
   description = Building C object $out
 
 
@@ -35,7 +35,7 @@ rule C_COMPILER__hello_flash
 # Rule for linking C executable.
 
 rule C_EXECUTABLE_LINKER__hello_flash
-  command = cmd.exe /C "$PRE_LINK && D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\gcc-arm-none-eabi\bin\arm-none-eabi-gcc.exe $FLAGS  $LINK_FLAGS $in  -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  command = cmd.exe /C "$PRE_LINK && R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\gcc-arm-none-eabi\bin\arm-none-eabi-gcc.exe $FLAGS  $LINK_FLAGS $in  -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT
 
@@ -52,7 +52,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake.exe -SD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release
+  command = R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake.exe -SR:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BR:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release
   description = Re-running CMake...
   generator = 1
 
@@ -61,7 +61,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\bin\ninja.exe -t clean
+  command = R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\bin\ninja.exe -t clean
   description = Cleaning all built files...
 
 
@@ -69,6 +69,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\bin\ninja.exe -t targets
+  command = R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\bin\ninja.exe -t targets
   description = All primary targets available:
 

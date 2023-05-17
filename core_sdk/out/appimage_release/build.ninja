@@ -50,6 +50,8 @@ build CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj: C_COMPI
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash_ldscript.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash_ldscript.dir\ldscripts
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash_ldscript.dir\
+  TARGET_PDB = ""
 
 
 
@@ -73,6 +75,8 @@ build CMakeFiles/hello_flash.dir/app/aes.c.obj: C_COMPILER__hello_flash ../../ap
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj: C_COMPILER__hello_flash ../../app/app_atcmd.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_atcmd.c.obj.d
@@ -80,6 +84,8 @@ build CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj: C_COMPILER__hello_flash ..
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_ble.c.obj: C_COMPILER__hello_flash ../../app/app_ble.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_ble.c.obj.d
@@ -87,6 +93,8 @@ build CMakeFiles/hello_flash.dir/app/app_ble.c.obj: C_COMPILER__hello_flash ../.
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj: C_COMPILER__hello_flash ../../app/app_customercmd.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_customercmd.c.obj.d
@@ -94,6 +102,8 @@ build CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj: C_COMPILER__hello_fl
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_gps.c.obj: C_COMPILER__hello_flash ../../app/app_gps.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_gps.c.obj.d
@@ -101,6 +111,8 @@ build CMakeFiles/hello_flash.dir/app/app_gps.c.obj: C_COMPILER__hello_flash ../.
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj: C_COMPILER__hello_flash ../../app/app_instructioncmd.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_instructioncmd.c.obj.d
@@ -108,6 +120,8 @@ build CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj: C_COMPILER__hello
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_kernal.c.obj: C_COMPILER__hello_flash ../../app/app_kernal.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_kernal.c.obj.d
@@ -115,6 +129,8 @@ build CMakeFiles/hello_flash.dir/app/app_kernal.c.obj: C_COMPILER__hello_flash .
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_main.c.obj: C_COMPILER__hello_flash ../../app/app_main.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_main.c.obj.d
@@ -122,6 +138,8 @@ build CMakeFiles/hello_flash.dir/app/app_main.c.obj: C_COMPILER__hello_flash ../
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_mcu.c.obj: C_COMPILER__hello_flash ../../app/app_mcu.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_mcu.c.obj.d
@@ -129,6 +147,8 @@ build CMakeFiles/hello_flash.dir/app/app_mcu.c.obj: C_COMPILER__hello_flash ../.
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj: C_COMPILER__hello_flash ../../app/app_mir3da.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_mir3da.c.obj.d
@@ -136,6 +156,8 @@ build CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj: C_COMPILER__hello_flash .
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_net.c.obj: C_COMPILER__hello_flash ../../app/app_net.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_net.c.obj.d
@@ -143,6 +165,8 @@ build CMakeFiles/hello_flash.dir/app/app_net.c.obj: C_COMPILER__hello_flash ../.
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_param.c.obj: C_COMPILER__hello_flash ../../app/app_param.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_param.c.obj.d
@@ -150,6 +174,8 @@ build CMakeFiles/hello_flash.dir/app/app_param.c.obj: C_COMPILER__hello_flash ..
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_port.c.obj: C_COMPILER__hello_flash ../../app/app_port.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_port.c.obj.d
@@ -157,6 +183,8 @@ build CMakeFiles/hello_flash.dir/app/app_port.c.obj: C_COMPILER__hello_flash ../
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_protocol.c.obj: C_COMPILER__hello_flash ../../app/app_protocol.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_protocol.c.obj.d
@@ -164,6 +192,8 @@ build CMakeFiles/hello_flash.dir/app/app_protocol.c.obj: C_COMPILER__hello_flash
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj: C_COMPILER__hello_flash ../../app/app_protocol_808.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_protocol_808.c.obj.d
@@ -171,6 +201,8 @@ build CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj: C_COMPILER__hello_f
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_sn.c.obj: C_COMPILER__hello_flash ../../app/app_sn.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_sn.c.obj.d
@@ -178,6 +210,8 @@ build CMakeFiles/hello_flash.dir/app/app_sn.c.obj: C_COMPILER__hello_flash ../..
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_socket.c.obj: C_COMPILER__hello_flash ../../app/app_socket.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_socket.c.obj.d
@@ -185,6 +219,8 @@ build CMakeFiles/hello_flash.dir/app/app_socket.c.obj: C_COMPILER__hello_flash .
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_sys.c.obj: C_COMPILER__hello_flash ../../app/app_sys.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_sys.c.obj.d
@@ -192,6 +228,8 @@ build CMakeFiles/hello_flash.dir/app/app_sys.c.obj: C_COMPILER__hello_flash ../.
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 build CMakeFiles/hello_flash.dir/app/app_task.c.obj: C_COMPILER__hello_flash ../../app/app_task.c || cmake_object_order_depends_target_hello_flash
   DEP_FILE = CMakeFiles\hello_flash.dir\app\app_task.c.obj.d
@@ -199,6 +237,8 @@ build CMakeFiles/hello_flash.dir/app/app_task.c.obj: C_COMPILER__hello_flash ../
   INCLUDES = -I../../components/include -I../../components/newlib/include -I../../components/mbedtls/include
   OBJECT_DIR = CMakeFiles\hello_flash.dir
   OBJECT_FILE_DIR = CMakeFiles\hello_flash.dir\app
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
+  TARGET_PDB = hex\hello_flash.pdb
 
 
 # =============================================================================
@@ -211,13 +251,14 @@ build CMakeFiles/hello_flash.dir/app/app_task.c.obj: C_COMPILER__hello_flash ../
 build hex/hello_flash.elf hex/hello_flash.img hex/hello_flash.map: C_EXECUTABLE_LINKER__hello_flash ../../components/lib/core_stub.o CMakeFiles/hello_flash.dir/app/aes.c.obj CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj CMakeFiles/hello_flash.dir/app/app_ble.c.obj CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj CMakeFiles/hello_flash.dir/app/app_gps.c.obj CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj CMakeFiles/hello_flash.dir/app/app_kernal.c.obj CMakeFiles/hello_flash.dir/app/app_main.c.obj CMakeFiles/hello_flash.dir/app/app_mcu.c.obj CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj CMakeFiles/hello_flash.dir/app/app_net.c.obj CMakeFiles/hello_flash.dir/app/app_param.c.obj CMakeFiles/hello_flash.dir/app/app_port.c.obj CMakeFiles/hello_flash.dir/app/app_protocol.c.obj CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj CMakeFiles/hello_flash.dir/app/app_sn.c.obj CMakeFiles/hello_flash.dir/app/app_socket.c.obj CMakeFiles/hello_flash.dir/app/app_sys.c.obj CMakeFiles/hello_flash.dir/app/app_task.c.obj | CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj ../../components/lib/libnwyivtts.a ../../components/lib/libAiSound5.a ../../components/newlib/armca5/libc.a ../../components/newlib/armca5/libm.a ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
   FLAGS = -std=gnu11
   LINK_FLAGS = -mcpu=cortex-a5 -mtune=generic-armv7-a -mthumb -mfpu=neon-vfpv4 -mfloat-abi=hard -mno-unaligned-access -Os
-  LINK_LIBRARIES = -T  CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj  -Wl,-Map=D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.map  -nostdlib  -Wl,--gc-sections  ../../components/lib/libnwyivtts.a  ../../components/lib/libAiSound5.a  ../../components/newlib/armca5/libc.a  ../../components/newlib/armca5/libm.a  ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
+  LINK_LIBRARIES = -T  CMakeFiles/hello_flash_ldscript.dir/ldscripts/app_flashimg.ld.obj  -Wl,-Map=R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.map  -nostdlib  -Wl,--gc-sections  ../../components/lib/libnwyivtts.a  ../../components/lib/libAiSound5.a  ../../components/newlib/armca5/libc.a  ../../components/newlib/armca5/libm.a  ../../prebuilts/win32/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7-ar/fpv3/hard/libgcc.a
   OBJECT_DIR = CMakeFiles\hello_flash.dir
-  POST_BUILD = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && dtools mkappimg D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.elf D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img"
+  POST_BUILD = cmd.exe /C "cd /D R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && dtools mkappimg R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.elf R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img"
   PRE_LINK = cd .
   RESTAT = 1
+  TARGET_COMPILE_PDB = CMakeFiles\hello_flash.dir\
   TARGET_FILE = hex\hello_flash.elf
-  TARGET_PDB = hello_flash.elf.dbg
+  TARGET_PDB = hex\hello_flash.pdb
 
 
 #############################################
@@ -230,7 +271,7 @@ build hello_flash_pacgen: phony CMakeFiles/hello_flash_pacgen hex/hello_flash.pa
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake-gui.exe -SD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
+  COMMAND = cmd.exe /C "cd /D R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake-gui.exe -SR:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BR:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -242,7 +283,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake.exe -SD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BD:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
+  COMMAND = cmd.exe /C "cd /D R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release && R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\prebuilts\win32\cmake\bin\cmake.exe -SR:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk -BR:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk\out\appimage_release"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -260,7 +301,7 @@ build CMakeFiles/appimg_flash_delete_pacgen: phony hex/appimg_flash_delete.pac
 # Custom command for hex\appimg_flash_delete.pac
 
 build hex/appimg_flash_delete.pac: CUSTOM_COMMAND ../../tools/pacgen.py
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-erase-flash -i ERASE_APPIMG -a 0x60230000 -s 0x1b0000 pac-gen D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/appimg_flash_delete.pac"
+  COMMAND = cmd.exe /C "cd /D R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-erase-flash -i ERASE_APPIMG -a 0x60230000 -s 0x1b0000 pac-gen R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/appimg_flash_delete.pac"
   DESC = Generating hex/appimg_flash_delete.pac
   restat = 1
 
@@ -275,7 +316,7 @@ build CMakeFiles/hello_flash_pacgen: phony hex/hello_flash.pac || hex/hello_flas
 # Custom command for hex\hello_flash.pac
 
 build hex/hello_flash.pac: CUSTOM_COMMAND ../../tools/pacgen.py hex/hello_flash.img || hex/hello_flash.elf
-  COMMAND = cmd.exe /C "cd /D D:\CODE\Neoway\N58\R08\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-image -i APPIMG -a 0x60230000 -s 0x1b0000 -p D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img pac-gen D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.pac"
+  COMMAND = cmd.exe /C "cd /D R:\CODE\Neoway\N58\R08\CA_EA\N58-R08-STD-OE_V20_VOLTE_ZT-002\core_sdk && python3 R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/tools/pacgen.py cfg-init --pname UIX8910_MODEM --palias APPIMG --pversion "8910 MODULE" --version BP_R1.0.0 --flashtype 1 cfg-host-fdl -a 0x8000c0 -s 0xff40 -p R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl1.img cfg-fdl2 -a 0x810000 -s 0x30000 -p R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/fdl2.img cfg-image -i APPIMG -a 0x60230000 -s 0x1b0000 -p R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.img pac-gen R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release/hex/hello_flash.pac"
   DESC = Generating hex/hello_flash.pac
   restat = 1
 
@@ -292,7 +333,7 @@ build hello_flash.elf: phony hex/hello_flash.elf
 # =============================================================================
 
 #############################################
-# Folder: D:/CODE/Neoway/N58/R08/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release
+# Folder: R:/CODE/Neoway/N58/R08/CA_EA/N58-R08-STD-OE_V20_VOLTE_ZT-002/core_sdk/out/appimage_release
 
 build all: phony appimg_flash_delete_pacgen hello_flash_ldscript hex/hello_flash.elf hello_flash_pacgen
 
@@ -308,14 +349,14 @@ default all
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../../CMakeLists.txt ../../cmake/core_config.cmake ../../cmake/toolchain-gcc.cmake ../../components/lib/fdl1.img ../../components/lib/fdl2.img ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeASMInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCXXInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeGenericSystem.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-ASM.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-C.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Platform/Generic.cmake CMakeCache.txt CMakeFiles/3.16.4/CMakeASMCompiler.cmake CMakeFiles/3.16.4/CMakeCCompiler.cmake CMakeFiles/3.16.4/CMakeCXXCompiler.cmake CMakeFiles/3.16.4/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../../CMakeLists.txt ../../cmake/core_config.cmake ../../cmake/toolchain-gcc.cmake ../../components/lib/fdl1.img ../../components/lib/fdl2.img ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeASMCompiler.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeASMInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCCompiler.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCXXCompiler.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCXXInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineASMCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCXXCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCompilerId.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineSystem.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeFindBinUtils.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeGenericSystem.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeNinjaFindMake.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystem.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeTestASMCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeTestCCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeTestCXXCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/ADSP-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/ARMCC-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/ARMClang-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/AppleClang-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Borland-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Bruce-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompilerInternal.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Compaq-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Cray-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Embarcadero-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Fujitsu-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GHS-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-ASM.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-C.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-FindBinUtils.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/HP-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/HP-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/IAR-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Intel-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/MSVC-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/NVIDIA-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/PGI-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/PathScale-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SCO-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SDCC-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SunPro-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/TI-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Watcom-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XL-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XL-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XLClang-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/zOS-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Platform/Generic.cmake CMakeCache.txt CMakeFiles/3.16.4/CMakeASMCompiler.cmake CMakeFiles/3.16.4/CMakeCCompiler.cmake CMakeFiles/3.16.4/CMakeCXXCompiler.cmake CMakeFiles/3.16.4/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../../CMakeLists.txt ../../cmake/core_config.cmake ../../cmake/toolchain-gcc.cmake ../../components/lib/fdl1.img ../../components/lib/fdl2.img ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeASMInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCXXInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeGenericSystem.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-ASM.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-C.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Platform/Generic.cmake CMakeCache.txt CMakeFiles/3.16.4/CMakeASMCompiler.cmake CMakeFiles/3.16.4/CMakeCCompiler.cmake CMakeFiles/3.16.4/CMakeCXXCompiler.cmake CMakeFiles/3.16.4/CMakeSystem.cmake: phony
+build ../../CMakeLists.txt ../../cmake/core_config.cmake ../../cmake/toolchain-gcc.cmake ../../components/lib/fdl1.img ../../components/lib/fdl2.img ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeASMCompiler.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeASMInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCCompiler.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCXXCompiler.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCXXInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineASMCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCXXCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineCompilerId.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeDetermineSystem.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeFindBinUtils.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeGenericSystem.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeNinjaFindMake.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystem.cmake.in ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeTestASMCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeTestCCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/CMakeTestCXXCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/ADSP-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/ARMCC-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/ARMClang-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/AppleClang-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Borland-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Bruce-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompilerInternal.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Compaq-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Cray-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Embarcadero-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Fujitsu-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GHS-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-ASM.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-C.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU-FindBinUtils.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/GNU.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/HP-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/HP-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/IAR-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Intel-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/MSVC-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/NVIDIA-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/PGI-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/PathScale-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SCO-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SDCC-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SunPro-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/TI-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/Watcom-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XL-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XL-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XLClang-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/zOS-C-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake ../../prebuilts/win32/cmake/share/cmake-3.16/Modules/Platform/Generic.cmake CMakeCache.txt CMakeFiles/3.16.4/CMakeASMCompiler.cmake CMakeFiles/3.16.4/CMakeCCompiler.cmake CMakeFiles/3.16.4/CMakeCXXCompiler.cmake CMakeFiles/3.16.4/CMakeSystem.cmake: phony
 
 
 #############################################

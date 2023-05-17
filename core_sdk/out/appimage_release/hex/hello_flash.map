@@ -2391,8 +2391,8 @@ Discarded input sections
  .debug_aranges
                 0x00000000       0x68 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .debug_ranges  0x00000000       0x58 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .debug_line    0x00000000      0x4f1 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
- .debug_str     0x00000000      0xb51 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .debug_line    0x00000000      0x4f7 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
+ .debug_str     0x00000000      0xb57 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .comment       0x00000000       0x7f CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .debug_frame   0x00000000      0x158 CMakeFiles/hello_flash.dir/app/app_sn.c.obj
  .ARM.attributes
@@ -7099,68 +7099,68 @@ OUTPUT(hex\hello_flash.elf elf32-littlearm)
  .debug_ranges  0x00001be0       0x70 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
  .debug_ranges  0x00001c50       0xb8 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
 
-.debug_line     0x00000000     0x769c
- .debug_line    0x00000000      0x607 CMakeFiles/hello_flash.dir/app/aes.c.obj
- .debug_line    0x00000607      0x75c CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
- .debug_line    0x00000d63      0x4a9 CMakeFiles/hello_flash.dir/app/app_ble.c.obj
- .debug_line    0x0000120c      0x90c CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj
- .debug_line    0x00001b18      0x691 CMakeFiles/hello_flash.dir/app/app_gps.c.obj
- .debug_line    0x000021a9      0xb46 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
- .debug_line    0x00002cef      0x34f CMakeFiles/hello_flash.dir/app/app_kernal.c.obj
- .debug_line    0x0000303e      0x1f2 CMakeFiles/hello_flash.dir/app/app_main.c.obj
- .debug_line    0x00003230      0x3cd CMakeFiles/hello_flash.dir/app/app_mcu.c.obj
- .debug_line    0x000035fd      0x320 CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj
- .debug_line    0x0000391d      0x4a7 CMakeFiles/hello_flash.dir/app/app_net.c.obj
- .debug_line    0x00003dc4      0x2dd CMakeFiles/hello_flash.dir/app/app_param.c.obj
- .debug_line    0x000040a1      0x572 CMakeFiles/hello_flash.dir/app/app_port.c.obj
- .debug_line    0x00004613      0xbcc CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
- .debug_line    0x000051df      0x782 CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj
- .debug_line    0x00005961      0x5c4 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
- .debug_line    0x00005f25      0x571 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
- .debug_line    0x00006496      0xa3d CMakeFiles/hello_flash.dir/app/app_task.c.obj
- .debug_line    0x00006ed3      0x2f5 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
- .debug_line    0x000071c8      0x4d4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+.debug_line     0x00000000     0x7708
+ .debug_line    0x00000000      0x60d CMakeFiles/hello_flash.dir/app/aes.c.obj
+ .debug_line    0x0000060d      0x762 CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
+ .debug_line    0x00000d6f      0x4af CMakeFiles/hello_flash.dir/app/app_ble.c.obj
+ .debug_line    0x0000121e      0x912 CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj
+ .debug_line    0x00001b30      0x697 CMakeFiles/hello_flash.dir/app/app_gps.c.obj
+ .debug_line    0x000021c7      0xb4c CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
+ .debug_line    0x00002d13      0x355 CMakeFiles/hello_flash.dir/app/app_kernal.c.obj
+ .debug_line    0x00003068      0x1f8 CMakeFiles/hello_flash.dir/app/app_main.c.obj
+ .debug_line    0x00003260      0x3d3 CMakeFiles/hello_flash.dir/app/app_mcu.c.obj
+ .debug_line    0x00003633      0x326 CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj
+ .debug_line    0x00003959      0x4ad CMakeFiles/hello_flash.dir/app/app_net.c.obj
+ .debug_line    0x00003e06      0x2e3 CMakeFiles/hello_flash.dir/app/app_param.c.obj
+ .debug_line    0x000040e9      0x578 CMakeFiles/hello_flash.dir/app/app_port.c.obj
+ .debug_line    0x00004661      0xbd2 CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+ .debug_line    0x00005233      0x788 CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj
+ .debug_line    0x000059bb      0x5ca CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+ .debug_line    0x00005f85      0x577 CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+ .debug_line    0x000064fc      0xa43 CMakeFiles/hello_flash.dir/app/app_task.c.obj
+ .debug_line    0x00006f3f      0x2f5 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+ .debug_line    0x00007234      0x4d4 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
 
-.debug_str      0x00000000     0x708c
- .debug_str     0x00000000      0xb8a CMakeFiles/hello_flash.dir/app/aes.c.obj
-                                0xc96 (size before relaxing)
- .debug_str     0x00000b8a     0x12db CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
-                               0x1d99 (size before relaxing)
- .debug_str     0x00001e65      0x527 CMakeFiles/hello_flash.dir/app/app_ble.c.obj
-                               0x129c (size before relaxing)
- .debug_str     0x0000238c      0xa49 CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj
-                               0x1b28 (size before relaxing)
- .debug_str     0x00002dd5      0x43b CMakeFiles/hello_flash.dir/app/app_gps.c.obj
-                               0x12f6 (size before relaxing)
- .debug_str     0x00003210      0x832 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
-                               0x18af (size before relaxing)
- .debug_str     0x00003a42      0x122 CMakeFiles/hello_flash.dir/app/app_kernal.c.obj
-                                0xb2b (size before relaxing)
- .debug_str     0x00003b64      0x134 CMakeFiles/hello_flash.dir/app/app_main.c.obj
-                                0xae6 (size before relaxing)
- .debug_str     0x00003c98      0x1bf CMakeFiles/hello_flash.dir/app/app_mcu.c.obj
-                                0xe87 (size before relaxing)
- .debug_str     0x00003e57      0x14e CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj
-                                0xcb3 (size before relaxing)
- .debug_str     0x00003fa5      0x3e0 CMakeFiles/hello_flash.dir/app/app_net.c.obj
-                               0x17d8 (size before relaxing)
- .debug_str     0x00004385       0xe5 CMakeFiles/hello_flash.dir/app/app_param.c.obj
-                                0xdab (size before relaxing)
- .debug_str     0x0000446a      0x45e CMakeFiles/hello_flash.dir/app/app_port.c.obj
-                               0x151c (size before relaxing)
- .debug_str     0x000048c8      0x88a CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
-                               0x1c5f (size before relaxing)
- .debug_str     0x00005152      0x56c CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj
-                               0x14f1 (size before relaxing)
- .debug_str     0x000056be      0x3f7 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
-                               0x1626 (size before relaxing)
- .debug_str     0x00005ab5      0x20f CMakeFiles/hello_flash.dir/app/app_sys.c.obj
-                                0xe00 (size before relaxing)
- .debug_str     0x00005cc4      0x7df CMakeFiles/hello_flash.dir/app/app_task.c.obj
-                               0x2059 (size before relaxing)
- .debug_str     0x000064a3      0x424 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
+.debug_str      0x00000000     0x7092
+ .debug_str     0x00000000      0xb90 CMakeFiles/hello_flash.dir/app/aes.c.obj
+                                0xc9c (size before relaxing)
+ .debug_str     0x00000b90     0x12db CMakeFiles/hello_flash.dir/app/app_atcmd.c.obj
+                               0x1d9f (size before relaxing)
+ .debug_str     0x00001e6b      0x527 CMakeFiles/hello_flash.dir/app/app_ble.c.obj
+                               0x12a2 (size before relaxing)
+ .debug_str     0x00002392      0xa49 CMakeFiles/hello_flash.dir/app/app_customercmd.c.obj
+                               0x1b2e (size before relaxing)
+ .debug_str     0x00002ddb      0x43b CMakeFiles/hello_flash.dir/app/app_gps.c.obj
+                               0x12fc (size before relaxing)
+ .debug_str     0x00003216      0x832 CMakeFiles/hello_flash.dir/app/app_instructioncmd.c.obj
+                               0x18b5 (size before relaxing)
+ .debug_str     0x00003a48      0x122 CMakeFiles/hello_flash.dir/app/app_kernal.c.obj
+                                0xb31 (size before relaxing)
+ .debug_str     0x00003b6a      0x134 CMakeFiles/hello_flash.dir/app/app_main.c.obj
+                                0xaec (size before relaxing)
+ .debug_str     0x00003c9e      0x1bf CMakeFiles/hello_flash.dir/app/app_mcu.c.obj
+                                0xe8d (size before relaxing)
+ .debug_str     0x00003e5d      0x14e CMakeFiles/hello_flash.dir/app/app_mir3da.c.obj
+                                0xcb9 (size before relaxing)
+ .debug_str     0x00003fab      0x3e0 CMakeFiles/hello_flash.dir/app/app_net.c.obj
+                               0x17de (size before relaxing)
+ .debug_str     0x0000438b       0xe5 CMakeFiles/hello_flash.dir/app/app_param.c.obj
+                                0xdb1 (size before relaxing)
+ .debug_str     0x00004470      0x45e CMakeFiles/hello_flash.dir/app/app_port.c.obj
+                               0x1522 (size before relaxing)
+ .debug_str     0x000048ce      0x88a CMakeFiles/hello_flash.dir/app/app_protocol.c.obj
+                               0x1c65 (size before relaxing)
+ .debug_str     0x00005158      0x56c CMakeFiles/hello_flash.dir/app/app_protocol_808.c.obj
+                               0x14f7 (size before relaxing)
+ .debug_str     0x000056c4      0x3f7 CMakeFiles/hello_flash.dir/app/app_socket.c.obj
+                               0x162c (size before relaxing)
+ .debug_str     0x00005abb      0x20f CMakeFiles/hello_flash.dir/app/app_sys.c.obj
+                                0xe06 (size before relaxing)
+ .debug_str     0x00005cca      0x7df CMakeFiles/hello_flash.dir/app/app_task.c.obj
+                               0x205f (size before relaxing)
+ .debug_str     0x000064a9      0x424 ../../components/lib/libnwyivtts.a(nwy_tts_lib_api.c.obj)
                                 0xb2e (size before relaxing)
- .debug_str     0x000068c7      0x7c5 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
+ .debug_str     0x000068cd      0x7c5 ../../components/lib/libnwyivtts.a(nwy_tts.c.obj)
                                0x10e8 (size before relaxing)
 
 .debug_frame    0x00000000     0x9d24
