@@ -353,6 +353,11 @@ static uint8_t netCheckDataCall(void)
                             LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR");
                             portSimSet(SIM_2);
                         }
+                        else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+		                {
+							LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+							portSimSet(SIM_1);
+		                }
                         portSystemReset();
                     }
                     break;
@@ -424,6 +429,11 @@ static uint8_t netCheckDataCall(void)
                 {
                     LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR");
                     portSimSet(SIM_2);
+                }
+                else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+                {
+					LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+					portSimSet(SIM_1);
                 }
                 portSystemReset();
             }
@@ -890,6 +900,7 @@ static void getSn(void)
 void networkConnectTask(void)
 {
     uint8_t csq;
+    static uint8_t first = 0;
     if (networkInfo.networkonoff == 0)
     {
         return ;
@@ -900,7 +911,7 @@ void networkConnectTask(void)
         networkConnectCtl(0);
         return;
     }
-
+	
 
     switch (networkInfo.netFsm)
     {
@@ -940,6 +951,11 @@ void networkConnectTask(void)
                     {
                         LogPrintf(DEBUG_ALL, "no sim , try to use SIM2");
                         portSimSet(SIM_2);
+                    }
+                    else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+                    {
+						LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+						portSimSet(SIM_1);
                     }
                     portSystemReset();
                 }
@@ -988,6 +1004,11 @@ void networkConnectTask(void)
                             LogPrintf(DEBUG_ALL, "Register ERROR");
                             portSimSet(SIM_2);
                         }
+                        else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+		                {
+							LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+							portSimSet(SIM_1);
+		                }
                         portSystemReset();
                     }
                 }
