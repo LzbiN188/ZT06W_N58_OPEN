@@ -925,7 +925,10 @@ void networkConnectTask(void)
                             relayAutoRequest();
                             LogPrintf(DEBUG_ALL, "shutdown==>try to relay on");
                         }
-                        portSimSet(SIM_2);
+                        if (sysparam.simSel == SIM_1)
+                        {
+                        	portSimSet(SIM_2);
+                        }
                         LogMessage(DEBUG_ALL, "no sim card");
                         alarmRequestSet(ALARM_SIMPULLOUT_REQUEST);
                         portSystemReset();

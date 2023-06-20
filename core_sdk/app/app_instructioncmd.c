@@ -1632,7 +1632,14 @@ static void doSimSelAlmInstrucion(ITEM *item, char *message)
     {
         sysparam.simSel = atoi(item->item_data[1]) > 0 ? SIM_2 : SIM_1;
         paramSaveAll();
-        portSimSet(sysparam.simSel);
+        if (sysparam.simSel == SIM_2)
+        {
+			portSimSet(SIM_1);
+        }
+        else
+        {
+			portSimSet(SIM_1);
+        }
         startTimer(50, portSystemReset, 0);
         sprintf(message, "Set sim(%d) successfully,device will reboot within 5 sec", sysparam.simSel);
     }
