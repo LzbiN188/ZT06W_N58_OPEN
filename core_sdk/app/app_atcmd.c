@@ -16,6 +16,7 @@
 #include "stdlib.h"
 #include "app_encrypt.h"
 #include "app_ble.h"
+#include "nwy_sim.h"
 
 
 const atCmd_s atCmdTable[] =
@@ -97,6 +98,7 @@ static void setDebugLevel(char *buf, uint16_t len)
 
 static void doAtdebugCmd(char *buf, uint32_t len)
 {
+    uint8_t simId;
     ITEM item;
     stringToItem(&item, (uint8_t *) buf, len);
     if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SUSPEND"))
@@ -150,29 +152,42 @@ static void doAtdebugCmd(char *buf, uint32_t len)
     }
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"ENCRYPT"))
     {
-        uint8_t mac[20], encBuff[20],macBuff[20], enclen;
+        uint8_t mac[20], encBuff[20], macBuff[20], enclen;
         char connmac[] = "BF:90:DA:E4:C2:84";
 
-        macBuff[0]=connmac[0];
-        macBuff[1]=connmac[1];
-        macBuff[2]=connmac[3];
-        macBuff[3]=connmac[4];
-        macBuff[4]=connmac[6];
-        macBuff[5]=connmac[7];
-        macBuff[6]=connmac[9];
-        macBuff[7]=connmac[10];
-        macBuff[8]=connmac[12];
-        macBuff[9]=connmac[13];
-        macBuff[10]=connmac[15];
-        macBuff[11]=connmac[16];
+        macBuff[0] = connmac[0];
+        macBuff[1] = connmac[1];
+        macBuff[2] = connmac[3];
+        macBuff[3] = connmac[4];
+        macBuff[4] = connmac[6];
+        macBuff[5] = connmac[7];
+        macBuff[6] = connmac[9];
+        macBuff[7] = connmac[10];
+        macBuff[8] = connmac[12];
+        macBuff[9] = connmac[13];
+        macBuff[10] = connmac[15];
+        macBuff[11] = connmac[16];
 
-		changeHexStringToByteArray(mac,macBuff,6);
+        changeHexStringToByteArray(mac, macBuff, 6);
         createEncrypt(mac, encBuff, &enclen);
     }
     else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SCAN"))
     {
         bleClientSendEvent(BLE_CLIENT_SCAN);
         LogMessage(DEBUG_ALL, "ble scan");
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"SETSIM"))
+    {
+        int ret;
+        simId = atoi(item.item_data[1]);
+        simId = simId > 0 ? 1 : 0;
+        ret = nwy_sim_set_simid(simId);
+        LogPrintf(DEBUG_ALL, "nwy_sim_set_simid(%d) %s", simId, ret == NWY_RES_OK ? "Success" : "Fail");
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"GETSIM"))
+    {
+        simId = nwy_sim_get_simid();
+        LogPrintf(DEBUG_ALL, "SIMID:%d", simId);
     }
     else
     {
@@ -365,7 +380,14 @@ static void atCmdFmpcLdrParser(void)
     else
     {
         LogMessage(DEBUG_FACTORY, "Light sensor detects brightness");
-
+    }
+    if (LDR2_READ)
+    {
+        LogMessage(DEBUG_FACTORY, "Front light sensor detects darkness");
+    }
+    else
+    {
+        LogMessage(DEBUG_FACTORY, "Front light sensor detects brightness");
     }
 }
 

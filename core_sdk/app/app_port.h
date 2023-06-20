@@ -5,11 +5,11 @@
 #include "nwy_usb_serial.h"
 #include "nwy_gpio_open.h"
 #include "nwy_loc.h"
-#define LED1_PORT		26
+#define LED1_PORT
 #define LED2_PORT		25
 
-#define LED1_ON			nwy_gpio_set_value(LED1_PORT,1)
-#define LED1_OFF    	nwy_gpio_set_value(LED1_PORT,0)
+#define LED1_ON			//nwy_gpio_set_value(LED1_PORT,1)
+#define LED1_OFF    	//nwy_gpio_set_value(LED1_PORT,0)
 
 #define LED2_ON			nwy_gpio_set_value(LED2_PORT,1)
 #define LED2_OFF    	nwy_gpio_set_value(LED2_PORT,0)
@@ -22,6 +22,9 @@
 
 #define LDR_PORT		3
 #define LDR_READ		nwy_gpio_get_value(LDR_PORT)
+
+#define LDR2_PORT		12
+#define LDR2_READ		nwy_gpio_get_value(LDR2_PORT)
 
 #define RELAY_PORT		28
 #define RELAY_ON		nwy_gpio_set_value(RELAY_PORT,1)
@@ -41,9 +44,18 @@
 #define ON_STATE		1
 #define OFF_STATE		0
 
+#define GPSLNA_ON		nwy_set_pmu_power_level(NWY_POWER_CAMA, 1800)
+#define GPSLNA_OFF		nwy_set_pmu_power_level(NWY_POWER_CAMA, 0)
+
 #define AUDIOFILE   "myMusic.mp3"
 #define RECFILE		"rec.amr"
 #define RECORD_BUFF_SIZE		(120*1024)
+
+typedef enum
+{
+    SIM_1=0,
+    SIM_2,
+} SIM_USE;
 
 typedef enum
 {
@@ -93,15 +105,16 @@ typedef struct
     char *cmd;
 } moduleAtCmd_s;
 
-typedef struct ttsList{
-	uint8_t ttsBuf[144];
-	uint8_t ttsBufLen;
-	struct ttsList * next;
-}tts_info_s;
+typedef struct ttsList
+{
+    uint8_t ttsBuf[144];
+    uint8_t ttsBufLen;
+    struct ttsList *next;
+} tts_info_s;
 
 typedef enum
 {
-	HOT_START = 0,
+    HOT_START = 0,
     WORM_START = 1,
     COLD_START = 2,
     FACTORY_START = 3,
@@ -144,7 +157,6 @@ void portSleepCtrl(uint8_t mode);
 
 void portGpioCfg(void);
 void portPmuCfg(void);
-void portOutsideGpsPwr(uint8_t onoff);
 
 
 void portGsensorCfg(uint8_t onoff);
@@ -171,9 +183,9 @@ void portSystemReset(void);
 void portSystemShutDown(void);
 
 
-void portSaveAudio(char * filePath,uint8_t *audio, uint16_t len);
-void portDeleteAudio(char * filePath);
-void portPlayAudio(char * filePath);
+void portSaveAudio(char *filePath, uint8_t *audio, uint16_t len);
+void portDeleteAudio(char *filePath);
+void portPlayAudio(char *filePath);
 
 uint8_t portUpgradeWirte(unsigned int offset, unsigned int length, unsigned char *data);
 uint8_t portUpgradeStart(void);
@@ -200,6 +212,10 @@ void portOutputTTS(void);
 void portPushTTS(char *ttsbuf);
 
 void portSetApn(char *apn, char *userName, char *password);
+
+void portSimSet(SIM_USE sim);
+SIM_USE portSimGet(void);
+
 
 #endif
 

@@ -295,7 +295,7 @@ static void netdataStateCallBack(int hndl,  nwy_data_call_state_t ind_state)
             netchangeDataCallFsm(DATA_CALL_STOP);
             LogMessage(DEBUG_ALL, "change to datacall stop");
         }
-        changeNetFsm(CHECK_SIGNAL);
+        changeNetFsm(CHECK_SIM);
     }
 }
 
@@ -348,6 +348,11 @@ static uint8_t netCheckDataCall(void)
                     if (getSrvTick > 7)
                     {
                         getSrvTick = 0;
+                        if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
+                        {
+                            LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR");
+                            portSimSet(SIM_2);
+                        }
                         portSystemReset();
                     }
                     break;
@@ -415,6 +420,11 @@ static uint8_t netCheckDataCall(void)
             {
                 networkInfo.dataCallCount = 0;
                 LogMessage(DEBUG_ALL, "Data Call too much time");
+                if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
+                {
+                    LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR");
+                    portSimSet(SIM_2);
+                }
                 portSystemReset();
             }
             else
@@ -903,13 +913,36 @@ void networkConnectTask(void)
             }
             else
             {
-                LogMessage(DEBUG_ALL, "no sim card");
+                LogMessage(DEBUG_ALL, "Sim check");
+                if (nwy_sim_get_card_status() == NWY_SIM_STATUS_NOT_INSERT)
+                {
+                    if (sysparam.simpulloutalm && networkInfo.netTick >= 3 && portSimGet() == SIM_1)
+                    {
+                        if (sysparam.simpulloutLock != 0)
+                        {
+                            sysparam.relayCtl = 1;
+                            paramSaveAll();
+                            relayAutoRequest();
+                            LogPrintf(DEBUG_ALL, "shutdown==>try to relay on");
+                        }
+                        portSimSet(SIM_2);
+                        LogMessage(DEBUG_ALL, "no sim card");
+                        alarmRequestSet(ALARM_SIMPULLOUT_REQUEST);
+                        portSystemReset();
+                    }
+                }
                 if (networkInfo.netTick >= 60)
                 {
+                    if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
+                    {
+                        LogPrintf(DEBUG_ALL, "no sim , try to use SIM2");
+                        portSimSet(SIM_2);
+                    }
                     portSystemReset();
                 }
                 break;
             }
+
         case CHECK_SIGNAL:
             nwy_nw_get_signal_csq(&csq);
             if (csq >= 8 && csq <= 31)
@@ -947,6 +980,11 @@ void networkConnectTask(void)
                     changeNetFsm(CHECK_SIM);
                     if (++networkInfo.netRegCnt >= 4)
                     {
+                        if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
+                        {
+                            LogPrintf(DEBUG_ALL, "Register ERROR");
+                            portSimSet(SIM_2);
+                        }
                         portSystemReset();
                     }
                 }

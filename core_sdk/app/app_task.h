@@ -19,21 +19,25 @@
 
 #define GPS_REQ_ALL					0xFF
 
-#define ALARM_LIGHT_REQUEST			0x0001 //感光
-#define ALARM_LOSTV_REQUEST			0x0002 //断电
-#define ALARM_LOWV_REQUEST			0x0004 //低电
-#define ALARM_SHUTTLE_REQUEST		0x0008//震动报警
+#define ALARM_LIGHT_REQUEST			0x00000001 //感光
+#define ALARM_LOSTV_REQUEST			0x00000002 //断电
+#define ALARM_LOWV_REQUEST			0x00000004 //低电
+#define ALARM_SHUTTLE_REQUEST		0x00000008//震动报警
 
-#define ALARM_GUARD_REQUEST			0X0010
-#define ALARM_BLE_LOST_REQUEST		0X0020
-#define ALARM_BLE_RESTORE_REQUEST	0X0040
-#define ALARM_OIL_RESTORE_REQUEST	0X0080
-#define ALARM_SHIELD_REQUEST		0X0100
-#define ALARM_PREWARN_REQUEST		0X0200
-#define ALARM_OIL_CUTDOWN_REQUEST	0X0400
-#define ALARM_BLE_ERR_REQUEST		0X0800
-#define ALARM_GPS_NO_FIX_REQUEST	0X1000
-#define ALARM_TRIAL_REQUEST			0X2000
+#define ALARM_GUARD_REQUEST			0X00000010
+#define ALARM_BLE_LOST_REQUEST		0X00000020
+#define ALARM_BLE_RESTORE_REQUEST	0X00000040
+#define ALARM_OIL_RESTORE_REQUEST	0X00000080
+#define ALARM_SHIELD_REQUEST		0X00000100
+#define ALARM_PREWARN_REQUEST		0X00000200
+#define ALARM_OIL_CUTDOWN_REQUEST	0X00000400
+#define ALARM_BLE_ERR_REQUEST		0X00000800
+#define ALARM_GPS_NO_FIX_REQUEST	0X00001000
+#define ALARM_TRIAL_REQUEST			0X00002000
+
+#define ALARM_SHUTDOWN_REQUEST		0X00004000
+#define ALARM_UNCAP_REQUEST			0X00008000
+#define ALARM_SIMPULLOUT_REQUEST    0x00010000
 
 
 #define ACCDETMODE0					0
@@ -42,7 +46,7 @@
 
 #define GPS_UPLOAD_GAP_MAX			60
 //GPS_UPLOAD_GAP_MAX 以下，gps常开，以上(包含GPS_UPLOAD_GAP_MAX),周期开启
-
+#define SHUTDOWN_TIME				300
 typedef enum
 {
     THREAD_EVENT_PLAY_AUDIO = NWY_APP_EVENT_ID_BASE + 1,
@@ -147,7 +151,7 @@ typedef struct
     uint8_t softWdtTick;
 	uint8_t debu;
 
-    uint16_t alarmrequest;
+    uint32_t alarmrequest;
 
     uint32_t sysTick;
     uint32_t sysStartTick;
@@ -177,9 +181,9 @@ void lbsRequestClear(void);
 void wifiRequestSet(void);
 void wifiRequestClear(void);
 
-void alarmRequestSet(uint16_t request);
-void alarmRequestClear(uint16_t request);
-void alarmRequestSave(uint16_t request);
+void alarmRequestSet(uint32_t request);
+void alarmRequestClear(uint32_t request);
+void alarmRequestSave(uint32_t request);
 void alarmRequestClearSave(void);
 
 

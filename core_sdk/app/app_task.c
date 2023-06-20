@@ -19,6 +19,9 @@ static sysLedCtrl_s sysLedCtrl;
 static motionInfo_s motionInfo;
 
 systemInfo_s sysinfo;
+
+static void doRelayOn(void);
+
 /**************************************************
 @bref		系统灯1控制
 @param
@@ -150,11 +153,12 @@ void ledStatusUpdate(uint8_t status, uint8_t onoff)
         ledSetPeriod(SYS_LED2_CTRL, 10, 10);
         if ((sysLedCtrl.sysStatus & SYSTEM_LED_LOGIN) != 0)
         {
-            ledSetPeriod(SYS_LED1_CTRL, 1, 0);
-        }
-        if ((sysLedCtrl.sysStatus & SYSTEM_LED_GPS) != 0)
-        {
-            ledSetPeriod(SYS_LED2_CTRL, 1, 0);
+            ledSetPeriod(SYS_LED2_CTRL, 1, 9);
+
+            if ((sysLedCtrl.sysStatus & SYSTEM_LED_GPS) != 0)
+            {
+                ledSetPeriod(SYS_LED2_CTRL, 1, 0);
+            }
         }
     }
     else
@@ -854,7 +858,7 @@ static void wifiRequestTask(void)
 	request	报警类型
 @note
 **************************************************/
-void alarmRequestSet(uint16_t request)
+void alarmRequestSet(uint32_t request)
 {
     sysinfo.alarmrequest |= request;
     LogPrintf(DEBUG_ALL, "alarmRequestSet==>0x%04X", request);
@@ -869,7 +873,7 @@ void alarmRequestSet(uint16_t request)
 @note
 **************************************************/
 
-void alarmRequestClear(uint16_t request)
+void alarmRequestClear(uint32_t request)
 {
     sysinfo.alarmrequest &= ~request;
     LogPrintf(DEBUG_ALL, "alarmRequestClear==>0x%04X", request);
@@ -881,7 +885,7 @@ void alarmRequestClear(uint16_t request)
 @note
 **************************************************/
 
-void alarmRequestSave(uint16_t request)
+void alarmRequestSave(uint32_t request)
 {
     sysparam.alarmRequest |= request;
     paramSaveAll();
@@ -1053,6 +1057,33 @@ static void alarmRequestTask(void)
         protocolUpdateEvent(alarm);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
     }
+    //关机报警
+    if (sysinfo.alarmrequest & ALARM_SHUTDOWN_REQUEST)
+    {
+        alarmRequestClear(ALARM_SHUTDOWN_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>关机报警");
+        alarm = 0x30;
+        protocolUpdateEvent(alarm);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
+    //开盖报警
+    if (sysinfo.alarmrequest & ALARM_UNCAP_REQUEST)
+    {
+        alarmRequestClear(ALARM_UNCAP_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>开盖报警");
+        alarm = 0x31;
+        protocolUpdateEvent(alarm);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
+    //拔卡报警
+    if (sysinfo.alarmrequest & ALARM_SIMPULLOUT_REQUEST)
+    {
+        alarmRequestClear(ALARM_SIMPULLOUT_REQUEST);
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>拔卡报警");
+        alarm = 0x32;
+        protocolUpdateEvent(alarm);
+        sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
 
 }
 
@@ -1198,7 +1229,15 @@ static void sysStart(void)
     gpsRequestSet(GPS_REQ_UPLOAD_ONE_POI);
     networkConnectCtl(1);
     sysChaneState(SYS_RUN);
-    ledStatusUpdate(SYSTEM_LED_RUN, 1);
+    if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+    {
+        ledStatusUpdate(SYSTEM_LED_RUN, 0);
+    }
+    else
+    {
+
+        ledStatusUpdate(SYSTEM_LED_RUN, 1);
+    }
 }
 
 /**************************************************
@@ -1531,6 +1570,10 @@ static void voltageCheckTask(void)
             if (sysinfo.sysTick - LostVoltageTick >= 10)
             {
                 LogMessage(DEBUG_ALL, "power supply resume");
+                if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+                {
+                    portSimSet(SIM_1);
+                }
                 portSystemReset();
             }
         }
@@ -1547,6 +1590,7 @@ static void voltageCheckTask(void)
 static void lightDetectionTask(void)
 {
     static uint32_t darknessTick = 0;
+    static uint32_t FrontdarknessTick = 0;
     uint8_t curLdrState;
     curLdrState = LDR_READ;
 
@@ -1567,6 +1611,34 @@ static void lightDetectionTask(void)
     {
         //暗
         darknessTick++;
+    }
+
+    //前感光检测
+    curLdrState = LDR2_READ;
+    if (curLdrState == 0)
+    {
+        //亮
+        if (FrontdarknessTick >= 60)
+        {
+            if (sysparam.uncapalm != 0)
+            {
+                LogMessage(DEBUG_ALL, "Uncap alarm");
+                alarmRequestSet(ALARM_UNCAP_REQUEST);
+                if (sysparam.uncapLock != 0)
+                {
+                    sysparam.relayCtl = 1;
+                    paramSaveAll();
+                    relayAutoRequest();
+                    LogPrintf(DEBUG_ALL, "uncap==>try to relay on");
+                }
+            }
+        }
+        FrontdarknessTick = 0;
+    }
+    else
+    {
+        //暗
+        FrontdarknessTick++;
     }
 }
 
@@ -1647,6 +1719,10 @@ static void rebootOneDay(void)
         return ;
     if (sysinfo.gpsRequest != 0)
         return ;
+    if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+    {
+        portSimSet(SIM_1);
+    }
     sysparam.bleErrCnt = 0;
     paramSaveAll();
     portSystemReset();
@@ -1678,13 +1754,45 @@ static void relayInit(void)
 
 static void autoShutDownTask(void)
 {
+    static uint16_t shutdownTick;
     if (ONOFF_READ == ON_STATE)
     {
+        shutdownTick = 0;
         return;
     }
-    sysparam.bleErrCnt = 0;
-    paramSaveAll();
-    portSystemShutDown();
+    ledStatusUpdate(SYSTEM_LED_RUN, 0);
+    if (shutdownTick == 0 && sysparam.shutdownalm != 0)
+    {
+        alarmRequestSet(ALARM_SHUTDOWN_REQUEST);
+        if (sysparam.shutdownLock != 0)
+        {
+            sysparam.relayCtl = 1;
+            paramSaveAll();
+            doRelayOn();
+            LogPrintf(DEBUG_ALL, "shutdown==>try to relay on");
+        }
+    }
+    else if (sysparam.shutdownalm == 0 || shutdownTick >= SHUTDOWN_TIME)
+    {
+        shutdownTick = 0;
+        sysparam.bleErrCnt = 0;
+        if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+        {
+            portSimSet(SIM_1);
+        }
+        paramSaveAll();
+        portSystemShutDown();
+    }
+    else if (bleScheduleCheckReq(BLE_EVENT_SET_DEVON))
+    {
+        LogPrintf(DEBUG_ALL, "wait ble event clear...");
+    }
+    else if (sysparam.alarmRequest == 0)
+    {
+    	LogPrintf(DEBUG_ALL, "wait alarmRequest clear...");
+        shutdownTick = SHUTDOWN_TIME;
+    }
+    shutdownTick++;
 }
 
 

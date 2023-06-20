@@ -67,7 +67,10 @@ const instruction_s instructiontable[] =
     {RELAYFORCE_INS, "RELAYFORCE"},
     {BLESCAN_INS, "BLESCAN"},
     {BLERELAYCTL_INS, "BLERELAYCTL"},
-    {SETRFHOLD_INS, "SETRFHOLD"},
+    {SHUTDOWNALM_INS, "SHUTDOWNALM"},
+    {UNCAPALM_INS, "UNCAPALM"},
+    {SIMPULLOUTALM_INS, "SIMPULLOUTALM"},
+    {SIMSEL_INS, "SIMSEL"},
     {SN_INS, "*"},
 };
 
@@ -219,7 +222,8 @@ static void doParamInstruction(ITEM *item, char *message)
             sprintf(message + strlen(message), "Mode23: %d minutes;", sysparam.gapMinutes);
             break;
     }
-    sprintf(message + strlen(message), "StartUp:%d;RunTime:%ld;", sysparam.startUpCnt, sysparam.runTime);
+    sprintf(message + strlen(message), "StartUp:%d;RunTime:%ld;SIM:%d;", sysparam.startUpCnt, sysparam.runTime,
+            portSimGet() + 1);
 }
 
 static void doStatusInstruction(ITEM *item, char *message)
@@ -641,6 +645,10 @@ static void doResetInstruction(ITEM *item, char *message)
     sprintf(message, "System will reset after 5 seconds");
     sysparam.bleErrCnt = 0;
     paramSaveAll();
+    if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
+    {
+        portSimSet(SIM_1);
+    }
     startTimer(50, portSystemReset, 0);
 }
 
@@ -1326,7 +1334,6 @@ static void doSetBleParamInstruction(ITEM *item, char *message)
                 cnt++;
                 sprintf(message + strlen(message), "(%d:[%.2f,%.2f,%d]) ", i, bleinfo->rf_threshold, bleinfo->out_threshold,
                         bleinfo->disc_threshold);
-
             }
         }
         if (cnt == 0)
@@ -1530,48 +1537,107 @@ static void doBleRelayCtrlInstruction(ITEM *item, char *message, instructionPara
     sprintf(message, "set success ,%d,%.2f", sysparam.bleRelay, sysparam.bleVoltage);
 }
 
-static void doSetRfHoldInstruction(ITEM *item, char *message)
+static void doShutdownAlmInstrucion(ITEM *item, char *message)
 {
-    uint8_t i, cnt;
-    bleRelayInfo_s *bleinfo;
-    
-    
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
     {
-        cnt = 0;
-
-        for (i = 0; i < BLE_CONNECT_LIST_SIZE; i++)
+        sprintf(message, "Shutdown alarm was %s", sysparam.shutdownalm ? "Enable" : "Disable");
+        if (sysparam.shutdownLock != 0)
         {
-            bleinfo = bleGetDevInfo(i);
-            if (bleinfo != NULL)
-            {
-                cnt++;
-                sprintf(message, "ble rf hold time is %d sec", bleinfo->rfHold_threshold);
-
-            }
-            if (cnt == 0)
-        	{
-            	sprintf(message, "no ble info");
-        	}
+            sprintf(message + strlen(message), ", %s locking the car", sysparam.shutdownLock ? "Enable" : "Disable");
         }
-   	}
-   	else
-   	{
-		for (i = 0; i < BLE_CONNECT_LIST_SIZE; i++)
+    }
+    else
+    {
+        sysparam.shutdownalm = atol(item->item_data[1]);
+        sysparam.shutdownLock = 0;
+        if (sysparam.shutdownalm != 0)
         {
-            bleinfo = bleGetDevInfo(i);
-            if (bleinfo != NULL)
-            {
-                bleinfo->rfHold_threshold = 0;
-            }
+            sysparam.shutdownLock = atol(item->item_data[2]);
         }
-        sysparam.bleRfHoldThreshold = atoi(item->item_data[1]);
         paramSaveAll();
-        sprintf(message, "Update rf hold time to %d sec", sysparam.bleRfHoldThreshold);
-        bleScheduleSetAllReq(BLE_EVENT_SET_RFHOLD | BLE_EVENT_GET_RFHOLD);
-   	}
+        sprintf(message, "%s the shutdown alarm", sysparam.shutdownalm ? "Enable" : "Disable");
 
+        if (sysparam.shutdownLock != 0)
+        {
+            sprintf(message + strlen(message), ", %s locking the car", sysparam.shutdownLock ? "Enable" : "Disable");
+        }
+    }
 }
+
+
+static void doUncapAlmInstrucion(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Uncap alarm was %s", sysparam.uncapalm ? "Enable" : "Disable");
+        if (sysparam.uncapLock != 0)
+        {
+            sprintf(message + strlen(message), ", %s locking the car", sysparam.uncapLock ? "Enable" : "Disable");
+        }
+    }
+    else
+    {
+        sysparam.uncapalm = atol(item->item_data[1]);
+        sysparam.uncapLock = 0;
+        if (sysparam.uncapalm != 0)
+        {
+            sysparam.uncapLock = atol(item->item_data[2]);
+        }
+        paramSaveAll();
+        sprintf(message, "%s the Uncap alarm", sysparam.uncapalm ? "Enable" : "Disable");
+        if (sysparam.uncapLock != 0)
+        {
+            sprintf(message + strlen(message), ", %s locking the car", sysparam.uncapLock ? "Enable" : "Disable");
+        }
+    }
+}
+
+static void doSimPullOutAlmInstrucion(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Sim pull out alarm was %s", sysparam.simpulloutalm ? "Enable" : "Disable");
+        if (sysparam.simpulloutLock != 0)
+        {
+            sprintf(message + strlen(message), ", %s locking the car", sysparam.simpulloutLock ? "Enable" : "Disable");
+        }
+    }
+    else
+    {
+        sysparam.simpulloutalm = atol(item->item_data[1]);
+        sysparam.simpulloutLock = 0;
+        if (sysparam.simpulloutalm != 0)
+        {
+            sysparam.simpulloutLock = atol(item->item_data[2]);
+        }
+        paramSaveAll();
+        sprintf(message, "%s the sim pull out alarm", sysparam.simpulloutalm ? "Enable" : "Disable");
+        if (sysparam.simpulloutLock != 0)
+        {
+            sprintf(message + strlen(message), ", %s locking the car", sysparam.simpulloutLock ? "Enable" : "Disable");
+        }
+    }
+}
+
+
+static void doSimSelAlmInstrucion(ITEM *item, char *message)
+{
+    if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+
+        sprintf(message, "Current SimSel is %d , SimID is %d", sysparam.simSel, portSimGet());
+    }
+    else
+    {
+        sysparam.simSel = atoi(item->item_data[1]) > 0 ? SIM_2 : SIM_1;
+        paramSaveAll();
+        portSimSet(sysparam.simSel);
+        startTimer(50, portSystemReset, 0);
+        sprintf(message, "Set sim(%d) successfully,device will reboot within 5 sec", sysparam.simSel);
+    }
+}
+
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
 {
@@ -1714,9 +1780,18 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
         case BLERELAYCTL_INS:
             doBleRelayCtrlInstruction(item, message, param);
             break;
-        case SETRFHOLD_INS:
-        	doSetRfHoldInstruction(item, message);
-        	break;
+        case SHUTDOWNALM_INS:
+            doShutdownAlmInstrucion(item, message);
+            break;
+        case UNCAPALM_INS:
+            doUncapAlmInstrucion(item, message);
+            break;
+        case SIMPULLOUTALM_INS:
+            doSimPullOutAlmInstrucion(item, message);
+            break;
+        case SIMSEL_INS:
+            doSimSelAlmInstrucion(item, message);
+            break;
         default:
             if (param->mode == MESSAGE_MODE)
                 return ;

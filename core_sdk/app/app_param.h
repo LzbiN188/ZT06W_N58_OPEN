@@ -3,9 +3,9 @@
 
 #include "nwy_osi_api.h"
 
-#define PARAM_VER		0x1F
+#define PARAM_VER		0x20
 
-#define EEPROM_VERSION	"N58_CA_V4.3.7"
+#define EEPROM_VERSION	"N58_CA_V5.2.2"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -70,7 +70,7 @@ typedef struct
     uint16_t jt808Port;
     uint16_t hiddenPort;
     uint16_t bleOutThreshold;
-	uint16_t alarmRequest;
+	uint16_t unused;//取消、不使用
 
     uint32_t runTime;
 
@@ -91,7 +91,15 @@ typedef struct
 	uint8_t bleRelay;
 	float   bleVoltage;
 
-	uint8_t bleRfHoldThreshold;
+	uint32_t alarmRequest;
+	uint8_t shutdownalm;
+	uint8_t uncapalm;
+	uint8_t simpulloutalm;
+	uint8_t simSel;
+
+	uint8_t shutdownLock;
+	uint8_t uncapLock;
+	uint8_t simpulloutLock;
 } systemParam_s;
 
 extern systemParam_s sysparam;

@@ -441,7 +441,7 @@ void portSleepCtrl(uint8_t mode)
 void portGpioCfg(void)
 {
     //LED gpio config
-    nwy_gpio_set_direction(LED1_PORT, nwy_output);
+    //nwy_gpio_set_direction(LED1_PORT, nwy_output);
     nwy_gpio_set_direction(LED2_PORT, nwy_output);
     LED1_OFF;
     LED2_OFF;
@@ -449,6 +449,9 @@ void portGpioCfg(void)
     //ldr感光口
     nwy_gpio_set_direction(LDR_PORT, nwy_input);
     nwy_gpio_pullup_or_pulldown(LDR_PORT, 2);
+    //ldr前感光口
+    nwy_gpio_set_direction(LDR2_PORT, nwy_input);
+    nwy_gpio_pullup_or_pulldown(LDR2_PORT, 2);
     //relay 继电器控制口
     nwy_gpio_set_direction(RELAY_PORT, nwy_output);
     RELAY_OFF;
@@ -477,25 +480,13 @@ void portPmuCfg(void)
 
     nwy_subpower_switch(NWY_POWER_CAMD, true, true);
     nwy_set_pmu_power_level(NWY_POWER_CAMD, 1800);
-
-
-}
-
-
-void portOutsideGpsPwr(uint8_t onoff)
-{
+	
     nwy_subpower_switch(NWY_POWER_CAMA, true, true);
-    if (onoff)
-    {
-        nwy_set_pmu_power_level(NWY_POWER_CAMD, 1800);
-        LogMessage(DEBUG_ALL, "gps power on");
-    }
-    else
-    {
-        nwy_set_pmu_power_level(NWY_POWER_CAMD, 0);
-        LogMessage(DEBUG_ALL, "gps power off");
-    }
+    nwy_set_pmu_power_level(NWY_POWER_CAMA, 0);
+
 }
+
+
 /**************************************************
 @bref		gpio中断回调
 @param
@@ -558,6 +549,7 @@ void portGpsCtrl(uint8_t onoff)
     {
         nwy_loc_close_uart_nmea_data();
         ret = nwy_loc_start_navigation();
+		GPSLNA_ON;
         if (ret)
         {
             LogMessage(DEBUG_ALL, "portGpsCtrl==>gps open success");
@@ -571,6 +563,7 @@ void portGpsCtrl(uint8_t onoff)
     {
         nwy_loc_set_startup_mode(0);
         ret = nwy_loc_stop_navigation();
+		GPSLNA_OFF;
         if (ret)
         {
             LogMessage(DEBUG_ALL, "portGpsCtrl==>gps close success");
@@ -1598,4 +1591,21 @@ void portSetApn(char *apn, char *userName, char *password)
     ret = nwy_nw_set_cfgdftpdn_info(cfgpdn);
     LogPrintf(DEBUG_ALL, "portSetApn==>%s", ret == 0 ? "Success" : "Fail");
 }
+
+
+void portSimSet(SIM_USE sim)
+{
+    int ret;
+    ret = nwy_sim_set_simid(sim);
+    LogPrintf(DEBUG_ALL, "portSimSet==>Sim%d %s", sim+1, ret == 0 ? "Success" : "Fail");
+}
+
+SIM_USE portSimGet(void)
+{
+    SIM_USE sim;
+    sim = nwy_sim_get_simid();
+    LogPrintf(DEBUG_ALL, "portSimGet==>Sim%d", sim);
+    return sim;
+}
+
 
