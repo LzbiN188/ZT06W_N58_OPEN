@@ -1596,8 +1596,8 @@ void portSetApn(char *apn, char *userName, char *password)
 void portSimSet(SIM_USE sim)
 {
     int ret;
-    ret = nwy_sim_set_simid(sim);
-    LogPrintf(DEBUG_ALL, "portSimSet==>Sim%d %s", sim+1, ret == 0 ? "Success" : "Fail");
+    ret = nwy_sim_set_simid(0);
+    LogPrintf(DEBUG_ALL, "portSimSet==>Sim1");
 }
 
 SIM_USE portSimGet(void)

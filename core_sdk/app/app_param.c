@@ -183,6 +183,8 @@ void paramSetDefault(uint8_t lev)
 	thisparam.uncapalm=1;
 	thisparam.uncapLock=1;
 
+	thisparam.simSel = 1;
+
     memcpy(&sysparam, &thisparam, sizeof(systemParam_s));
     paramSaveAll();
     LogMessage(DEBUG_ALL, "paramSetDefault");

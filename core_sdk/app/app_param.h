@@ -3,9 +3,9 @@
 
 #include "nwy_osi_api.h"
 
-#define PARAM_VER		0x20
+#define PARAM_VER		0x21
 
-#define EEPROM_VERSION	"N58_CA_V5.2.2"
+#define EEPROM_VERSION	"N58_CA_V5.2.2C"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
