@@ -809,9 +809,12 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, À¶ÑÀÆÁ±Î±¨¾¯...");
                 alarmRequestSet(ALARM_FAKE_SHIELD_REQUEST);
-                bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM);
+                bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM | BLE_EVENT_CLR_CNT);
                 break;
             case CMD_SEND_SHIELD_LOCK_ALARM:
+                sysparam.relayCtl = 1;
+                paramSaveAll();
+                relayAutoRequest();
 				LogMessage(DEBUG_ALL, "BLE==>shield alarm lock occur");
                 LogMessage(DEBUG_ALL, "oh, À¶ÑÀÆÁ±ÎËø³µ±¨¾¯...");
                 alarmRequestSet(ALARM_SHIELD_REQUEST);
