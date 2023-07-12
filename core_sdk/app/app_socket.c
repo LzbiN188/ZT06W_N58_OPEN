@@ -350,14 +350,14 @@ static uint8_t netCheckDataCall(void)
                         getSrvTick = 0;
                         if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
                         {
-                            LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR");
+                            LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR, try to use SIM2");
                             portSimSet(SIM_2);
                         }
                         else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
-		                {
-							LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+                        {
+							LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR, try to use SIM1");
 							portSimSet(SIM_1);
-		                }
+                        }
                         portSystemReset();
                     }
                     break;
@@ -427,12 +427,12 @@ static uint8_t netCheckDataCall(void)
                 LogMessage(DEBUG_ALL, "Data Call too much time");
                 if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
                 {
-                    LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR");
+                    LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR, try to use SIM2");
                     portSimSet(SIM_2);
                 }
                 else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
                 {
-					LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+					LogPrintf(DEBUG_ALL, "netCheckDataCall ERROR, try to use SIM1");
 					portSimSet(SIM_1);
                 }
                 portSystemReset();
@@ -900,7 +900,6 @@ static void getSn(void)
 void networkConnectTask(void)
 {
     uint8_t csq;
-    static uint8_t first = 0;
     if (networkInfo.networkonoff == 0)
     {
         return ;
@@ -916,6 +915,7 @@ void networkConnectTask(void)
     switch (networkInfo.netFsm)
     {
         case CHECK_SIM:
+        	portSimGet();
             if (nwy_sim_get_card_status() == NWY_SIM_STATUS_READY)
             {
                 getSn();
@@ -927,6 +927,7 @@ void networkConnectTask(void)
                 LogMessage(DEBUG_ALL, "Sim check");
                 if (nwy_sim_get_card_status() == NWY_SIM_STATUS_NOT_INSERT)
                 {
+                	//把卡报警的处理
                     if (sysparam.simpulloutalm && networkInfo.netTick >= 3 && portSimGet() == SIM_1)
                     {
                         if (sysparam.simpulloutLock != 0)
@@ -936,15 +937,13 @@ void networkConnectTask(void)
                             relayAutoRequest();
                             LogPrintf(DEBUG_ALL, "shutdown==>try to relay on");
                         }
-                        if (sysparam.simSel == SIM_1)
-                        {
-                        	portSimSet(SIM_2);
-                        }
+                        portSimSet(SIM_2);
                         LogMessage(DEBUG_ALL, "no sim card");
                         alarmRequestSet(ALARM_SIMPULLOUT_REQUEST);
                         portSystemReset();
                     }
                 }
+                
                 if (networkInfo.netTick >= 60)
                 {
                     if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
@@ -1001,12 +1000,12 @@ void networkConnectTask(void)
                     {
                         if (sysparam.simSel == SIM_1 && portSimGet() == SIM_1)
                         {
-                            LogPrintf(DEBUG_ALL, "Register ERROR");
+                            LogPrintf(DEBUG_ALL, "Register ERROR, try to use SIM2");
                             portSimSet(SIM_2);
                         }
                         else if (sysparam.simSel == SIM_1 && portSimGet() == SIM_2)
 		                {
-							LogPrintf(DEBUG_ALL, "no sim2 , try to use SIM1");
+							LogPrintf(DEBUG_ALL, "Register ERROR , try to use SIM1");
 							portSimSet(SIM_1);
 		                }
                         portSystemReset();

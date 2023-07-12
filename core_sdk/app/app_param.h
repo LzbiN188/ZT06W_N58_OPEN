@@ -5,7 +5,7 @@
 
 #define PARAM_VER		0x21
 
-#define EEPROM_VERSION	"N58_CA_V5.2.2C"
+#define EEPROM_VERSION	"N58_CA_V5.2.5"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0

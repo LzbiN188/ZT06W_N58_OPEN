@@ -14,12 +14,14 @@
 #include "app_instructioncmd.h"
 #include "aes.h"
 #include "app_encrypt.h"
+#include "app_kernal.h"
 
 #define INS_MSG_SIZE		500
 
 static bleServer_s bleServInfo;
 static bleClinet_s bleClientInfo;
 static bleConnectShchedule_s bleSchedule;
+static int chkSockId = -1;
 
 static void bleServRecvParser(uint8_t *buf, uint8_t len);
 static void bleRecvParser(uint8_t *data, uint8_t len);
@@ -800,15 +802,21 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogPrintf(DEBUG_ALL, "BLE==>relay state %d", data[readInd + 4]);
                 break;
             case CMD_ALARM:
-                //顺便把继电器也给断了
-                sysparam.relayCtl = 1;
-                paramSaveAll();
-                relayAutoRequest();
+                //不断继电器
+                //sysparam.relayCtl = 1;
+                //paramSaveAll();
+                //relayAutoRequest();
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽报警...");
-                alarmRequestSet(ALARM_SHIELD_REQUEST);
+                alarmRequestSet(ALARM_FAKE_SHIELD_REQUEST);
                 bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM);
                 break;
+            case CMD_SEND_SHIELD_LOCK_ALARM:
+				LogMessage(DEBUG_ALL, "BLE==>shield alarm lock occur");
+                LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽锁车报警...");
+                alarmRequestSet(ALARM_SHIELD_REQUEST);
+                bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_RES_LOCK_ALRAM);
+            	break;
             case CMD_AUTODIS:
                 LogMessage(DEBUG_ALL, "BLE==>set auto disconnect success");
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_AD_THRE);
@@ -817,6 +825,10 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogMessage(DEBUG_ALL, "BLE==>clear alarm success");
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM);
                 break;
+            case CMD_RES_SHIELD_LOCK_ALRAM:
+				LogMessage(DEBUG_ALL, "BLE==>res alarm success");
+				bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_RES_LOCK_ALRAM);
+            	break;
             case CMD_PREALARM:
                 LogMessage(DEBUG_ALL, "BLE==>preshield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, 蓝牙预警...");
@@ -848,6 +860,14 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogPrintf(DEBUG_ALL, "BLE==>update rtc success");
                 bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_SET_RTC);
                 break;
+            case CMD_CHK_SOCKET_STATUS:
+				LogPrintf(DEBUG_ALL, "BLE==>check socket status");
+				checkPrivateServer();
+				if (chkSockId == -1)
+				{
+					chkSockId = startTimer(80, CheckSoketRspTimeout, 0);
+				}
+            	break;
         }
         readInd += size + 3;
     }
@@ -989,7 +1009,7 @@ void bleScheduleSetAllReq(uint32_t event)
         bleSchedule.bleList[i].dataReq |= event;
     }
     bleSchedule.bleQuickRun = bleSchedule.bleListCnt;
-    //LogPrintf(DEBUG_ALL, "set ble all req to 0x%02x", event);
+    LogPrintf(DEBUG_ALL, "set ble all req to 0x%02x", event);
 }
 /**************************************************
 @bref		清除所有事件
@@ -1137,7 +1157,7 @@ void bleChangToByte(uint8_t *byteMac, uint8_t *hexMac)
 @param
 @return
 	0		等待超时
-	1		提前退出
+	1		提前退出(切换到另一个蓝牙设备)
 @note
 **************************************************/
 
@@ -1150,7 +1170,6 @@ static uint8_t bleDataSendTry(void)
     uint16_t value16;
 
     event = bleSchedule.bleList[bleSchedule.bleCurConnInd].dataReq;
-
     //固定发送组
     if (bleSchedule.sendTick % 25 == 0)
     {
@@ -1222,6 +1241,11 @@ static uint8_t bleDataSendTry(void)
             LogMessage(DEBUG_ALL, "try to clear alarm");
             bleSendProtocol(CMD_CLEAR_ALARM, param, 1);
         }
+        if (event & BLE_EVENT_RES_LOCK_ALRAM)
+        {
+			LogMessage(DEBUG_ALL, "try to clear lock alarm");
+			bleSendProtocol(CMD_RES_SHIELD_LOCK_ALRAM, param, 1);
+        }
 
         if (event & BLE_EVENT_GET_RF_THRE)
         {
@@ -1257,11 +1281,18 @@ static uint8_t bleDataSendTry(void)
             LogMessage(DEBUG_ALL, "try to get auto disc param");
             bleSendProtocol(CMD_GET_DISCONNECT_PARAM, param, 0);
         }
+        if (event & BLE_EVENT_CHK_SOCKET)
+        {
+			LogPrintf(DEBUG_ALL, "try to send socket status is %s", sysinfo.socketStatus ? "OK" : "ERR");
+			param[0] = sysinfo.socketStatus;
+			bleSendProtocol(CMD_CHK_SOCKET_STATUS, param, 1);
+			bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_CHK_SOCKET);
+        }
 
         if (bleSchedule.bleQuickRun != 0 && event & 0xFFFFFF00)
         {
             ret = 1;
-            LogMessage(DEBUG_ALL, "oh , urgent event send done");
+            LogPrintf(DEBUG_ALL, "oh , urgent event send done:");
         }
     }
 
@@ -1526,4 +1557,27 @@ void bleScheduleTask(void)
     bleSchedule.runTick++;
 
 }
+
+
+void CheckSoketRspTimeout(void)
+{
+	bleScheduleSetAllReq(BLE_EVENT_CHK_SOCKET);
+	chkSockId = -1;
+}
+
+void CheckSoketRspSuccess(void)
+{
+	if (chkSockId != -1)
+	{
+		bleScheduleSetAllReq(BLE_EVENT_CHK_SOCKET);
+		stopTimer(chkSockId);
+		chkSockId = -1;
+	}
+	else
+	{
+		bleScheduleSetAllReq(BLE_EVENT_CHK_SOCKET);
+	}
+}
+
+
 

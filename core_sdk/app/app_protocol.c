@@ -1366,6 +1366,8 @@ void protoclparser01(uint8_t link, char *protocol, int size)
 void protoclparser13(uint8_t link, char *protocol, int size)
 {
     LogMessage(DEBUG_ALL, "heartbeat respon");
+    sysinfo.socketStatus = 1;
+    CheckSoketRspSuccess();
 }
 
 

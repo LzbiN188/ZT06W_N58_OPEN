@@ -633,6 +633,9 @@ static void gpsRequestTask(void)
     static uint16_t gpsInvalidTick = 0;
     gpsinfo_s *gpsinfo;
     uint32_t noNmeaOutputTick;
+    static lbsInfo_s lastlbs, nowlbs;
+
+    static uint8_t gpsInvalidFlag = 0, gpsInvalidFlagTick = 0;
     switch (gpsFsm)
     {
         case GPS_STATE_IDLE:
@@ -706,6 +709,8 @@ static void gpsRequestTask(void)
     if (sysinfo.gpsRequest == 0 || getTerminalAccState() == 0)
     {
         gpsInvalidTick = 0;
+        gpsInvalidFlag = 0;
+        gpsInvalidFlagTick = 0;
         return;
     }
     gpsinfo = getCurrentGPSInfo();
@@ -716,13 +721,34 @@ static void gpsRequestTask(void)
             gpsInvalidTick = 0;
             alarmRequestSet(ALARM_GPS_NO_FIX_REQUEST);
             //行车定位异常报警
+            gpsInvalidFlag = 1;
+            lastlbs = portGetLbsInfo();
         }
     }
     else
     {
         gpsInvalidTick = 0;
+        gpsInvalidFlag = 0;
+        gpsInvalidFlagTick = 0;
     }
-
+    //进入行车定位异常后
+	if (gpsInvalidFlag == 1)
+	{
+		if (++gpsInvalidFlagTick >= 10)
+		{
+			gpsInvalidFlagTick = 0;
+			nowlbs = portGetLbsInfo();
+			if (nowlbs.lac != lastlbs.lac || nowlbs.cid != lastlbs.cid)
+			{
+				protocolUpdateLbsInfo(nowlbs.mcc, nowlbs.mnc, nowlbs.lac, nowlbs.cid);
+    			sendProtocolToServer(NORMAL_LINK, PROTOCOL_19, NULL);
+			}
+		}
+	}
+	else 
+	{
+		gpsInvalidFlagTick = 0;
+	}
 
 
 }
@@ -1011,12 +1037,21 @@ static void alarmRequestTask(void)
         protocolUpdateEvent(alarm);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
     }
+    //伪信号屏蔽报警
+    if (sysinfo.alarmrequest & ALARM_FAKE_SHIELD_REQUEST)
+    {
+		alarmRequestClear(ALARM_FAKE_SHIELD_REQUEST);
+		LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE fake shield Alarm");
+		alarm = 0x33;
+		protocolUpdateEvent(alarm);
+		sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
+    }
 
     //蓝牙预警报警
     if (sysinfo.alarmrequest & ALARM_PREWARN_REQUEST)
     {
         alarmRequestClear(ALARM_PREWARN_REQUEST);
-        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE warnning Alarm");
+        LogMessage(DEBUG_ALL, "alarmUploadRequest==>BLE perwarn Alarm");
         alarm = 0x1D;
         protocolUpdateEvent(alarm);
         sendProtocolToServer(NORMAL_LINK, PROTOCOL_16, NULL);
@@ -1912,7 +1947,7 @@ void myAppRun(void *param)
 {
     memset(&motionInfo, 0, sizeof(motionInfo_s));
     memset(&sysinfo, 0, sizeof(systemInfo_s));
-    sysinfo.logLevel = DEBUG_NONE;
+    sysinfo.logLevel = DEBUG_ALL;
     portUSBCfg((nwy_sio_recv_cb_t)atCmdRecvParser);
     portUartCfg(APPUSART2, 1, 115200, atCmdRecvParser);
     LogMessage(DEBUG_NONE, "Application Run");
@@ -1931,7 +1966,6 @@ void myAppRun(void *param)
     bleClientInfoInit();
     bleScheduleInit();
     dbSaveInit();
-
     startTimer(10, wdtTest, 0);
     portSleepCtrl(1);
     while (1)
@@ -1960,7 +1994,6 @@ void myAppRun(void *param)
         autoShutDownTask();
         autoUartTask();
         relayAutoCtrl();
-
     }
 }
 

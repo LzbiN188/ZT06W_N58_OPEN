@@ -1596,15 +1596,15 @@ void portSetApn(char *apn, char *userName, char *password)
 void portSimSet(SIM_USE sim)
 {
     int ret;
-    ret = nwy_sim_set_simid(0);
-    LogPrintf(DEBUG_ALL, "portSimSet==>Sim1");
+    ret = nwy_sim_set_simid(sim);
+    LogPrintf(DEBUG_ALL, "portSimSet==>Sim%d %s", sim + 1, ret == 0 ? "Success" : "Fail");
 }
 
 SIM_USE portSimGet(void)
 {
     SIM_USE sim;
     sim = nwy_sim_get_simid();
-    LogPrintf(DEBUG_ALL, "portSimGet==>Sim%d", sim);
+    LogPrintf(DEBUG_ALL, "portSimGet==>Sim%d", sim + 1);
     return sim;
 }
 

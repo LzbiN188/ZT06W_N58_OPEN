@@ -37,7 +37,8 @@
 
 #define ALARM_SHUTDOWN_REQUEST		0X00004000
 #define ALARM_UNCAP_REQUEST			0X00008000
-#define ALARM_SIMPULLOUT_REQUEST    0x00010000
+#define ALARM_SIMPULLOUT_REQUEST    0X00010000
+#define ALARM_FAKE_SHIELD_REQUEST	0X00020000	//Î±ÆÁ±Î±¨¾¯
 
 
 #define ACCDETMODE0					0
@@ -143,6 +144,7 @@ typedef struct
     uint8_t wdtTest				: 1;
     uint8_t recTest				: 1;
     uint8_t bleOnBySystem		: 1;
+    uint8_t socketStatus		: 1;
 	uint8_t dbFileUpload;
     uint8_t logLevel;
     uint8_t gpsRequest;

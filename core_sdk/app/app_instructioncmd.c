@@ -828,7 +828,7 @@ static void doRelayInstrucion(ITEM *item, char *message)
         sysparam.relayCtl = 0;
         paramSaveAll();
         relayAutoClear();
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC);
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC | BLE_EVENT_CLR_LOCK_ALARM);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
         strcpy(message, "try to relay off");
     }
@@ -1506,7 +1506,7 @@ static void doRelayForceInstrucion(ITEM *item, char *message)
         sysparam.relayCtl = 0;
         paramSaveAll();
         relayAutoClear();
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT);
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_CLR_LOCK_ALARM);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
         strcpy(message, "Relay force off");
     }
@@ -1626,22 +1626,15 @@ static void doSimSelAlmInstrucion(ITEM *item, char *message)
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
     {
 
-        sprintf(message, "Current SimSel is %d , SimID is %d", sysparam.simSel, portSimGet());
+        sprintf(message, "Current SimSel is %d , SimID is %d", sysparam.simSel, portSimGet()+1);
     }
     else
     {
         sysparam.simSel = atoi(item->item_data[1]) > 0 ? SIM_2 : SIM_1;
         paramSaveAll();
-        if (sysparam.simSel == SIM_2)
-        {
-			portSimSet(SIM_1);
-        }
-        else
-        {
-			portSimSet(SIM_1);
-        }
+        portSimSet(sysparam.simSel);
         startTimer(50, portSystemReset, 0);
-        sprintf(message, "Set sim(%d) successfully,device will reboot within 5 sec", sysparam.simSel);
+        sprintf(message, "Set sim sel alarm mode(%d) successfully,device will reboot within 5 sec", sysparam.simSel);
     }
 }
 

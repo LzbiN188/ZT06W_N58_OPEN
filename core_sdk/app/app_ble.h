@@ -12,26 +12,36 @@
 /*蓝牙保持时长*/
 #define BLE_CONN_HOLD_TIME		120
 
-#define CMD_GET_SHIELD_CNT        0x00  //获取屏蔽次数
-#define CMD_CLEAR_SHIELD_CNT      0x01  //清除计数器，并接通继电器
-#define CMD_DEV_ON                0x02  //主动接通继电器
-#define CMD_DEV_OFF               0x03  //主动断开继电器
-#define CMD_SET_VOLTAGE           0x04  //设置屏蔽电压阈值
-#define CMD_GET_VOLTAGE           0x05  //读取屏蔽电压阈值
-#define CMD_GET_ADCV              0x06  //读取屏蔽电压
-#define CMD_SET_OUTVOLTAGE		  0x07  //设置外部电压阈值
-#define CMD_GET_OUTVOLTAGE		  0x08  //读取外部电压阈值
-#define CMD_GET_OUTV			  0x09  //读取外部电压值
-#define CMD_GET_ONOFF			  0x0A  //读取继电器状态
-#define CMD_ALARM			      0x0B  //报警发送
-#define CMD_SPEED_FLAG			  0x0C  //速度标志
-#define CMD_AUTODIS				  0x0D  //设置倒计时参数
-#define CMD_CLEAR_ALARM			  0x0E  //清除报警
-#define CMD_PREALARM		      0x0F  //预警发送
-#define CMD_CLEAR_PREALARM		  0x10  //清除预警
-#define CMD_SET_PRE_ALARM_PARAM   0x13  //设置屏蔽预警参数
-#define CMD_GET_PRE_ALARM_PARAM   0x14  //读取屏蔽预警参数
-#define CMD_GET_DISCONNECT_PARAM  0x15  //读取倒计时参数
+#define CMD_GET_SHIELD_CNT        			0x00  //获取屏蔽次数
+#define CMD_CLEAR_SHIELD_CNT      			0x01  //清除计数器，并接通继电器
+#define CMD_DEV_ON                			0x02  //主动接通继电器
+#define CMD_DEV_OFF               			0x03  //主动断开继电器
+#define CMD_SET_VOLTAGE           			0x04  //设置屏蔽电压阈值
+#define CMD_GET_VOLTAGE           			0x05  //读取屏蔽电压阈值
+#define CMD_GET_ADCV              			0x06  //读取屏蔽电压
+#define CMD_SET_OUTVOLTAGE		  			0x07  //设置外部电压阈值
+#define CMD_GET_OUTVOLTAGE		  			0x08  //读取外部电压阈值
+#define CMD_GET_OUTV			  			0x09  //读取外部电压值
+#define CMD_GET_ONOFF			  			0x0A  //读取继电器状态
+#define CMD_ALARM			      			0x0B  //报警发送
+#define CMD_SPEED_FLAG			  			0x0C  //速度标志
+#define CMD_AUTODIS				  			0x0D  //设置倒计时参数
+#define CMD_CLEAR_ALARM			  			0x0E  //清除报警
+#define CMD_PREALARM		      			0x0F  //预警发送
+#define CMD_CLEAR_PREALARM		  			0x10  //清除预警
+#define CMD_SET_PRE_ALARM_PARAM   			0x13  //设置屏蔽预警参数
+#define CMD_GET_PRE_ALARM_PARAM   			0x14  //读取屏蔽预警参数
+#define CMD_GET_DISCONNECT_PARAM  			0x15  //读取倒计时参数
+#define CMD_CHK_SOCKET_STATUS				0x18  //获取主机网络状态
+#define CMD_SEND_SHIELD_LOCK_ALARM			0x19  //发送屏蔽锁车报警
+#define CMD_RES_SHIELD_LOCK_ALRAM			0x20  //屏蔽锁车应答
+#define CMD_CLEAR_SHIELD_LOCK_ALRAM			0x21  //清除屏蔽锁车事件
+
+
+/*暂时不用*/
+#define CMD_SET_SHIEL_ALARM_HOLD_PARAM		0x16  //设置屏蔽电压保持参数
+#define CMD_GET_SHIEL_ALARM_HOLD_PARAM		0x17  //读取屏蔽电压保持参数
+
 
 #define CMD_SET_RTC               0xA8//更新RTC时间
 
@@ -53,6 +63,9 @@
 #define BLE_EVENT_GET_PRE_PARAM	  0x00020000 //读取预警参数
 #define BLE_EVENT_GET_AD_THRE  	  0x00040000 //读取自动断连参数
 #define BLE_EVENT_SET_RTC	  	  0x00080000 //更新RTC
+#define BLE_EVENT_CHK_SOCKET	  0x00100000 //获取网络链路状态
+#define BLE_EVENT_RES_LOCK_ALRAM  0x00200000 //应答屏蔽锁车报警
+#define BLE_EVENT_CLR_LOCK_ALARM  0x00400000 //清除屏蔽锁车报警
 
 typedef enum
 {
@@ -195,6 +208,9 @@ uint8_t bleScheduleGetCnt(void);
 void bleScheduleCtrl(uint8_t onoff);
 
 void bleScheduleTask(void);
+void CheckSoketRspTimeout(void);
+void CheckSoketRspSuccess(void);
+
 
 #endif
 

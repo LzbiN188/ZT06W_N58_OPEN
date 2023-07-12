@@ -244,6 +244,24 @@ void hiddenServReconnect(void)
     socketClose(HIDE_LINK);
 }
 
+/**************************************************
+@bref		发送一次心跳包来检查链路
+@param
+	none
+@return
+	none
+@note
+**************************************************/
+void checkPrivateServer(void)
+{
+    protocolUpdateRssi(portGetModuleRssi());
+    protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
+                           sysparam.startUpCnt, sysparam.runTime);
+    sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
+    sysinfo.socketStatus = 0;
+}
+
+
 
 /**************************************************
 @bref		servr状态切换

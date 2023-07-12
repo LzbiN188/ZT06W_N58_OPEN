@@ -84,6 +84,7 @@ typedef struct bleDev
 void serverLoginRespon(void);
 uint8_t serverIsReady(void);
 void serverReconnect(void);
+void checkPrivateServer(void);
 
 void hiddenServCloseRequest(void);
 void hiddenServCloseClear(void);
