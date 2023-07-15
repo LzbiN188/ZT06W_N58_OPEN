@@ -568,7 +568,16 @@ void bleScheduleInit(void)
     if (sysparam.relayCtl)
     {
         //状态同步
+        LogPrintf(DEBUG_ALL, "锁车状态同步");
         relayAutoRequest();
+    }
+    else 
+    {
+		RELAY_OFF;
+		relayAutoClear();
+		bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF);
+		bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
+		LogMessage(DEBUG_ALL, "do relay off");
     }
 }
 
@@ -679,7 +688,6 @@ static void bleSendProtocol(unsigned char cmd, unsigned char *data, int data_len
 **************************************************/
 
 static void bleRecvParser(uint8_t *data, uint8_t len)
-
 {
     uint8_t readInd, size, crc, i;
     uint16_t value16;
@@ -688,6 +696,11 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
     {
         return;
     }
+//    //在可发送数据的情况下才解析继电器的信息
+//    if (bleSchedule.bleConnFsm != BLE_CONN_RUN)
+//    {
+//    	return;
+//    }
     for (readInd = 0; readInd < len; readInd++)
     {
         if (data[readInd] != 0x0C)
@@ -805,13 +818,23 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 //不断继电器
                 //sysparam.relayCtl = 1;
                 //paramSaveAll();
-                //relayAutoRequest();
+                //relayAutoRequest();  
+                if (bleSchedule.bleConnFsm != BLE_CONN_RUN)
+			    {
+			    	LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽报警...但不报警");
+			    	return;
+			    }
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽报警...");
                 alarmRequestSet(ALARM_FAKE_SHIELD_REQUEST);
                 bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM | BLE_EVENT_CLR_CNT);
                 break;
             case CMD_SEND_SHIELD_LOCK_ALARM:
+                if (bleSchedule.bleConnFsm != BLE_CONN_RUN)
+			    {
+			    	LogMessage(DEBUG_ALL, "oh, 蓝牙屏蔽锁车报警...但不报警");
+			    	return;
+			    }
                 sysparam.relayCtl = 1;
                 paramSaveAll();
                 relayAutoRequest();
@@ -1043,7 +1066,7 @@ void bleScheduleClearAllReq(uint32_t event)
 void bleScheduleClearReq(uint8_t ind, uint32_t event)
 {
     bleSchedule.bleList[ind].dataReq &= ~event;
-    //LogPrintf(DEBUG_ALL, "clear bleList[%X] req 0x%02x", ind, event);
+    LogPrintf(DEBUG_ALL, "clear bleList[%X] req 0x%02x", ind, event);
 }
 
 void bleScheduleScan(void)
@@ -1191,6 +1214,21 @@ static uint8_t bleDataSendTry(void)
     //非固定发送组
     if (bleSchedule.sendTick % 2 == 0)
     {
+        if (event & BLE_EVENT_RES_LOCK_ALRAM)
+        {
+			LogMessage(DEBUG_ALL, "try to clear lock alarm");
+			bleSendProtocol(CMD_RES_SHIELD_LOCK_ALRAM, param, 1);
+        }
+        if (event & BLE_EVENT_CLR_ALARM)
+        {
+            LogMessage(DEBUG_ALL, "try to clear alarm");
+            bleSendProtocol(CMD_CLEAR_ALARM, param, 1);
+        }
+        if (event & BLE_EVENT_CLR_CNT)
+        {
+            LogMessage(DEBUG_ALL, "try to clear shield");
+            bleSendProtocol(CMD_CLEAR_SHIELD_CNT, param, 0);
+        }
 
         if (event & BLE_EVENT_SET_RTC)
         {
@@ -1214,11 +1252,7 @@ static uint8_t bleDataSendTry(void)
             createEncrypt(mac, bleSchedule.bleKey, &bleSchedule.bleKeyLen);
             bleSendProtocol(CMD_DEV_OFF, bleSchedule.bleKey, bleSchedule.bleKeyLen);
         }
-        if (event & BLE_EVENT_CLR_CNT)
-        {
-            LogMessage(DEBUG_ALL, "try to clear shield");
-            bleSendProtocol(CMD_CLEAR_SHIELD_CNT, param, 0);
-        }
+
         if (event & BLE_EVENT_SET_RF_THRE)
         {
             LogMessage(DEBUG_ALL, "try to set shield voltage");
@@ -1238,16 +1272,6 @@ static uint8_t bleDataSendTry(void)
             LogMessage(DEBUG_ALL, "try to set auto disconnect param");
             param[0] = sysparam.bleAutoDisc;
             bleSendProtocol(CMD_AUTODIS, param, 1);
-        }
-        if (event & BLE_EVENT_CLR_ALARM)
-        {
-            LogMessage(DEBUG_ALL, "try to clear alarm");
-            bleSendProtocol(CMD_CLEAR_ALARM, param, 1);
-        }
-        if (event & BLE_EVENT_RES_LOCK_ALRAM)
-        {
-			LogMessage(DEBUG_ALL, "try to clear lock alarm");
-			bleSendProtocol(CMD_RES_SHIELD_LOCK_ALRAM, param, 1);
         }
 
         if (event & BLE_EVENT_GET_RF_THRE)
@@ -1295,7 +1319,7 @@ static uint8_t bleDataSendTry(void)
         if (bleSchedule.bleQuickRun != 0 && event & 0xFFFFFF00)
         {
             ret = 1;
-            LogPrintf(DEBUG_ALL, "oh , urgent event send done:");
+            LogPrintf(DEBUG_ALL, "oh , urgent event send done");
         }
     }
 

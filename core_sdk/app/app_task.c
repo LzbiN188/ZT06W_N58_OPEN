@@ -20,7 +20,6 @@ static motionInfo_s motionInfo;
 
 systemInfo_s sysinfo;
 
-static void doRelayOn(void);
 
 /**************************************************
 @bref		ÏµÍ³µÆ1¿ØÖÆ
@@ -1883,7 +1882,7 @@ void relayAutoClear(void)
 @param
 @note
 **************************************************/
-static void doRelayOn(void)
+void doRelayOn(void)
 {
     relayAutoClear();
     RELAY_ON;
@@ -1891,6 +1890,15 @@ static void doRelayOn(void)
     bleScheduleSetAllReq(BLE_EVENT_SET_DEVON | BLE_EVENT_SET_RTC);
     LogMessage(DEBUG_ALL, "do relay on");
 
+}
+
+void doRelayOff(void)
+{
+	RELAY_OFF;
+    relayAutoClear();
+    bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC | BLE_EVENT_CLR_LOCK_ALARM);
+    bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
+    LogMessage(DEBUG_ALL, "do relay off");
 }
 void relayAutoCtrl(void)
 {

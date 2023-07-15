@@ -199,6 +199,7 @@ void appSendThreadEvent(uint16 threadEvent, uint32_t param1);
 
 void relayAutoRequest(void);
 void relayAutoClear(void);
+void doRelayOn(void);
 
 void myAppRun(void *param);
 void myApp100MSRun(void *param);
