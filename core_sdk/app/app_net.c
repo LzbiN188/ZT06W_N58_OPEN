@@ -258,7 +258,7 @@ void checkPrivateServer(void)
     protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
                            sysparam.startUpCnt, sysparam.runTime);
     sendProtocolToServer(NORMAL_LINK, PROTOCOL_13, NULL);
-    sysinfo.socketStatus = 0;
+    //sysinfo.socketStatus = 0;
 }
 
 

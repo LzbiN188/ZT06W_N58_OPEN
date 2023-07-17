@@ -804,6 +804,11 @@ int createProtocol16(char *dest)
     {
         dest[pdu_len++] = 0x81;
     }
+
+    if (protocolInfo.event == 0x17)
+    {
+		sysinfo.shieldAlaSerial = protocolInfo.Serial;
+    }
     pdu_len = createProtocolTail_78(dest, pdu_len,  protocolInfo.Serial);
     return pdu_len;
 
@@ -1379,8 +1384,15 @@ void protoclparser13(uint8_t link, char *protocol, int size)
 **************************************************/
 void protoclparser16(uint8_t link, char *protocol, int size)
 {
+	uint16_t serial;
     LogMessage(DEBUG_ALL, "alarm respon");
     alarmRequestClearSave();
+    serial = protocol[4] << 8 | protocol[5];
+    if (sysinfo.shieldAlaSerial == serial)
+    {
+		LogPrintf(DEBUG_ALL, "ÆÁ±ÎËø³µ±¨¾¯Ó¦´ð");
+		bleScheduleSetAllReq(BLE_EVENT_RES_LOCK_ALRAM);
+    }
 }
 
 

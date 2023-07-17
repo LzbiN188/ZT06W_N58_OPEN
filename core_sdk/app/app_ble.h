@@ -10,7 +10,7 @@
 /*蓝牙接收缓冲区*/
 #define BLE_RECV_BUFF_SIZE		128
 /*蓝牙保持时长*/
-#define BLE_CONN_HOLD_TIME		120
+#define BLE_CONN_HOLD_TIME		80
 
 #define CMD_GET_SHIELD_CNT        			0x00  //获取屏蔽次数
 #define CMD_CLEAR_SHIELD_CNT      			0x01  //清除计数器，并接通继电器

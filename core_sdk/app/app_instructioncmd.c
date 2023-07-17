@@ -828,7 +828,7 @@ static void doRelayInstrucion(ITEM *item, char *message)
         sysparam.relayCtl = 0;
         paramSaveAll();
         relayAutoClear();
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC | BLE_EVENT_CLR_LOCK_ALARM);
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
         strcpy(message, "try to relay off");
     }
@@ -1506,7 +1506,7 @@ static void doRelayForceInstrucion(ITEM *item, char *message)
         sysparam.relayCtl = 0;
         paramSaveAll();
         relayAutoClear();
-        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_CLR_LOCK_ALARM);
+        bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT);
         bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
         strcpy(message, "Relay force off");
     }

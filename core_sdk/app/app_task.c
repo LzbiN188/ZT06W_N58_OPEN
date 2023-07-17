@@ -1892,14 +1892,6 @@ void doRelayOn(void)
 
 }
 
-void doRelayOff(void)
-{
-	RELAY_OFF;
-    relayAutoClear();
-    bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC | BLE_EVENT_CLR_LOCK_ALARM);
-    bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
-    LogMessage(DEBUG_ALL, "do relay off");
-}
 void relayAutoCtrl(void)
 {
     static uint8_t runTick = 0;

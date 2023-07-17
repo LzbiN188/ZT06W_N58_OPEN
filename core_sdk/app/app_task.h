@@ -163,6 +163,7 @@ typedef struct
     float outsideVol;
     float batteryVol;
 
+	uint16_t shieldAlaSerial;
 } systemInfo_s;
 
 
