@@ -5,7 +5,7 @@
 
 #define PARAM_VER		0x21
 
-#define EEPROM_VERSION	"N58_CA_V5.2.8"
+#define EEPROM_VERSION	"N58_CA_V5.2.9"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -100,6 +100,8 @@ typedef struct
 	uint8_t shutdownLock;
 	uint8_t uncapLock;
 	uint8_t simpulloutLock;
+
+	//uint8_t relayOffCtl;
 } systemParam_s;
 
 extern systemParam_s sysparam;

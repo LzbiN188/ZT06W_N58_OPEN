@@ -572,14 +572,20 @@ void bleScheduleInit(void)
         LogPrintf(DEBUG_ALL, "Ëø³µ×´Ì¬Í¬²½");
         relayAutoRequest();
     }
-//    else 
-//    {
-//		RELAY_OFF;
-//		relayAutoClear();
-//		bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC | BLE_EVENT_CLR_LOCK_ALARM);
-//		bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
-//		LogMessage(DEBUG_ALL, "do relay off");
-//    }
+    else 
+    {
+//		if (sysparam.relayOffCtl)
+//	    {
+//			RELAY_OFF;
+//			relayAutoClear();
+//			bleScheduleSetAllReq(BLE_EVENT_SET_DEVOFF | BLE_EVENT_CLR_CNT | BLE_EVENT_SET_RTC | BLE_EVENT_CLR_LOCK_ALARM);
+//			bleScheduleClearAllReq(BLE_EVENT_SET_DEVON);
+//			LogMessage(DEBUG_ALL, "do relay off");
+//			sysparam.relayOffCtl = 0;
+//			paramSaveAll();
+//	    }
+    }
+
 }
 
 /**************************************************
@@ -828,7 +834,7 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
                 LogMessage(DEBUG_ALL, "BLE==>shield alarm occur");
                 LogMessage(DEBUG_ALL, "oh, À¶ÑÀÆÁ±Î±¨¾¯...");
                 alarmRequestSet(ALARM_FAKE_SHIELD_REQUEST);
-                bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM | BLE_EVENT_CLR_CNT);
+                bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_CLR_ALARM);
                 break;
             case CMD_SEND_SHIELD_LOCK_ALARM:
                 if (bleSchedule.bleConnFsm != BLE_CONN_RUN)
@@ -842,7 +848,7 @@ static void bleRecvParser(uint8_t *data, uint8_t len)
 				LogMessage(DEBUG_ALL, "BLE==>shield alarm lock occur");
                 LogMessage(DEBUG_ALL, "oh, À¶ÑÀÆÁ±ÎËø³µ±¨¾¯...");
                 alarmRequestSet(ALARM_SHIELD_REQUEST);
-                //bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_RES_LOCK_ALRAM);
+                bleScheduleSetReq(bleSchedule.bleCurConnInd, BLE_EVENT_RES_LOCK_ALRAM);
             	break;
            	case CMD_CLEAR_SHIELD_LOCK_ALRAM:
 				LogMessage(DEBUG_ALL, "BLE==>clear shield lock success");
@@ -1056,7 +1062,7 @@ void bleScheduleClearAllReq(uint32_t event)
     {
         bleSchedule.bleList[i].dataReq &= ~event;
     }
-    //LogPrintf(DEBUG_ALL, "clear ble all req 0x%02x", event);
+    LogPrintf(DEBUG_ALL, "clear ble all req 0x%02x", event);
 }
 
 /**************************************************
@@ -1219,7 +1225,6 @@ static uint8_t bleDataSendTry(void)
 			LogPrintf(DEBUG_ALL, "try to send socket status is %s", isNetworkNormal() ? "OK" : "ERR");
 			param[0] = isNetworkNormal();
 			bleSendProtocol(CMD_CHK_SOCKET_STATUS, param, 1);
-			//bleScheduleClearReq(bleSchedule.bleCurConnInd, BLE_EVENT_CHK_SOCKET);
         }
 
     }
