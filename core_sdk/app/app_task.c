@@ -620,6 +620,39 @@ static void openGnssGpsBd(void)
 {
     portGpsSetPositionMode(NWY_LOC_AUX_GNSS_GPS_BD);
 }
+
+static void saveLastFixLocation(void)
+{
+    gpsinfo_s *gpsinfo;
+    double latitude, longtitude;
+    gpsinfo = getLastFixedGPSInfo();
+    if (gpsinfo->fixstatus != 0)
+    {
+        latitude = gpsinfo->latitude;
+        longtitude = gpsinfo->longtitude;
+        if (gpsinfo->NS == 'S')
+        {
+            if (latitude > 0)
+            {
+                latitude *= -1;
+            }
+        }
+        if (gpsinfo->EW == 'W')
+        {
+            if (longtitude > 0)
+            {
+                longtitude *= -1;
+            }
+        }
+        LogPrintf(DEBUG_ALL, "Save Latitude:%f,Longtitude:%f\r\n", latitude, longtitude);
+        sysparam.latitude = gpsinfo->latitude;
+        sysparam.longtitude = gpsinfo->longtitude;
+        paramSaveAll();
+    }
+}
+
+
+
 /**************************************************
 @bref		gps开关控制任务
 @param
@@ -691,6 +724,10 @@ static void gpsRequestTask(void)
                 if (noNmeaOutputTick >= 20)
                 {
                     LogMessage(DEBUG_ALL, "no nmea output , try to reboot gps");
+                }
+                else 
+                {
+					saveLastFixLocation();
                 }
                 portSetGpsStarupMode(HOT_START);
                 sysinfo.gpsOnoff = 0;

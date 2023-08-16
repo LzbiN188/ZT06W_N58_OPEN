@@ -27,6 +27,7 @@ typedef enum
     PROTOCOL_F3,
     PROTOCOL_21,
     PROTOCOL_UP,
+    PROTOCOL_A0,	//AGPS
 } protocol_type_e;
 
 typedef enum
@@ -187,6 +188,7 @@ void saveInstructionId(void);
 void recoverInstructionId(void);
 uint8_t *getProtoclInstructionid(void);
 
+void createProtocolA0(char *dest, uint16_t *len);
 
 uint16_t GetCrc16(const char *pData, int nLength);
 

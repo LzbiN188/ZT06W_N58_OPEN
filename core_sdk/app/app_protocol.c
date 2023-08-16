@@ -24,6 +24,7 @@ static upgradeInfo_s   	upgradeInfo;
 static void upgradeChangeFsm(upgrade_fsm_e newfsm);
 static void upgradeLoginReady(void);
 static void upgradeDoing(void);
+static void sendTcpDataDebugShow(uint8_t link, char *txdata, int txlen);
 
 
 static const uint16_t ztvm_crctab16[] =
@@ -1056,6 +1057,62 @@ static int createProtocol21(char *dest, char *data, uint16_t datalen)
     }
     pdu_len = createProtocolTail_79(dest, pdu_len, protocolInfo.Serial);
     return pdu_len;
+}
+
+
+/**************************************************
+@bref		AGPS请求协议
+@param
+	dest		协议存放区域
+	data		回传内容
+	datalen		内容长度
+
+@return
+@note
+**************************************************/
+void createProtocolA0(char *dest, uint16_t *len)
+{
+	int pdu_len = 0;
+	int ret;
+	lbsInfo_s lbs;
+	uint16_t lat, lon;
+
+	lbs = portGetLbsInfo();
+	pdu_len = createProtocolHead(dest, 0xA0);
+	ret = packIMEI(sysparam.SN, dest + pdu_len);
+	if (ret <= 0)
+	{
+		return;
+	}
+	pdu_len += ret;
+	dest[pdu_len++] = lbs.mcc >> 8;
+    dest[pdu_len++] = lbs.mcc;
+    dest[pdu_len++] = lbs.mnc;
+    dest[pdu_len++] = lbs.lac >> 8;
+    dest[pdu_len++] = lbs.lac;
+    dest[pdu_len++] = lbs.cid >> 24;
+    dest[pdu_len++] = lbs.cid >> 16;
+    dest[pdu_len++] = lbs.cid >> 8;
+    dest[pdu_len++] = lbs.cid;
+    lat = (uint16_t)fabsf(sysparam.latitude);
+    lon = (uint16_t)fabsf(sysparam.longtitude);
+	if (sysparam.latitude < 0)
+	{
+		dest[pdu_len] |= 0x80;
+	}
+	dest[pdu_len] |= (lat >> 8) & 0xEF;
+	pdu_len++;
+	dest[pdu_len++] = lat & 0xFF;
+	if (sysparam.longtitude < 0)
+	{
+		dest[pdu_len] |= 0x80;
+	}
+	dest[pdu_len] |= (lon >> 8) & 0xEF;
+	pdu_len++;
+	dest[pdu_len++] = lon & 0xFF;
+	pdu_len = createProtocolTail_78(dest, pdu_len, protocolInfo.Serial++);
+	sendTcpDataDebugShow(AGPS_LINK, dest, pdu_len);
+    *len = pdu_len;
 }
 
 /**************************************************

@@ -986,9 +986,10 @@ void agpsConnRunTask(void)
 {
     static uint8_t agpsFsm = 0;
     static uint8_t runTick = 0;
-    char agpsBuff[150];
+    char agpsBuff[150] = {0};
+    uint16_t agpsLen = 0;
     int ret;
-
+	gpsinfo_s *gpsinfo;
     if (sysinfo.agpsRequest == 0)
     {
         if (socketGetUsedFlag(AGPS_LINK))
@@ -1001,6 +1002,15 @@ void agpsConnRunTask(void)
     if (isNetworkNormal() == 0)
     {
         return;
+    }
+    gpsinfo = getCurrentGPSInfo();
+    if (sysinfo.gpsOnoff == 0 || gpsinfo->fixstatus)
+    {
+		if (socketGetUsedFlag(AGPS_LINK))
+        {
+            socketClose(AGPS_LINK);
+        }
+        agpsRequestClear();
     }
     if (socketGetUsedFlag(AGPS_LINK) != 1)
     {
@@ -1015,18 +1025,21 @@ void agpsConnRunTask(void)
     }
     if (socketGetConnectStatus(AGPS_LINK) != 1)
     {
+    	agpsFsm = 0;
         return;
     }
     switch (agpsFsm)
     {
         case 0:
-            sprintf(agpsBuff, "user=%s;pwd=%s;cmd=full;", sysparam.agpsUser, sysparam.agpsPswd);
-            socketSendData(AGPS_LINK, (uint8_t *) agpsBuff, strlen(agpsBuff));
+//            sprintf(agpsBuff, "user=%s;pwd=%s;cmd=full;", sysparam.agpsUser, sysparam.agpsPswd);
+//            socketSendData(AGPS_LINK, (uint8_t *) agpsBuff, strlen(agpsBuff));
+			createProtocolA0(agpsBuff, &agpsLen);
+			socketSendData(AGPS_LINK, (uint8_t *) agpsBuff, agpsLen);
             agpsFsm = 1;
             runTick = 0;
             break;
         case 1:
-            if (++runTick >= 6)
+            if (++runTick >= 30)
             {
                 agpsFsm = 0;
                 runTick = 0;

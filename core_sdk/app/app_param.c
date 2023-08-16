@@ -139,7 +139,7 @@ void paramSetDefault(uint8_t lev)
     strcpy(thisparam.agpsPswd, "123");
 
     thisparam.updateServerPort = 9998;
-    thisparam.agpsPort = 10188;
+    thisparam.agpsPort = 10187;
     thisparam.paramVersion = PARAM_VER;
     thisparam.heartbeatgap = 180;
     thisparam.lightAlarm = 1;
@@ -184,7 +184,7 @@ void paramSetDefault(uint8_t lev)
 	thisparam.uncapLock=1;
 
 	thisparam.simSel = 0;
-
+	thisparam.otaParamFlag = OTA_PARAM_FLAG;
     memcpy(&sysparam, &thisparam, sizeof(systemParam_s));
     paramSaveAll();
     LogMessage(DEBUG_ALL, "paramSetDefault");
@@ -204,6 +204,14 @@ void paramInit(void)
     if (sysparam.paramVersion != PARAM_VER)
     {
         paramSetDefault(0);
+    }
+    if (sysparam.otaParamFlag != OTA_PARAM_FLAG)
+    {
+		sysparam.otaParamFlag = OTA_PARAM_FLAG;
+		sysparam.agpsPort = 10187;
+		sysparam.latitude = 0.0;
+		sysparam.longtitude = 0.0;
+		paramSaveAll();
     }
     sysinfo.alarmrequest = sysparam.alarmRequest;
 
