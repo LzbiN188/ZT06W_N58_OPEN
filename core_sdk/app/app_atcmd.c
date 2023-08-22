@@ -745,7 +745,7 @@ void atCmdParserFunction(char *buf, uint32_t len)
     int ret = 0, cmdlen = 0, cmdid = 0;
     char debug[100];
     char cmdbuf[51];
-    LogMessageWL(DEBUG_FACTORY, (char *)buf, len);
+    //LogMessageWL(DEBUG_FACTORY, (char *)buf, len);
     //Ê¶±ðAT^
     if (buf[0] == 'A' && buf[1] == 'T' && buf[2] == '^')
     {
@@ -833,7 +833,7 @@ void atCmdParserFunction(char *buf, uint32_t len)
     }
     else
     {
-        atCustomerCmdParser(buf, len);
+        //atCustomerCmdParser(buf, len);
     }
 }
 

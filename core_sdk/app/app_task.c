@@ -864,7 +864,7 @@ void uartCtl(uint8_t onoff)
 
         if (usart1_ctl.init == 0)
         {
-            appUartConfig(APPUSART1, 1, 115200, atCmdParserFunction);//MCU
+            appUartConfig(APPUSART1, 1, 115200, cusBleRecvParser);//MCU
         }
 
     }
@@ -876,7 +876,7 @@ void uartCtl(uint8_t onoff)
         }
         if (usart1_ctl.init == 1)
         {
-            appUartConfig(APPUSART1, 0, 115200, atCmdParserFunction);//DEBUG
+            appUartConfig(APPUSART1, 0, 115200, cusBleRecvParser);//DEBUG
         }
     }
 }
@@ -1110,7 +1110,7 @@ void ldrCheckTask(void)
 /*-------------------------------------------------------------------------------------*/
 static int usbReceiveData(void *data, size_t size)
 {
-    atCmdParserFunction((char *)data, size);
+    customerRecvCmdParser((char *)data, size);
     return size;
 }
 static void usbInit(void)
@@ -1126,7 +1126,7 @@ static void myAppConfig(void)
 {
     memset(&sysinfo, 0, sizeof(SYSTEM_INFO));
     appUartConfig(APPUSART2, 1, 115200, cusBleRecvParser);//DEBUG
-    appUartConfig(APPUSART1, 1, 115200, atCmdParserFunction);//mcu
+    appUartConfig(APPUSART1, 1, 115200, cusBleRecvParser);//mcu
     usbInit();
     paramInit();
     pmuConfig();

@@ -77,7 +77,7 @@ int16_t getcustomercmdid(uint8_t *cmdstr)
     uint16_t i = 0;
     for (i = 0; i < sizeof(custable) / sizeof(custable[0]); i++)
     {
-        if (my_strpach((char *)custable[i].cmdstr, (const char *)cmdstr))
+        if (my_strpach((char *)cmdstr, (const char *)custable[i].cmdstr))
             return custable[i].cmdid;
     }
     return -1;
@@ -1161,10 +1161,11 @@ void cusBleRecvParser(char *buf, uint32_t len)
     int16 index, relen;
     char *rebuf;
     char debug[512];
-    LogMessage(DEBUG_ALL, "========================\r\n");
-    LogMessageWL(DEBUG_ALL, (char *)buf, len);
-    LogMessage(DEBUG_ALL, "========================\r\n");
+    LogMessage(DEBUG_NONE, "========================\r\n");
+    LogMessageWL(DEBUG_NONE, (char *)buf, len);
+    LogMessage(DEBUG_NONE, "========================\r\n");
 
+	customerRecvCmdParser(buf, len);
     index = my_getstrindex((char *)buf, "+CONNECT:", len);
     if (index >= 0)
     {
@@ -1401,5 +1402,55 @@ void customerGpsOutput(void)
     customerLogOutWl(gpsOutput, gpsOutputLen);
     gpsOutputLen = 0;
 }
+
+void customerRecvCmdParser(char *buf, uint16_t len)
+{
+    uint16_t i, j, contentlen;
+    int cmdid;
+    char *rebuf;
+    uint16_t relen;
+
+    rebuf = buf;
+    relen = len;
+
+	if (rebuf[0] == 'A' && rebuf[1] == 'T' && rebuf[2] == '^')
+	{
+		atCmdParserFunction(rebuf, relen);
+	}
+	for (i = 0; i < relen; i++)
+	{
+		if (rebuf[i] == 'A' && rebuf[i + 1] == 'T' && rebuf[i + 2] == '+')
+		{
+            cmdid = getcustomercmdid((uint8_t *)rebuf + i + 3);
+            /*识别指令头成功*/
+            if (cmdid != -1)
+            {
+            	contentlen = relen - i;
+            	//LogPrintf(DEBUG_ALL, "找到头部：%d, 剩余长度：%d  \r\n", i, contentlen);
+				for(j = i + 3; j < relen; j++)
+				{
+					if (rebuf[j] == '\r' && rebuf[j + 1] == '\n' && rebuf[j + 2] == 'A' && rebuf[j + 3] == 'T' && rebuf[j + 4] == '+')
+					{
+						cmdid = getcustomercmdid((uint8_t *)rebuf + j + 5);
+						/*找到下一个指令头部*/
+						if (cmdid != -1)
+						{
+							contentlen = j + 2 - i;
+							//LogPrintf(DEBUG_ALL, "找到尾部:%d, 指令长度为:%d, 下一个头部:%d\r\n", j + 1, contentlen, j + 1 + 1);
+							break;
+						}
+					}
+				}
+				atCustomerCmdParser(rebuf + i, contentlen);
+				i += contentlen - 2;
+            }
+            else 
+            {
+				LogMessage(DEBUG_ALL, "找不到指令\r\n");
+            }
+		}
+	}
+}
+
 
 

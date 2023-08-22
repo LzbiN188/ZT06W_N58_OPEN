@@ -141,6 +141,7 @@ void outPutNodeCmd(void);
 
 void customGpsInPut(char *nmea, uint8_t nmeaLen);
 void customerGpsOutput(void);
+void customerRecvCmdParser(char *buf, uint16_t len);
 
 
 #endif
