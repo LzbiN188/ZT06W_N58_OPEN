@@ -15,6 +15,7 @@
 static gpsinfo_s gpsinfonow;
 static gpsfifo_s gpsfifo;
 static lastUploadPosition_s lastuploadgpsinfo;
+static lastMilePosition_s lastmilegpsinfo;
 
 /**************************************************
 @bref		打印gps信息
@@ -906,7 +907,7 @@ static int8_t autoFenceCalculate(void)
     distance = lengthOfPoints(gpsinfo->latitude, gpsinfo->longtitude, lastuploadgpsinfo.latitude,
                               lastuploadgpsinfo.longtitude);
     sprintf(debug, "distance of point =%.2fm", distance);
-    LogMessage(DEBUG_ALL, debug);
+    //LogMessage(DEBUG_ALL, debug);
     if (distance >= sysparam.fence)
     {
         return 1;
@@ -1013,6 +1014,74 @@ void gpsUploadPointToServer(void)
             tick = 0;
         }
     }
+}
+
+
+void ClearLastMilePoint(void)
+{
+	memset(&lastmilegpsinfo, 0, sizeof(lastmilegpsinfo));
+}
+
+static void recordLastMilePoint(gpsinfo_s *gpsinfo)
+{
+	lastmilegpsinfo.init = 1;
+	lastmilegpsinfo.datetime = gpsinfo->datetime;
+	lastmilegpsinfo.latitude = gpsinfo->latitude;
+	lastmilegpsinfo.longtitude = gpsinfo->longtitude;
+	LogPrintf(DEBUG_ALL, "record last mile point");
+}
+
+/**************************************************
+@bref		记录gps运行里程
+@param
+@return
+@note
+**************************************************/
+
+void gpsMileRecord(void)
+{
+	static uint8_t tick = 0;
+	double mile = 0.0;
+	gpsinfo_s *gpsinfo;
+	
+	gpsinfo = getCurrentGPSInfo();
+	if (sysinfo.gpsOnoff == 0 && (sysparam.MODE == MODE2 || sysparam.MODE == MODE21 || sysparam.MODE == MODE23))
+	{
+		tick = 0;
+		return;
+	}
+	if (gpsinfo->fixstatus == 0)
+	{
+		tick = 0;
+		return;
+	}
+	if (getTerminalAccState() == 0)
+	{
+		return;
+	}
+	tick++;
+	/*还没有上一次记录*/
+	if (lastmilegpsinfo.init == 0)
+	{
+		recordLastMilePoint(getCurrentGPSInfo());
+	}
+	else 
+	{
+		if (tick >= 1)
+		{
+			tick = 0;
+			mile = lengthOfPoints(gpsinfo->latitude, gpsinfo->longtitude, lastmilegpsinfo.latitude,\
+                              lastmilegpsinfo.longtitude);
+            /*误差过滤*/
+            if (mile >= 1.2)
+            {
+            	sysparam.mileage += mile;
+            }
+            LogPrintf(DEBUG_ALL, "gpsMileRecord==>mile:%.3lf, totalmile:%.3lf", mile, sysparam.mileage * (sysparam.milecal / 100.0 + 1.0));
+            recordLastMilePoint(getCurrentGPSInfo());
+		}
+	}
+	
 }
 
 

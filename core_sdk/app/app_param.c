@@ -211,6 +211,8 @@ void paramInit(void)
 		sysparam.agpsPort = 10187;
 		sysparam.latitude = 0.0;
 		sysparam.longtitude = 0.0;
+		sysparam.mileage = 0.0;
+		sysparam.milecal = 5;
 		paramSaveAll();
     }
     sysinfo.alarmrequest = sysparam.alarmRequest;

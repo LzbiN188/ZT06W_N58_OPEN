@@ -71,6 +71,7 @@ const instruction_s instructiontable[] =
     {UNCAPALM_INS, "UNCAPALM"},
     {SIMPULLOUTALM_INS, "SIMPULLOUTALM"},
     {SIMSEL_INS, "SIMSEL"},
+    {SETMILE_INS, "SETMILE"},
     {SN_INS, "*"},
 };
 
@@ -245,6 +246,7 @@ static void doStatusInstruction(ITEM *item, char *message)
     sprintf(message + strlen(message), "SIGNAL=%d;", portGetModuleRssi());
     sprintf(message + strlen(message), "BATTERY=%s;", getTerminalChargeState() > 0 ? "Charging" : "Uncharged");
     sprintf(message + strlen(message), "LOGIN=%s;", serverIsReady() ? "Yes" : "No");
+    sprintf(message + strlen(message), "MILE=%.2lfkm;", (sysparam.mileage * (double)(sysparam.milecal / 100.0 + 1.0)) / 1000);
 }
 static void doVersionInstruction(ITEM *item, char *message)
 {
@@ -1625,7 +1627,6 @@ static void doSimSelAlmInstrucion(ITEM *item, char *message)
 {
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
     {
-
         sprintf(message, "Current SimSel is %d , SimID is %d", sysparam.simSel, portSimGet()+1);
     }
     else
@@ -1638,6 +1639,22 @@ static void doSimSelAlmInstrucion(ITEM *item, char *message)
     }
 }
 
+static void doSetmileInstruction(ITEM *item, char *message)
+{
+	if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "Current mileage is %.2lf km, milecal is %d%%", (sysparam.mileage * (double)(sysparam.milecal / 100.0 + 1.0)) / 1000, sysparam.milecal);
+    }
+    else 
+    {
+		sysparam.mileage = atof(item->item_data[1])*1000;
+		if (item->item_data[2][0] != 0)
+		{
+			sysparam.milecal = atoi(item->item_data[2]);
+		}
+		sprintf(message, "Update mileage to %.2lf km, milecal is %d%%", sysparam.mileage/1000, sysparam.milecal);
+    }
+}
 
 static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
 {
@@ -1792,6 +1809,9 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
         case SIMSEL_INS:
             doSimSelAlmInstrucion(item, message);
             break;
+        case SETMILE_INS:
+			doSetmileInstruction(item, message);
+        	break;
         default:
             if (param->mode == MESSAGE_MODE)
                 return ;

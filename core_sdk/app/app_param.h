@@ -4,9 +4,9 @@
 #include "nwy_osi_api.h"
 
 #define PARAM_VER		0x21
-#define OTA_PARAM_FLAG  0x2C
+#define OTA_PARAM_FLAG  0x2D
 
-#define EEPROM_VERSION	"N58_CA_V5.3.0"
+#define EEPROM_VERSION	"N58_CA_V5.3.1.1"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -107,6 +107,9 @@ typedef struct
 	uint8_t otaParamFlag;
 	double latitude;
     double longtitude;
+
+    double mileage;
+    uint8_t milecal;
 	
 } systemParam_s;
 

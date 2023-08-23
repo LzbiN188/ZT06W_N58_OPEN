@@ -673,12 +673,20 @@ static uint16_t jt808PositionInfo(uint8_t *dest, uint16_t len, jt808Position_s *
 static uint16_t jt808TerminalPosition(uint8_t *dest, uint8_t *sn, jt808Position_s *positionInfo, uint8_t type)
 {
     uint16_t len,jt808vol;
-
+	uint32_t mile;
+	mile = (uint32_t)(sysparam.mileage * (double)(sysparam.milecal / 100.0 + 1.0) * 10.0); 
     len = jt808PackMessageHead(dest, TERMINAL_POSITION_MSGID, sn, jt808GetSerial(), 0);
     len = jt808PositionInfo(dest, len, positionInfo);
     if (type == 1)
     {
         /*------------------附加消息--------------------*/
+        //里程
+        dest[len++] = 0x01;
+        dest[len++] = 0x04;
+		dest[len++] = (mile >> 24) & 0xFF;
+		dest[len++] = (mile >> 16) & 0xFF;
+		dest[len++] = (mile >> 8) & 0xFF;
+		dest[len++] = mile & 0xFF;
         //网络信号强度
         dest[len++] = 0x30;
         dest[len++] = 0x01;

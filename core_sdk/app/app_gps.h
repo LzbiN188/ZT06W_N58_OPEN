@@ -66,6 +66,13 @@ typedef struct
     uint8_t init;
 } lastUploadPosition_s;
 
+typedef struct
+{
+	datetime_s datetime;
+    double latitude;
+    double longtitude;
+    uint8_t init;
+}lastMilePosition_s;
 
 typedef enum
 {
@@ -87,5 +94,9 @@ datetime_s changeUTCTimeToLocalTime(datetime_s utctime, int8_t localtimezone);
 void portUpdateLocalTime(uint8_t y, uint8_t m, uint8_t d, uint8_t hh, uint8_t mm, uint8_t ss, int8_t utc);
 
 void gpsUploadPointToServer(void);
+
+void ClearLastMilePoint(void);
+void gpsMileRecord(void);
+
 
 #endif

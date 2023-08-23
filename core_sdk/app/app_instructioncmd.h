@@ -55,6 +55,7 @@ typedef enum
     UNCAPALM_INS,
     SIMPULLOUTALM_INS,
     SIMSEL_INS,
+    SETMILE_INS,
 } cmd_e;
 
 

@@ -245,6 +245,7 @@ void motionStateUpdate(motion_src_e src, motionState_e newState)
             }
         }
         terminalAccon();
+        ClearLastMilePoint();
         hiddenServCloseClear();
         protocolUpdateSomeInfo(sysinfo.outsideVol, sysinfo.batteryVol, portCapacityCalculate(sysinfo.batteryVol),
                                sysparam.startUpCnt, sysparam.runTime);
@@ -689,6 +690,7 @@ static void gpsRequestTask(void)
                 portGpsCtrl(1);
                 startTimer(80, openGnssGpsBd, 0);
                 gpsClearCurrentGPSInfo();
+                
             }
 
             break;
@@ -1361,6 +1363,7 @@ static void sysRunTimeCnt(void)
 
 static void sysRun(void)
 {
+	gpsMileRecord();
     switch (sysparam.MODE)
     {
         case MODE1:
