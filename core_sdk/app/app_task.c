@@ -512,7 +512,7 @@ static void motionCheckTask(void)
     if (totalCnt == 0)
     {
         gsStaticTick++;
-        if (gsStaticTick >= 90)
+        if (gsStaticTick >= 180)
         {
             motionStateUpdate(GSENSOR_SRC, MOTION_STATIC);
         }
@@ -1379,11 +1379,13 @@ static void sysRun(void)
             break;
         case MODE2:
             gpsUploadPointToServer();
+            gpsPakeageUpload();
             sysRunTimeCnt();
             break;
         case MODE21:
         case MODE23:
             gpsUploadPointToServer();
+            gpsPakeageUpload();
             sysEnterStopQuickly();
             sysRunTimeCnt();
             break;

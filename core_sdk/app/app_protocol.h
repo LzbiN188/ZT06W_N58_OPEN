@@ -217,8 +217,8 @@ void upgradeStartInit(void);
 void upgradeFromServer(void);
 
 void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len);
+uint8_t gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num);
 
-void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num);
 uint8_t gpsRestoreReadData(void);
 
 void getInsid(void);

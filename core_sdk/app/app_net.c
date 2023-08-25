@@ -143,19 +143,20 @@ static void serverConnRunTask(void)
 
             if (socketGetNonAck(NORMAL_LINK) == 0)
             {
-                if (dbPost() == 0)
-                {
-                    if (serverConnect.runTick % 3 == 0)
-                    {
-                        if (sysinfo.dbFileUpload == 1)
-                        {
-                            sysinfo.dbFileUpload = gpsRestoreReadData();
-                        }
-                    }
-
-                }
+				if (sysparam.uploadGap == 0) 
+				{
+					if (dbPost() == 0)
+					{
+						if (jt808ServConn.runTick % 3 == 0)
+						{
+							if (sysinfo.dbFileUpload == 1)
+							{
+								sysinfo.dbFileUpload = gpsRestoreReadData();
+							}
+						}
+					}
+				}
             }
-
             break;
         default:
             serverChangeFsm(SERV_LOGIN);
@@ -589,16 +590,18 @@ static void jt808ServerConnRunTask(void)
             }
 			if (socketGetNonAck(JT808_LINK) == 0)
             {
-                if (dbPost() == 0)
-                {
-                    if (jt808ServConn.runTick % 3 == 0)
-                    {
-                        if (sysinfo.dbFileUpload == 1)
-                        {
-                            sysinfo.dbFileUpload = gpsRestoreReadData();
-                        }
-                    }
-
+            	if (sysparam.uploadGap == 0)
+            	{
+	                if (dbPost() == 0)
+	                {
+	                    if (jt808ServConn.runTick % 3 == 0)
+	                    {
+	                        if (sysinfo.dbFileUpload == 1)
+	                        {
+	                            sysinfo.dbFileUpload = gpsRestoreReadData();
+	                        }
+	                    }
+	                }
                 }
             }
             break;

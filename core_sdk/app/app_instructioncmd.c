@@ -344,7 +344,7 @@ static void doModeInstruction(ITEM *item, char *message)
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
     {
         sprintf(message, "Current Mode %d", sysparam.MODE);
-        sprintf(message + strlen(message), ",gps upload gap %ds,%dm", sysparam.gpsuploadgap, sysparam.gapMinutes);
+        sprintf(message + strlen(message), ",gps upload gap %ds,%dm, uploadgap %ds", sysparam.gpsuploadgap, sysparam.gapMinutes, sysparam.uploadGap);
     }
     else
     {
@@ -426,6 +426,10 @@ static void doModeInstruction(ITEM *item, char *message)
                 sysparam.gpsuploadgap = (uint16_t)atoi((const char *)item->item_data[2]);
                 sysparam.gapMinutes = atoi(item->item_data[3]);
                 sysparam.MODE = MODE2;
+                if (item->item_data[4][0] != 0)
+                {
+					sysparam.uploadGap = (uint16_t)atoi(item->item_data[4]);
+                }
 
                 if (sysparam.accctlgnss == 0)
                 {
@@ -480,6 +484,7 @@ static void doModeInstruction(ITEM *item, char *message)
                                 sysparam.gpsuploadgap, sysparam.gapMinutes);
                     }
                 }
+                sprintf(message + strlen(message), ", and update uploadGap to %d s", sysparam.uploadGap);
                 portGsensorCfg(1);
                 break;
             case 3:
@@ -713,6 +718,7 @@ static void doDebugInstrucion(ITEM *item, char *message)
         sprintf(message + strlen(message), "gpsrequest:0x%04X;", sysinfo.gpsRequest);
         sprintf(message + strlen(message), "hideLogin:%s;", hiddenServIsReady() ? "Yes" : "NO");
         sprintf(message + strlen(message), "bleErr:%d;", sysparam.bleErrCnt);
+        sprintf(message + strlen(message), "dbsize:%d", sysparam.dbsize);
     }
     else
     {

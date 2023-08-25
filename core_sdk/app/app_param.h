@@ -6,7 +6,7 @@
 #define PARAM_VER		0x21
 #define OTA_PARAM_FLAG  0x2D
 
-#define EEPROM_VERSION	"N58_CA_V5.3.1.1"
+#define EEPROM_VERSION	"N58_CA_V5.3.2"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -110,7 +110,8 @@ typedef struct
 
     double mileage;
     uint8_t milecal;
-	
+	uint16_t uploadGap;
+    uint16_t dbsize;
 } systemParam_s;
 
 extern systemParam_s sysparam;

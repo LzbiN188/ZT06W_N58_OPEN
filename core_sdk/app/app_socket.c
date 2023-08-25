@@ -11,6 +11,7 @@
 #include "app_task.h"
 #include "app_param.h"
 #include "app_protocol.h"
+#include "app_jt808.h"
 
 static socketInfo_s 	socketlist[SOCKET_LIST_MAX];
 static networkInfo_s	networkInfo;
@@ -886,6 +887,7 @@ static void getSn(void)
         return;
     }
     strncpy(sysparam.SN, imei, 15);
+    jt808CreateSn(sysparam.jt808sn, (uint8_t *)sysparam.SN + 3, 12);
     paramSaveAll();
 }
 /**************************************************

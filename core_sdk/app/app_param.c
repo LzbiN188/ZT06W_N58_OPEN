@@ -3,6 +3,7 @@
 #include "app_task.h"
 #include "nwy_file.h"
 #include "app_ble.h"
+#include "app_jt808.h"
 
 #define PARAM_FILENAME	"param.save"
 
@@ -213,6 +214,9 @@ void paramInit(void)
 		sysparam.longtitude = 0.0;
 		sysparam.mileage = 0.0;
 		sysparam.milecal = 5;
+		jt808CreateSn(sysparam.jt808sn, (uint8_t *)sysparam.SN + 3, 12);
+		sysparam.uploadGap = 0;
+		sysparam.dbsize = 0;
 		paramSaveAll();
     }
     sysinfo.alarmrequest = sysparam.alarmRequest;

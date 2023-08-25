@@ -8,6 +8,7 @@
 #include "app_socket.h"
 #include "app_task.h"
 #include "app_db.h"
+#include "app_kernal.h"
 
 static jt808Info_s jt808_info;
 static jt808Position_s jt808_position;
@@ -551,6 +552,7 @@ static void jt808PackGpsinfo(gpsinfo_s *gpsinfo)
     jt808_position.speed = (uint16_t)(gpsinfo->speed * 10);
     jt808_position.hight = gpsinfo->hight;
     jt808_position.statelliteUsed = gpsinfo->used_star;
+    jt808_position.accuracy = gpsinfo->fixAccuracy;
     /*--------------日期时间-----------------*/
     datetimenew = changeUTCTimeToLocalTime(gpsinfo->datetime, 8);
     jt808_position.year = byteToBcd(datetimenew.year % 100);
@@ -701,6 +703,10 @@ static uint16_t jt808TerminalPosition(uint8_t *dest, uint8_t *sn, jt808Position_
         dest[len++] = 0x02;
         dest[len++] = (jt808vol >> 8) & 0xFF;
         dest[len++] = (jt808vol) & 0xFF;
+        //定位精度
+        dest[len++] = 0xF4;
+        dest[len++] = 0x01;
+        dest[len++] = positionInfo->accuracy;
     }
 
     len = jt808PackMessageTail(dest, len);
@@ -807,32 +813,42 @@ static void jt808SendPosition(uint8_t *sn, gpsinfo_s *gpsinfo)
     len = jt808TerminalPosition(dest, sn, &jt808_position, 1);
 
 
-
-    if (serverIsReady() == 0 || socketGetNonAck(JT808_LINK) != 0)
-    {
-        if (gpsinfo->fixstatus && gpsinfo->hadupload == 0)
-        {
-            dbPush(&jt808_gpsres);
-        }
-        else
-        {
-            jt808TcpSend((uint8_t *)dest, len);
-        }
-        gpsinfo->hadupload = 1;
-        return;
+	if (sysparam.uploadGap != 0)
+	{
+		if (gpsinfo->fixmode && gpsinfo->hadupload == 0)
+		{
+			dbPush(&jt808_gpsres);
+		}
+		gpsinfo->hadupload = 1;
+	}
+	else 
+	{
+	    if (serverIsReady() == 0 || socketGetNonAck(JT808_LINK) != 0)
+	    {
+	        if (gpsinfo->fixstatus && gpsinfo->hadupload == 0)
+	        {
+	            dbPush(&jt808_gpsres);
+	        }
+	        else
+	        {
+	            jt808TcpSend((uint8_t *)dest, len);
+	        }
+	        gpsinfo->hadupload = 1;
+	        return;
+	    }
+	    if (jt808TcpSend((uint8_t *)dest, len) == 0)
+	    {
+	        if (gpsinfo->fixstatus && gpsinfo->hadupload == 0)
+	        {
+	            dbPush(&jt808_gpsres);
+	        }
+	    }
+	    gpsinfo->hadupload = 1;
     }
-    if (jt808TcpSend((uint8_t *)dest, len) == 0)
-    {
-        if (gpsinfo->fixstatus && gpsinfo->hadupload == 0)
-        {
-            dbPush(&jt808_gpsres);
-        }
-    }
-
-    gpsinfo->hadupload = 1;
 
 
 }
+
 
 /**************************************************
 @bref		定位数据批量上传
@@ -1129,6 +1145,7 @@ static void jt808RegisterResponParser(uint8_t *msg, uint16_t len)
 {
     uint8_t  result, j;
     result = msg[2];
+    LogPrintf(DEBUG_ALL, "RegisterCode:%d\n", result);
     if (result == 0)
     {
         for (j = 0; j < (len - 3); j++)
@@ -1244,7 +1261,7 @@ static void jt808GenericResponParser(uint8_t *msg, uint16_t len)
 
 static void jt808SetTerminalParamParser(uint8_t *msg, uint16_t len)
 {
-    uint8_t paramCount, paramLen, i;
+    uint8_t paramCount, paramLen, i, res;
     uint16_t j;
     uint32_t paramId, value;
     j = 0;
@@ -1273,6 +1290,42 @@ static void jt808SetTerminalParamParser(uint8_t *msg, uint16_t len)
                 LogPrintf(DEBUG_ALL, "Update heartbeat to %d", sysparam.heartbeatgap);
                 j += paramLen;
                 break;
+            //设置域名
+            case 0x0013:
+				for (res = 0; res < paramLen; res++)
+				{
+					sysparam.jt808Server[res] = msg[j++];
+				}
+				sysparam.jt808Server[paramLen] = 0;
+				LogPrintf(DEBUG_ALL, "IP:%s\n", sysparam.jt808Server);
+				paramSaveAll();
+            	break;
+            //设置端口
+            case 0x0018:
+				value = msg[j++];
+                value = (value << 8) | msg[j++];
+                value = (value << 8) | msg[j++];
+                value = (value << 8) | msg[j++];
+                sysparam.jt808Port = value;
+                sysparam.jt808isRegister = 0;
+                paramSaveAll();
+                LogPrintf(DEBUG_ALL, "Port:%d\n", value);	      
+	        	startTimer(30, jt808serverReconnect, 0);
+            	break;
+            //设置上报周期
+            case 0x0029:
+            	value = msg[j++];
+                value = (value << 8) | msg[j++];
+                value = (value << 8) | msg[j++];
+                value = (value << 8) | msg[j++];
+                sysparam.gpsuploadgap = value;
+                paramSaveAll();
+                LogPrintf(DEBUG_ALL, "Update gpsuploadgap to %ds\n", sysparam.gpsuploadgap);
+                break;
+            //设置千寻KEY
+            case 0xF000:
+				LogPrintf(DEBUG_ALL, "暂不支持修改千寻key");
+            	break;
             default:
                 j += paramLen;
                 break;

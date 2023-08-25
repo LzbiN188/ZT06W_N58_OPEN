@@ -14,6 +14,7 @@
 #include "app_ble.h"
 #include "app_socket.h"
 #include "app_db.h"
+#include "app_kernal.h"
 
 
 static protocol_s 		protocolInfo;
@@ -1359,16 +1360,22 @@ void sendProtocolToServer(uint8_t link, int type, void *param)
         case PROTOCOL_12:
             if (link == NORMAL_LINK)
             {
-                if (serverIsReady() == 0 || socketGetNonAck(link) != 0)
-                {
-                    dbPush(&gpsres);
-                    return;
+            	if (sysparam.uploadGap != 0)
+            	{
+					dbPush(&gpsres);
+            	}
+            	else 
+            	{
+	                if (serverIsReady() == 0 || socketGetNonAck(link) != 0)
+	                {
+	                    dbPush(&gpsres);
+	                    return;
+	                }
+	                if (tcpSendData(link, (uint8_t *)txdata, txlen) == 0)
+	                {
+	                    dbPush(&gpsres);
+	                }
                 }
-                if (tcpSendData(link, (uint8_t *)txdata, txlen) == 0)
-                {
-                    dbPush(&gpsres);
-                }
-
             }
             else
             {
@@ -2416,10 +2423,11 @@ void gpsRestoreDataSend(gpsRestore_s *grs, char *dest	, uint16_t *len)
 @note
 **************************************************/
 
-void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num)
+uint8_t gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num)
 {
     uint16_t paramsize, fileOperation;
     int fd, writelen;
+    uint8_t ret = 0;
     paramsize = sizeof(gpsRestore_s) * num;
     if (nwy_sdk_fexist(GPS_RESTORE_FILE_NAME) == true)
     {
@@ -2433,19 +2441,23 @@ void gpsRestoreWriteData(gpsRestore_s *gpsres, uint8_t num)
     if (fd < 0)
     {
         LogMessage(DEBUG_ALL, "gpsSave==>Open error");
-        return;
+        return ret;
     }
     writelen = nwy_sdk_fwrite(fd, gpsres, paramsize);
     if (writelen != paramsize)
     {
         LogMessage(DEBUG_ALL, "gpsSave==>Error");
+        ret = 0;
     }
     else
     {
         LogMessage(DEBUG_ALL, "gpsSave==>Success");
+        ret = 1;
     }
     nwy_sdk_fclose(fd);
+    return ret;
 }
+
 
 
 /**************************************************
@@ -2527,6 +2539,8 @@ uint8_t gpsRestoreReadData(void)
         {
             readOffset = 0;
             LogMessage(DEBUG_ALL, "Delete gps.save OK");
+            sysparam.dbsize = 0;
+            startTimer(50, paramSaveAll, 0);
         }
         else
         {

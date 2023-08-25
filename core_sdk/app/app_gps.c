@@ -9,6 +9,7 @@
 #include "app_task.h"
 #include "app_port.h"
 #include "app_jt808.h"
+#include "app_db.h"
 
 #define PIA 3.1415926
 
@@ -854,14 +855,14 @@ datetime_s changeUTCTimeToLocalTime(datetime_s utctime, int8_t localtimezone)
 @note
 **************************************************/
 
-static double lengthOfPoints(double lat1, double lng1, double lat2, double lng2)
+double lengthOfPoints(double lat1, double lng1, double lat2, double lng2)
 {
     double radLng1, radLng2;
     double a, b, s;
-    radLng1 = lng1 * PIA / 180.0;
-    radLng2 = lng2 * PIA / 180.0;
+    radLng1 = lat1 * PIA / 180.0;
+    radLng2 = lat2 * PIA / 180.0;
     a = (radLng1 - radLng2);
-    b = (lat1 - lat2) * PIA / 180.0;
+    b = (lng1 - lng2) * PIA / 180.0;
     s = 2 * asin(sqrt(sin(a / 2) * sin(a / 2) + cos(radLng1) * cos(radLng2) * sin(b / 2) * sin(b / 2))) * 6378.137 * 1000;
     return s;
 }
@@ -929,7 +930,11 @@ int8_t calculateTheGPSCornerPoint(void)
     uint8_t positionidnex[5];
     uint16_t coursechange;
     uint8_t cur_index, i;
-
+    
+	if (sysparam.gpsuploadgap <= 3)
+	{
+		return -1;
+	}
 
     gpsfifo = getGSPfifo();
     //获取当前最新的gps索引
@@ -1016,18 +1021,65 @@ void gpsUploadPointToServer(void)
     }
 }
 
+/**************************************************
+@bref		轨迹打包上送
+@param
+@return
+@note
+**************************************************/
+
+void gpsPakeageUpload(void)
+{
+	static uint16_t tick = 0;
+	static uint8_t flag = 0, runTick = 0;
+	if (serverIsReady() == 0)
+	{
+		return;
+	}
+	if (sysparam.uploadGap == 0)
+	{
+		flag = 0;
+		tick = 0;
+		return;
+	}
+
+	tick++;
+	if ((tick % sysparam.uploadGap) == 0)
+	{
+		tick = 0;
+		flag = 1;
+		dbPost();
+	}
+	if (flag == 1)
+	{
+		if (runTick % 3 == 0)
+		{
+			if (sysinfo.dbFileUpload == 1)
+			{
+				sysinfo.dbFileUpload = gpsRestoreReadData();
+			}
+			else
+			{
+				flag = 0;
+			}
+		}
+		runTick++;
+	}
+
+}
 
 void ClearLastMilePoint(void)
 {
 	memset(&lastmilegpsinfo, 0, sizeof(lastmilegpsinfo));
 }
 
-static void recordLastMilePoint(gpsinfo_s *gpsinfo)
+static void recordLastMilePoint(gpsinfo_s *gpsinfo, uint16_t tick)
 {
 	lastmilegpsinfo.init = 1;
 	lastmilegpsinfo.datetime = gpsinfo->datetime;
 	lastmilegpsinfo.latitude = gpsinfo->latitude;
 	lastmilegpsinfo.longtitude = gpsinfo->longtitude;
+	lastmilegpsinfo.tick = tick;
 	LogPrintf(DEBUG_ALL, "record last mile point");
 }
 
@@ -1040,19 +1092,16 @@ static void recordLastMilePoint(gpsinfo_s *gpsinfo)
 
 void gpsMileRecord(void)
 {
-	static uint8_t tick = 0;
+	static uint32_t tick = 0;
 	double mile = 0.0;
 	gpsinfo_s *gpsinfo;
+	static uint32_t filttick = 0;
 	
 	gpsinfo = getCurrentGPSInfo();
 	if (sysinfo.gpsOnoff == 0 && (sysparam.MODE == MODE2 || sysparam.MODE == MODE21 || sysparam.MODE == MODE23))
 	{
 		tick = 0;
-		return;
-	}
-	if (gpsinfo->fixstatus == 0)
-	{
-		tick = 0;
+		filttick = 0;
 		return;
 	}
 	if (getTerminalAccState() == 0)
@@ -1060,10 +1109,21 @@ void gpsMileRecord(void)
 		return;
 	}
 	tick++;
+	if (gpsinfo->fixstatus == 0)
+	{
+		return;
+	}
+
+	if (filttick++ < 10)
+	{
+		LogPrintf(DEBUG_ALL, "Filter mile record");
+		return;
+	}
+	
 	/*还没有上一次记录*/
 	if (lastmilegpsinfo.init == 0)
 	{
-		recordLastMilePoint(getCurrentGPSInfo());
+		recordLastMilePoint(getCurrentGPSInfo(), sysinfo.sysTick);
 	}
 	else 
 	{
@@ -1073,12 +1133,20 @@ void gpsMileRecord(void)
 			mile = lengthOfPoints(gpsinfo->latitude, gpsinfo->longtitude, lastmilegpsinfo.latitude,\
                               lastmilegpsinfo.longtitude);
             /*误差过滤*/
-            if (mile >= 1.2)
+            if (mile <= 1.0)
             {
-            	sysparam.mileage += mile;
             }
-            LogPrintf(DEBUG_ALL, "gpsMileRecord==>mile:%.3lf, totalmile:%.3lf", mile, sysparam.mileage * (sysparam.milecal / 100.0 + 1.0));
-            recordLastMilePoint(getCurrentGPSInfo());
+            else if (mile >= 50.0 && (sysinfo.sysTick - lastmilegpsinfo.tick) <= 1)
+            {
+
+            }
+            else 
+            {
+				sysparam.mileage += mile;
+            }
+            LogPrintf(DEBUG_ALL, "gpsMileRecord==>mile:%.3lf, totalmile:%.3lf, tickgap:%d", mile, sysparam.mileage * (sysparam.milecal / 100.0 + 1.0), (sysinfo.sysTick - lastmilegpsinfo.tick));
+            LogPrintf(DEBUG_ALL, "lastlat:%lf, lastlon:%lf, nowlat:%lf, nowlon:%lf", lastmilegpsinfo.latitude, lastmilegpsinfo.longtitude, gpsinfo->latitude, gpsinfo->longtitude);
+            recordLastMilePoint(getCurrentGPSInfo(), sysinfo.sysTick);
 		}
 	}
 	

@@ -28,10 +28,22 @@ void dbSaveInit(void)
 
 void dbSaveAll(void)
 {
-    gpsRestoreWriteData(dbSave.gpsBuff, dbSave.gpsNum);
+	uint8_t ret;
+	if (sysparam.dbsize + sizeof(gpsRestore_s) * dbSave.gpsNum >= 40000)
+	{
+		return;
+	}
+    ret = gpsRestoreWriteData(dbSave.gpsBuff, dbSave.gpsNum);
+    if (ret)
+    {
+    	sysparam.dbsize += sizeof(gpsRestore_s) * dbSave.gpsNum;
+    	paramSaveAll();
+    }
+    LogPrintf(DEBUG_ALL, "dbSaveAll==>dbsize:%d, ret:%d\r\n", sysparam.dbsize, ret);
     sysinfo.dbFileUpload = 1;
     dbSave.gpsNum = 0;
 }
+
 /**************************************************
 @bref		´æ´¢gpsÊý¾Ý
 @param

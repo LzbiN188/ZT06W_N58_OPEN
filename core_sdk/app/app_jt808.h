@@ -75,6 +75,7 @@ typedef struct
     uint8_t mintues;
     uint8_t seconds;
     uint8_t statelliteUsed;
+    uint8_t accuracy;
 } jt808Position_s;
 
 

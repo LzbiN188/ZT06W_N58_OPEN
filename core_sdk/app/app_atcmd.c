@@ -189,6 +189,16 @@ static void doAtdebugCmd(char *buf, uint32_t len)
         simId = nwy_sim_get_simid();
         LogPrintf(DEBUG_ALL, "SIMID:%d", simId);
     }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"DIS"))
+    {
+		double a,b,c,d,f;
+		a=atof(item.item_data[1]);
+		b=atof(item.item_data[2]);
+		c=atof(item.item_data[3]);
+		d=atof(item.item_data[4]);
+		f=lengthOfPoints(a,b,c,d);
+		LogPrintf(DEBUG_ALL, "a:%lf, b:%lf, c:%lf, d:%lf, f:%lf", a,b,c,d,f);
+    }
     else
     {
         setDebugLevel(item.item_data[0], strlen(item.item_data[0]));
