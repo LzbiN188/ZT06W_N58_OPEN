@@ -4,9 +4,9 @@
 #include "nwy_osi_api.h"
 
 #define PARAM_VER		0x21
-#define OTA_PARAM_FLAG  0x2D
+#define OTA_PARAM_FLAG  0x1A
 
-#define EEPROM_VERSION	"N58_CA_V5.3.2"
+#define EEPROM_VERSION	"N58_CA_V5.3.3"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0
@@ -112,6 +112,10 @@ typedef struct
     uint8_t milecal;
 	uint16_t uploadGap;
     uint16_t dbsize;
+
+    uint8_t jt808manufacturerID[20];
+    uint8_t jt808terminalType[20];
+    uint8_t jt808terminalID[20];
 } systemParam_s;
 
 extern systemParam_s sysparam;

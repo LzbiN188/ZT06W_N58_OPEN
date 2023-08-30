@@ -72,6 +72,7 @@ const instruction_s instructiontable[] =
     {SIMPULLOUTALM_INS, "SIMPULLOUTALM"},
     {SIMSEL_INS, "SIMSEL"},
     {SETMILE_INS, "SETMILE"},
+    {JT808ID_INS, "JT808ID"},
     {SN_INS, "*"},
 };
 
@@ -1190,6 +1191,46 @@ static void doJT808ParamInstrucion(ITEM *item, char *message)
 
 }
 
+static void doJT808IdInstruction(ITEM *item, char *message)
+{
+	if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
+    {
+        sprintf(message, "JT808 manufacturerID:%s terminalType:%s terminalID:%s", sysparam.jt808manufacturerID,\
+        								sysparam.jt808terminalType, sysparam.jt808terminalID);
+    }
+    else 
+    {
+		if (item->item_data[1][0] != 0)
+		{
+			if (strlen((char *)sysparam.jt808manufacturerID) <= 5 && strlen((char *)sysparam.jt808manufacturerID) > 0)
+			{
+				strncpy((char *)sysparam.jt808manufacturerID, item->item_data[1], 5);
+			}
+		}
+		if (item->item_data[2][0] != 0)
+		{
+			if (strlen((char *)sysparam.jt808terminalType) <= 20 && strlen((char *)sysparam.jt808terminalType) > 0)
+			{
+				strncpy((char *)sysparam.jt808terminalType, item->item_data[2], 20);
+			}
+		}
+		if (item->item_data[3][0] != 0)
+		{
+			if (strlen((char *)sysparam.jt808terminalID) <= 7 && strlen((char *)sysparam.jt808terminalID) > 0)
+			{
+				strncpy((char *)sysparam.jt808terminalID, item->item_data[3], 7);
+			}
+		}
+
+		jt808RegisterManufactureId(sysparam.jt808manufacturerID);
+	 	jt808RegisterTerminalType(sysparam.jt808terminalType);
+	 	jt808RegisterTerminalId(sysparam.jt808terminalID);
+		sprintf(message, "Update JT808 manufacturerID:%s terminalType:%s terminalID:%s", sysparam.jt808manufacturerID,\
+        								sysparam.jt808terminalType, sysparam.jt808terminalID);
+       	paramSaveAll();
+    }
+}
+
 static void doHideServerInstruction(ITEM *item, char *message)
 {
     if (item->item_data[1][0] == 0 || item->item_data[1][0] == '?')
@@ -1770,6 +1811,9 @@ static void doInstruction(int16_t cmdid, ITEM *item, instructionParam_s *param)
         case JT808PARAM_INS:
             doJT808ParamInstrucion(item, message);
             break;
+        case JT808ID_INS:
+			doJT808IdInstruction(item, message);
+        	break;
         case HIDESERVER_INS:
             doHideServerInstruction(item, message);
             break;

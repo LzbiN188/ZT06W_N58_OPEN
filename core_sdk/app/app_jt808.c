@@ -159,7 +159,7 @@ void jt808RegisterLoginInfo(uint8_t *sn, uint8_t reg, uint8_t *authCode, uint8_t
 
 void jt808RegisterManufactureId(uint8_t *id)
 {
-    memcpy(jt808_info.jt808manufacturerID, id, 5);
+    strncpy((char *)jt808_info.jt808manufacturerID, (char *)id, 5);
 }
 /**************************************************
 @bref		◊¢≤·JT808 ÷’∂À¿‡–Õ
@@ -171,7 +171,7 @@ void jt808RegisterManufactureId(uint8_t *id)
 
 void jt808RegisterTerminalType(uint8_t *type)
 {
-    memcpy(jt808_info.jt808terminalType, type, 20);
+    strncpy((char *)jt808_info.jt808terminalType, (char *)type, 20);
 }
 
 /**************************************************
@@ -184,7 +184,7 @@ void jt808RegisterTerminalType(uint8_t *type)
 
 void jt808RegisterTerminalId(uint8_t *id)
 {
-    memcpy(jt808_info.jt808terminalID, id, 7);
+    strncpy((char *)jt808_info.jt808terminalID, (char *)id, 7);
 }
 
 

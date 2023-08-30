@@ -40,6 +40,7 @@ typedef enum
     FACTORYTEST_INS,
     JT808SN_INS,
     JT808PARAM_INS,
+    JT808ID_INS,
     HIDESERVER_INS,
     SETBLEMAC_INS,
     READPARAM_INS,
@@ -56,6 +57,7 @@ typedef enum
     SIMPULLOUTALM_INS,
     SIMSEL_INS,
     SETMILE_INS,
+    
 } cmd_e;
 
 

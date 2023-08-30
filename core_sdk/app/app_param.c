@@ -208,6 +208,7 @@ void paramInit(void)
     }
     if (sysparam.otaParamFlag != OTA_PARAM_FLAG)
     {
+    	
 		sysparam.otaParamFlag = OTA_PARAM_FLAG;
 		sysparam.agpsPort = 10187;
 		sysparam.latitude = 0.0;
@@ -217,6 +218,9 @@ void paramInit(void)
 		jt808CreateSn(sysparam.jt808sn, (uint8_t *)sysparam.SN + 3, 12);
 		sysparam.uploadGap = 0;
 		sysparam.dbsize = 0;
+		strncpy((char *)sysparam.jt808manufacturerID, (char *)"70111", 20);
+		strncpy((char *)sysparam.jt808terminalType, (char *)"BSJ-A7", 20);
+		strncpy((char *)sysparam.jt808terminalID, (char *)"0882984", 20);
 		paramSaveAll();
     }
     sysinfo.alarmrequest = sysparam.alarmRequest;
