@@ -676,7 +676,7 @@ static uint16_t jt808TerminalPosition(uint8_t *dest, uint8_t *sn, jt808Position_
 {
     uint16_t len,jt808vol;
 	uint32_t mile;
-	mile = (uint32_t)(sysparam.mileage * (double)(sysparam.milecal / 100.0 + 1.0) * 10.0); 
+	mile = (uint32_t)(sysparam.mileage * (double)(sysparam.milecal / 100.0 + 1.0) / 100.0); 
     len = jt808PackMessageHead(dest, TERMINAL_POSITION_MSGID, sn, jt808GetSerial(), 0);
     len = jt808PositionInfo(dest, len, positionInfo);
     if (type == 1)
