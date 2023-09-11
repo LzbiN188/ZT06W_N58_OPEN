@@ -6,7 +6,7 @@
 #define PARAM_VER		0x21
 #define OTA_PARAM_FLAG  0x2A
 
-#define EEPROM_VERSION	"N58_CA_V5.3.4"
+#define EEPROM_VERSION	"N58_CA_V5.3.5"
 
 #define JT808_PROTOCOL_TYPE			8
 #define ZT_PROTOCOL_TYPE			0

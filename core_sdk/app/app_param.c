@@ -165,27 +165,36 @@ void paramSetDefault(uint8_t lev)
     thisparam.accOnVoltage = 13.2;
     thisparam.accOffVoltage = 12.8;
 
-    thisparam.bleRfThreshold = 48;
+    thisparam.bleRfThreshold = 140;
     thisparam.bleOutThreshold = 1500;
     thisparam.bleAutoDisc = 0;
 
-    thisparam.blePreShieldVoltage = 48;
-    thisparam.blePreShieldDetCnt = 10;
-    thisparam.blePreShieldHoldTime = 1;
+    thisparam.blePreShieldVoltage = 125;
+    thisparam.blePreShieldDetCnt = 20;
+    thisparam.blePreShieldHoldTime = 3;
 
     thisparam.relaySpeed = 20;
     thisparam.bleRelay = 1;
-    thisparam.bleVoltage = 11.5;
+    thisparam.bleVoltage = 10.5;
 
 	thisparam.simpulloutalm=1;
-	thisparam.simpulloutLock=1;
+	thisparam.simpulloutLock=0;
 	thisparam.shutdownalm=1;
-	thisparam.shutdownLock=1;
+	thisparam.shutdownLock=0;
 	thisparam.uncapalm=1;
-	thisparam.uncapLock=1;
+	thisparam.uncapLock=0;
 
 	thisparam.simSel = 0;
 	thisparam.otaParamFlag = OTA_PARAM_FLAG;
+	thisparam.latitude = 0.0;
+	thisparam.longtitude = 0.0;
+	thisparam.mileage = 0.0;
+	thisparam.milecal = 5;
+	thisparam.uploadGap = 0;
+	thisparam.dbsize = 0;
+	strncpy((char *)thisparam.jt808manufacturerID, (char *)"70111", 20);
+	strncpy((char *)thisparam.jt808terminalType, (char *)"BSJ-A7", 20);
+	strncpy((char *)thisparam.jt808terminalID, (char *)"0882984", 20);
     memcpy(&sysparam, &thisparam, sizeof(systemParam_s));
     paramSaveAll();
     LogMessage(DEBUG_ALL, "paramSetDefault");
@@ -215,7 +224,6 @@ void paramInit(void)
 		sysparam.longtitude = 0.0;
 		sysparam.mileage = 0.0;
 		sysparam.milecal = 5;
-		jt808CreateSn(sysparam.jt808sn, (uint8_t *)sysparam.SN + 3, 12);
 		sysparam.uploadGap = 0;
 		sysparam.dbsize = 0;
 		strncpy((char *)sysparam.jt808manufacturerID, (char *)"70111", 20);
