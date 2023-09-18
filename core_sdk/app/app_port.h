@@ -4,6 +4,8 @@
 #include "nwy_osi_api.h"
 #include "nwy_usb_serial.h"
 #include "nwy_gpio_open.h"
+#include "nwy_pm.h"
+
 #include "nwy_loc.h"
 #define LED1_PORT
 #define LED2_PORT		25
@@ -16,8 +18,8 @@
 
 
 #define GSINT_PORT		2
-#define GSPWR_ON		nwy_set_pmu_power_level(NWY_POWER_CAMD, 1800);
-#define GSPWR_OFF		nwy_set_pmu_power_level(NWY_POWER_CAMD, 0);
+#define GSPWR_ON		nwy_set_pmu_power_level(NWY_POWER_CAMD, 1800)
+#define GSPWR_OFF		nwy_set_pmu_power_level(NWY_POWER_CAMD, 0)
 
 
 #define LDR_PORT		3

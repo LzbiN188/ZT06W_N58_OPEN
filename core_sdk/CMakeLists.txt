@@ -179,6 +179,8 @@ if(CONFIG_APPIMG_LOAD_FLASH)
 	
     target_link_libraries(${target} PRIVATE ${libc_file_name} ${libm_file_name} ${libgcc_file_name})
 
+	target_link_libraries(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/components/lib/libcarMotion.a)
+	target_link_libraries(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/components/lib/LIBCH58xBLE.a)
     set(pac_file ${out_hex_dir}/${target}.pac)
     set(target_img_file ${out_hex_dir}/${target}.img)
     pac_init_fdl(init_fdl)

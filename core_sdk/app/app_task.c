@@ -13,13 +13,14 @@
 #include "app_ble.h"
 #include "app_jt808.h"
 #include "app_db.h"
-
+#include "carMotion.h"
 extern nwy_osiThread_t *myAppEventThread;
 static sysLedCtrl_s sysLedCtrl;
 static motionInfo_s motionInfo;
 
 systemInfo_s sysinfo;
 
+static struct carMotion_op_s carMotionInfo;
 
 /**************************************************
 @bref		ÏµÍ³µÆ1¿ØÖÆ

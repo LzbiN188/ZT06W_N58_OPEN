@@ -1,13 +1,26 @@
-/******************** (C) COPYRIGHT 2018 MiraMEMS *****************************
-* File Name     : mir3da.h
-* Author        : ycwang@miramems.com
-* Version       : V1.0
-* Date          : 05/18/2018
-* Description   : Demo for configuring mir3da
-*******************************************************************************/
-#ifndef __MIR3DA_h
-#define __MIR3DA_h
-
+/*******************************************************************************/
+ /**
+  ******************************************************************************
+  * @file    mira_std.h
+  * @author  ycwang@miramems.com
+  * @version V1.0
+  * @date    26-Nov-2014
+  * @brief
+  ******************************************************************************
+  * @attention
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, MiraMEMS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2014 MiraMEMS</center></h2>
+  */
+/*******************************************************************************/
+#ifndef __mira_std_h
+#define __mira_std_h
 
 /*******************************************************************************
 Macro definitions - Register define for Gsensor asic
@@ -74,19 +87,11 @@ typedef struct AccData_tag{
    s16_m ax;                                   //加速度计原始数据结构体  数据格式 0 0 1024
    s16_m ay;
    s16_m az;
+
 }AccData;
 
 #define mir3da_abs(x)          (((x) > 0) ? (x) : (-(x)))
-
-s8_m mir3da_init(void);
-s8_m mir3da_read_data(s16_m *x, s16_m *y, s16_m *z);
-s8_m mir3da_open_interrupt(u8_m th);
-s8_m mir3da_set_enable(u8_m enable);
-s8_m read_gsensor_id(void);
-s8_m readInterruptConfig(void);
-
 s32_m mir3da_sqrt(s32_m val);
 void mir3da_memset(void *dest, u8_m count);
 void* mir3da_memcpy(void* dest, void* source, u8_m count);
-
 #endif

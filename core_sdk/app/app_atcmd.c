@@ -17,6 +17,12 @@
 #include "app_encrypt.h"
 #include "app_ble.h"
 #include "nwy_sim.h"
+#include "carMotion.h"
+#include "nwy_osi_api.h"
+#include "nwy_usb_serial.h"
+#include "nwy_gpio_open.h"
+#include "nwy_loc.h"
+#include "CH58xBLE_LIB.h"
 
 
 const atCmd_s atCmdTable[] =
@@ -198,6 +204,37 @@ static void doAtdebugCmd(char *buf, uint32_t len)
 		d=atof(item.item_data[4]);
 		f=lengthOfPoints(a,b,c,d);
 		LogPrintf(DEBUG_ALL, "a:%lf, b:%lf, c:%lf, d:%lf, f:%lf", a,b,c,d,f);
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"GSPWRON"))
+    {
+		GSPWR_ON;
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"GSPWROFF"))
+    {
+		GSPWR_OFF;
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"AA"))
+    {
+//		GATT_InitClient();
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"CHIPON"))
+    {
+		carMotion_Chip_Power_On();
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"CHIPOFF"))
+    {
+		carMotion_Chip_Power_Off();
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"READ"))
+    {
+    	s16_m x, y, z;
+		carMotion_Chip_Read_XYZ(&x, &y, &z);
+		LogPrintf(DEBUG_ALL, "x:%d y:%d z:%d",x,y,z);
+    }
+    else if (mycmdPatch((uint8_t *)item.item_data[0], (uint8_t *)"INIT"))
+    {
+    	struct carMotion_op_s aaa;
+    	LogPrintf(DEBUG_ALL, "carMotion_Init:%d", carMotion_Init(&aaa));
     }
     else
     {

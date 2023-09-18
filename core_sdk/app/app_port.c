@@ -512,25 +512,26 @@ static void gpioInterruptCallBack(int param)
 void portGsensorCfg(uint8_t onoff)
 {
 
-    LogPrintf(DEBUG_ALL, "portGsensorCfg==>%s", onoff ? "Enable" : "Disable");
-    nwy_close_gpio(GSINT_PORT);
-    if (onoff)
-    {
-        GSPWR_ON;
-        nwy_open_gpio_irq_config(GSINT_PORT, nwy_irq_rising, gpioInterruptCallBack);
-        mir3da_init();
-        mir3da_set_enable(1);
-        mir3da_open_interrupt(10);
-        nwy_gpio_open_irq_enable(GSINT_PORT);
-        sysinfo.gsensorOnoff = 1;
-        sysinfo.gsensorErr = 0;
-    }
-    else
-    {
-        GSPWR_OFF;
-        nwy_gpio_open_irq_disable(GSINT_PORT);
-        sysinfo.gsensorOnoff = 0;
-    }
+//    LogPrintf(DEBUG_ALL, "portGsensorCfg==>%s", onoff ? "Enable" : "Disable");
+//    nwy_close_gpio(GSINT_PORT);
+//    if (onoff)
+//    {
+//        GSPWR_ON;
+//        nwy_open_gpio_irq_config(GSINT_PORT, nwy_irq_rising, gpioInterruptCallBack);
+//        mir3da_init();
+//        mir3da_set_enable(1);
+//        mir3da_open_interrupt(10);
+//        nwy_gpio_open_irq_enable(GSINT_PORT);
+//        sysinfo.gsensorOnoff = 1;
+//        sysinfo.gsensorErr = 0;
+//    }
+//    else
+//    {
+//        GSPWR_OFF;
+//        nwy_gpio_open_irq_disable(GSINT_PORT);
+//        sysinfo.gsensorOnoff = 0;
+//    }
+
 }
 
 
